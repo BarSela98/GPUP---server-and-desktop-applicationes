@@ -7,12 +7,8 @@ import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
-import util.Constants;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.net.URL;
 
@@ -40,7 +36,7 @@ public class WorkerAppMainController {
        // userGreetingLabel.textProperty().bind(Bindings.concat("Hello ", currentUserName));
         // prepare components
         loadLoginPage();
-       // loadChatRoomPage();
+        loadWorkerPage();
     }
 
     private void setPanelTo(Parent pane) {
@@ -71,10 +67,9 @@ public class WorkerAppMainController {
             FXMLLoader fxmlLoader = new FXMLLoader();
             URL workerPageUrl = getClass().getResource(WORKER_PAGE_FXML_RESOURCE_LOCATION);
             fxmlLoader.setLocation(workerPageUrl);
-            loginComponent = fxmlLoader.load(workerPageUrl.openStream());
+            workerPageComponent = fxmlLoader.load(workerPageUrl.openStream());
             workerPageController = fxmlLoader.getController();
             workerPageController.setAppMainController(this);
-            setMainPanelTo(workerPageComponent);
         } catch (IOException e) {
             e.printStackTrace();
         }

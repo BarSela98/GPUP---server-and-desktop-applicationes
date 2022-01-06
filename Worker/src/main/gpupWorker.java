@@ -1,5 +1,5 @@
 package main;
-import component.login.loginController;
+
 import component.mainApp.WorkerAppMainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -7,9 +7,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import util.http.HttpClientUtil;
+
 import java.io.IOException;
 import java.net.URL;
-import static util.Constants.*;
+
+import static util.Constants.MAIN_PAGE_FXML_RESOURCE_LOCATION;
 
 public class gpupWorker extends Application {
 
@@ -24,6 +26,7 @@ public class gpupWorker extends Application {
         Scene scene = new Scene(root, 500, 300);
         primaryStage.setScene(scene);
         WorkerAppMainController controller = fxmlLoader.getController();
+
         primaryStage.show();
     }
 

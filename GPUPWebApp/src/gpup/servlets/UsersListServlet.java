@@ -1,5 +1,6 @@
 package gpup.servlets;
 
+import ODT.User;
 import com.google.gson.Gson;
 import engine.users.UserManager;
 import gpup.utils.ServletUtils;
@@ -20,7 +21,8 @@ public class UsersListServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             Gson gson = new Gson();
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            Set<String> usersList = userManager.getUsers();
+            Set<User> usersList = userManager.getUsers();
+            System.out.println(usersList);     ///////////////////////////////////////////////////////////////////////////
             String json = gson.toJson(usersList);
             out.println(json);
             out.flush();

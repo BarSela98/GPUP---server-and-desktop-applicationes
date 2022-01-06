@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="GPUP">
+    <output-path>$PROJECT_DIR$/out/artifacts/GPUP</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="GPUPWebApp" />
+          <element id="module-output" name="GpupLogicEngine" />
+          <element id="module-output" name="Worker" />
+          <element id="module-output" name="Exception" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="gson-2.1" />
+          <element id="library" level="project" name="okhttp-4.9.1" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="GPUPWebApp/web/Web" />
+    </root>
+  </artifact>
+</component>

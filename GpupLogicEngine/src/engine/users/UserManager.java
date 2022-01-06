@@ -1,5 +1,7 @@
 package engine.users;
 
+import ODT.User;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,21 +13,23 @@ of the user of this class to handle the synchronization of isUserExists with oth
  */
 public class UserManager {
 
-    private final Set<String> usersSet;
+    private final Set<User> usersSet;
 
     public UserManager() {
         usersSet = new HashSet<>();
     }
 
-    public synchronized void addUser(String username) {
-        usersSet.add(username);
+    public synchronized void addUser(String username, String role) {
+        usersSet.add(new User(username,role));
+        System.out.println("usersSet - "+usersSet);     ///////////////////////////////////////////////////////////////////////////
+
     }
 
     public synchronized void removeUser(String username) {
         usersSet.remove(username);
     }
 
-    public synchronized Set<String> getUsers() {
+    public synchronized Set<User> getUsers() {
         return Collections.unmodifiableSet(usersSet);
     }
 

@@ -46,6 +46,7 @@ public class loginController {
                 .parse(Constants.LOGIN_PAGE)
                 .newBuilder()
                 .addQueryParameter("username", userName)
+                .addQueryParameter("role", "Worker")
                 .build()
                 .toString();
 
