@@ -7,11 +7,7 @@
           <element id="module-output" name="GPUPWebApp" />
           <element id="module-output" name="GpupLogicEngine" />
         </element>
-        <element id="directory" name="lib">
-          <element id="library" level="project" name="gson-2.1" />
-          <element id="library" level="project" name="okHttp" />
-          <element id="library" level="project" name="google-gson-2" />
-        </element>
+        <element id="directory" name="lib" />
       </element>
       <element id="javaee-facet-resources" facet="GPUPWebApp/web/Web" />
     </root>

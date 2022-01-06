@@ -3,12 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Admin/Admin.iml" filepath="$PROJECT_DIR$/Admin/Admin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/old/Engine/Engine.iml" filepath="$PROJECT_DIR$/old/Engine/Engine.iml" />
       <module fileurl="file://$PROJECT_DIR$/Exception/Exception.iml" filepath="$PROJECT_DIR$/Exception/Exception.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/GPUP3.iml" filepath="$PROJECT_DIR$/.idea/GPUP3.iml" />
       <module fileurl="file://$PROJECT_DIR$/GPUPWebApp/GPUPWebApp.iml" filepath="$PROJECT_DIR$/GPUPWebApp/GPUPWebApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/GpupLogicEngine/GpupLogicEngine.iml" filepath="$PROJECT_DIR$/GpupLogicEngine/GpupLogicEngine.iml" />
-      <module fileurl="file://$PROJECT_DIR$/old/UI/UI.iml" filepath="$PROJECT_DIR$/old/UI/UI.iml" />
       <module fileurl="file://$PROJECT_DIR$/Worker/Worker.iml" filepath="$PROJECT_DIR$/Worker/Worker.iml" />
     </modules>
   </component>
