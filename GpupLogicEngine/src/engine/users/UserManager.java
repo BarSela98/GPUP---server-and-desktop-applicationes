@@ -14,19 +14,16 @@ of the user of this class to handle the synchronization of isUserExists with oth
 public class UserManager {
 
     private final Set<User> usersSet;
-
-    public UserManager() {
+     public UserManager() {
         usersSet = new HashSet<>();
     }
 
     public synchronized void addUser(String username, String role) {
         usersSet.add(new User(username,role));
-        System.out.println("usersSet - "+usersSet);     ///////////////////////////////////////////////////////////////////////////
-
     }
 
     public synchronized void removeUser(String username) {
-        usersSet.remove(username);
+        usersSet.removeIf(user -> user.getName().equals(username));
     }
 
     public synchronized Set<User> getUsers() {
@@ -34,6 +31,9 @@ public class UserManager {
     }
 
     public boolean isUserExists(String username) {
-        return usersSet.contains(username);
+        for(User user: usersSet)
+            if (user.getName().equals(username))
+                return true;
+        return false;
     }
 }

@@ -9,7 +9,12 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="Admin" target="1.8" />
+      <module name="ChatWeb" target="1.8" />
+      <module name="chatWebApp" target="1.8" />
       <module name="demo" target="1.8" />
+      <module name="demo.main" target="1.8" />
+      <module name="demo.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

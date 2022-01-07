@@ -31,11 +31,40 @@
         </webroots>
       </configuration>
     </facet>
+    <facet type="web" name="Web5">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/bbb/ChatWeb/web/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/bbb/ChatWeb/web" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="web" name="Web4">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/bbb/GPUPWebApp/web/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/bbb/GPUPWebApp/web" relative="/" />
+        </webroots>
+        <sourceRoots>
+          <root url="file://$MODULE_DIR$/ChatLogicEngine" />
+        </sourceRoots>
+      </configuration>
+    </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Tomcat 10.0.14" level="application_server_libraries" />
+    <orderEntry type="module" module-name="GpupLogicEngine" />
+    <orderEntry type="module" module-name="GPUPWebApp" />
+    <orderEntry type="library" name="gson-2.1" level="project" />
+    <orderEntry type="module" module-name="Admin" />
+    <orderEntry type="module" module-name="Worker" />
   </component>
 </module>

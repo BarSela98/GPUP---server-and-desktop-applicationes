@@ -8,6 +8,8 @@
           <element id="module-output" name="GpupLogicEngine" />
           <element id="module-output" name="Worker" />
           <element id="module-output" name="Exception" />
+          <element id="module-output" name="chatWebApp" />
+          <element id="module-output" name="Admin" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="gson-2.1" />
