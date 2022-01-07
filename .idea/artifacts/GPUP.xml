@@ -17,6 +17,7 @@
         </element>
       </element>
       <element id="javaee-facet-resources" facet="GPUPWebApp/web/Web" />
+      <element id="javaee-facet-resources" facet="chatWebApp/web/Web" />
     </root>
   </artifact>
 </component>
