@@ -82,7 +82,7 @@ public class AdminAppMainController {
 
     public void switchToAdminPage() {
         //setMainPanelTo(adminPageComponent);
-        Scene scene = new Scene(adminPageComponent,1100,800);
+        Scene scene = new Scene(adminPageComponent,1200,800);
         primaryStage.setScene(scene);
         adminPageController.setActive();
     }

@@ -4,6 +4,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -20,185 +21,195 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.page.AdminPageController">
-   <children>
-      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <center>
-            <TabPane fx:id="tabPanAdmin" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-              <tabs>
-                <Tab text="Genral Information">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="background">
-                           <children>
-                              <BorderPane layoutX="243.0" layoutY="204.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <top>
-                                    <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-                                       <children>
-                                          <HBox>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.page.AdminPageController">
+   <center>
+      <ScrollPane fitToHeight="true" fitToWidth="true" minHeight="0.0" minWidth="0.0" BorderPane.alignment="CENTER">
+         <content>
+            <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="770.0" minWidth="1190.0" prefHeight="790.0" prefWidth="1190.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <TabPane fx:id="tabPanAdmin" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+                     <tabs>
+                        <Tab text="Genral Information">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="background">
+                                 <children>
+                                    <BorderPane layoutX="243.0" layoutY="204.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <top>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                                              <children>
-                                                <Label text="Name:" />
-                                                <Text fx:id="nameOfAdmin" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
-                                                   <HBox.margin>
-                                                      <Insets left="20.0" />
-                                                   </HBox.margin>
-                                                </Text>
+                                                <HBox>
+                                                   <children>
+                                                      <Label text="Name:" />
+                                                      <Text fx:id="nameOfAdmin" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                                                         <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                         </HBox.margin>
+                                                      </Text>
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets left="20.0" top="20.0" />
+                                                   </VBox.margin>
+                                                </HBox>
                                              </children>
-                                             <VBox.margin>
-                                                <Insets left="20.0" top="20.0" />
-                                             </VBox.margin>
+                                          </VBox>
+                                       </top>
+                                       <center>
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                             <children>
+                                                <fx:include fx:id="usersListComponent" source="../usersList/usersList.fxml" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="0.0" />
+                                             </children>
+                                          </AnchorPane>
+                                       </center>
+                                       <bottom>
+                                          <GridPane BorderPane.alignment="CENTER">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Button mnemonicParsing="false" onAction="#loadButton" prefHeight="35.0" prefWidth="119.0" text="Load Graph">
+                                                   <GridPane.margin>
+                                                      <Insets bottom="30.0" left="30.0" right="30.0" />
+                                                   </GridPane.margin>
+                                                </Button>
+                                                <Button mnemonicParsing="false" onAction="#quitButton" prefHeight="35.0" prefWidth="91.0" text="Quit" GridPane.columnIndex="1">
+                                                   <GridPane.margin>
+                                                      <Insets bottom="30.0" left="30.0" right="30.0" />
+                                                   </GridPane.margin>
+                                                </Button>
+                                             </children>
+                                          </GridPane>
+                                       </bottom>
+                                    </BorderPane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab text="Graph">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <fx:include fx:id="graphAdminComponent" source="../graph/main/mainGraph.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab text="Execute Mission">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <BorderPane layoutX="363.0" layoutY="217.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <center>
+                                          <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                             <columns>
+                                                <TableColumn prefWidth="47.0" />
+                                                <TableColumn prefWidth="149.0" text="Name Of Mission" />
+                                                <TableColumn prefWidth="142.0" text="Name Of Graph" />
+                                                <TableColumn prefWidth="142.0" text="Targets Information">
+                                                   <columns>
+                                                      <TableColumn prefWidth="66.0" text="Root" />
+                                                      <TableColumn prefWidth="67.0" text="Middle " />
+                                                      <TableColumn prefWidth="74.0" text="Leaf " />
+                                                      <TableColumn prefWidth="106.0" text="Independents" />
+                                                   </columns>
+                                                </TableColumn>
+                                                <TableColumn prefWidth="74.0" text="Workers" />
+                                                <TableColumn prefWidth="142.0" text="Target - Progress " />
+                                                <TableColumn prefWidth="142.0" text="Progress " />
+                                             </columns>
+                                          </TableView>
+                                       </center>
+                                       <bottom>
+                                          <HBox alignment="CENTER" prefHeight="58.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
+                                             <children>
+                                                <Button mnemonicParsing="false" prefWidth="100.0" text="Play">
+                                                   <HBox.margin>
+                                                      <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                                <Button mnemonicParsing="false" prefWidth="100.0" text="Pause">
+                                                   <HBox.margin>
+                                                      <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                                <Button mnemonicParsing="false" prefWidth="100.0" text="Resume">
+                                                   <HBox.margin>
+                                                      <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                                <Button mnemonicParsing="false" prefWidth="100.0" text="Stop">
+                                                   <HBox.margin>
+                                                      <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                             </children>
                                           </HBox>
-                                       </children>
-                                    </VBox>
-                                 </top>
-                                 <center>
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                                       <children>
-                                          <fx:include fx:id="usersListComponent" source="../usersList/usersList.fxml" AnchorPane.leftAnchor="250.0" />
-                                       </children>
-                                    </AnchorPane>
-                                 </center>
-                                 <bottom>
-                                    <GridPane BorderPane.alignment="CENTER">
+                                       </bottom>
+                                    </BorderPane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab text="Chat">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <GridPane hgap="3.0" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../chat/chat-area.css" vgap="3.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <columnConstraints>
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
+                                          <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+                                          <ColumnConstraints hgrow="NEVER" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" />
                                        </columnConstraints>
                                        <rowConstraints>
-                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                          <RowConstraints vgrow="NEVER" />
+                                          <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
+                                          <RowConstraints vgrow="NEVER" />
                                        </rowConstraints>
                                        <children>
-                                          <Button mnemonicParsing="false" onAction="#loadButton" prefHeight="35.0" prefWidth="119.0" text="Load Graph">
-                                             <GridPane.margin>
-                                                <Insets bottom="30.0" left="30.0" right="30.0" />
-                                             </GridPane.margin>
-                                          </Button>
-                                          <Button mnemonicParsing="false" onAction="#quitButton" prefHeight="35.0" prefWidth="91.0" text="Quit" GridPane.columnIndex="1">
-                                             <GridPane.margin>
-                                                <Insets bottom="30.0" left="30.0" right="30.0" />
-                                             </GridPane.margin>
-                                          </Button>
+                                          <Button id="send-button" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#sendButtonClicked" text="SEND" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <AnchorPane maxWidth="1.7976931348623157E308" GridPane.columnSpan="2">
+                                             <children>
+                                                <ToggleButton fx:id="autoScrollButton" mnemonicParsing="false" selected="true" styleClass="toggle-action-button" text="Auto Scroll" AnchorPane.leftAnchor="0.0" />
+                                                <Label id="chat-version-label" fx:id="chatVersionLabel" layoutX="285.0" layoutY="6.0" text="Chat version" AnchorPane.rightAnchor="0.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <TextArea fx:id="mainChatLinesTextArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </TextArea>
+                                          <TextArea fx:id="chatLineTextArea" maxHeight="50.0" maxWidth="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" promptText="Say Something..." GridPane.rowIndex="2">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </TextArea>
                                        </children>
+                                       <padding>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </padding>
                                     </GridPane>
-                                 </bottom>
-                              </BorderPane>
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </Tab>
-                  <Tab text="Graph">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <fx:include fx:id="graphAdminComponent" source="../graph/main/mainGraph.fxml" />
-                           </children>
-                        </AnchorPane>
-                    </content>
-                  </Tab>
-                  <Tab text="Execute Mission">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <BorderPane layoutX="363.0" layoutY="217.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <center>
-                                    <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                                      <columns>
-                                          <TableColumn prefWidth="47.0" />
-                                        <TableColumn prefWidth="149.0" text="Name Of Mission" />
-                                        <TableColumn prefWidth="142.0" text="Name Of Graph" />
-                                          <TableColumn prefWidth="142.0" text="Targets Information">
-                                             <columns>
-                                                <TableColumn prefWidth="66.0" text="Root" />
-                                                <TableColumn prefWidth="67.0" text="Middle " />
-                                                <TableColumn prefWidth="74.0" text="Leaf " />
-                                                <TableColumn prefWidth="106.0" text="Independents" />
-                                             </columns>
-                                          </TableColumn>
-                                          <TableColumn prefWidth="74.0" text="Workers" />
-                                          <TableColumn prefWidth="142.0" text="Target - Progress " />
-                                          <TableColumn prefWidth="142.0" text="Progress " />
-                                      </columns>
-                                    </TableView>
-                                 </center>
-                                 <bottom>
-                                    <HBox alignment="CENTER" prefHeight="58.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
-                                       <children>
-                                          <Button mnemonicParsing="false" prefWidth="100.0" text="Play">
-                                             <HBox.margin>
-                                                <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                          <Button mnemonicParsing="false" prefWidth="100.0" text="Pause">
-                                             <HBox.margin>
-                                                <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                          <Button mnemonicParsing="false" prefWidth="100.0" text="Resume">
-                                             <HBox.margin>
-                                                <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                          <Button mnemonicParsing="false" prefWidth="100.0" text="Stop">
-                                             <HBox.margin>
-                                                <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-                                 </bottom>
-                              </BorderPane>
-                           </children>
-                        </AnchorPane>
-                    </content>
-                  </Tab>
-                  <Tab text="Chat">
-                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <GridPane hgap="3.0" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../chat/chat-area.css" vgap="3.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
-                                    <ColumnConstraints hgrow="NEVER" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints vgrow="NEVER" />
-                                    <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
-                                    <RowConstraints vgrow="NEVER" />
-                                 </rowConstraints>
-                                 <children>
-                                    <Button id="send-button" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#sendButtonClicked" text="SEND" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <AnchorPane maxWidth="1.7976931348623157E308" GridPane.columnSpan="2">
-                                       <children>
-                                          <ToggleButton fx:id="autoScrollButton" mnemonicParsing="false" selected="true" styleClass="toggle-action-button" text="Auto Scroll" AnchorPane.leftAnchor="0.0" />
-                                          <Label id="chat-version-label" fx:id="chatVersionLabel" layoutX="285.0" layoutY="6.0" text="Chat version" AnchorPane.rightAnchor="0.0" />
-                                       </children>
-                                    </AnchorPane>
-                                    <TextArea fx:id="mainChatLinesTextArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
-                                       <font>
-                                          <Font size="16.0" />
-                                       </font>
-                                    </TextArea>
-                                    <TextArea fx:id="chatLineTextArea" maxHeight="50.0" maxWidth="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" promptText="Say Something..." GridPane.rowIndex="2">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                    </TextArea>
                                  </children>
-                                 <padding>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </padding>
-                              </GridPane>
-                           </children>
-                        </AnchorPane>
-                     </content>
-                  </Tab>
-              </tabs>
-            </TabPane>
-         </center>
-         <stylesheets>
-            <URL value="@../login/css/button.css" />
-            <URL value="@../login/css/table.css" />
-            <URL value="@../login/css/backgroung.css" />
-         </stylesheets>
-      </BorderPane>
-   </children>
-</AnchorPane>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
+               </children>
+            </GridPane>
+         </content>
+      </ScrollPane>
+   </center>
+   <stylesheets>
+      <URL value="@../login/css/button.css" />
+      <URL value="@../login/css/table.css" />
+      <URL value="@../login/css/backgroung.css" />
+   </stylesheets>
+</BorderPane>
