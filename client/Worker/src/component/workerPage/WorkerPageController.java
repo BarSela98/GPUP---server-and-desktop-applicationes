@@ -34,6 +34,7 @@ import static util.Constants.REFRESH_RATE;
 
 
 public class WorkerPageController implements WorkerCommands , Closeable{
+    ///bar
     private final IntegerProperty chatVersion;
     private final BooleanProperty autoScroll;
     private final BooleanProperty autoUpdate;

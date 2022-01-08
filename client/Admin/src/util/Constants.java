@@ -28,7 +28,7 @@ public class Constants {
     // list of user
     public final static String USERS_LIST = FULL_SERVER_PATH + "/userslist";
     // load xml
-    public final static String LOAD_XML_FILE = FULL_SERVER_PATH + "/userslist";
+    public final static String LOAD_XML_FILE = FULL_SERVER_PATH + "/file/xml/load";
 
 
     // Chat
