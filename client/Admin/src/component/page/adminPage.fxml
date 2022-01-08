@@ -45,8 +45,8 @@
                                              <children>
                                                 <HBox>
                                                    <children>
-                                                      <Label text="Name:" />
-                                                      <Text fx:id="nameOfAdmin" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                                                      <Label styleClass="Label" text="Name:" />
+                                                      <Text fx:id="nameOfAdmin" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text" text="Text">
                                                          <HBox.margin>
                                                             <Insets left="20.0" />
                                                          </HBox.margin>
@@ -178,7 +178,7 @@
                                           <AnchorPane maxWidth="1.7976931348623157E308" GridPane.columnSpan="2">
                                              <children>
                                                 <ToggleButton fx:id="autoScrollButton" mnemonicParsing="false" selected="true" styleClass="toggle-action-button" text="Auto Scroll" AnchorPane.leftAnchor="0.0" />
-                                                <Label id="chat-version-label" fx:id="chatVersionLabel" layoutX="285.0" layoutY="6.0" text="Chat version" AnchorPane.rightAnchor="0.0" />
+                                                <Label id="chat-version-label" fx:id="chatVersionLabel" layoutX="285.0" layoutY="6.0" styleClass="Label" text="Chat version" AnchorPane.rightAnchor="0.0" />
                                              </children>
                                           </AnchorPane>
                                           <TextArea fx:id="mainChatLinesTextArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
@@ -208,8 +208,9 @@
       </ScrollPane>
    </center>
    <stylesheets>
-      <URL value="@../login/css/button.css" />
-      <URL value="@../login/css/table.css" />
-      <URL value="@../login/css/backgroung.css" />
+      <URL value="@../css/button.css" />
+      <URL value="@../css/backgroung.css" />
+      <URL value="@../css/tabPane.css" />
+      <URL value="@../css/label.css" />
    </stylesheets>
 </BorderPane>

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="513.0" prefWidth="710.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.graph.general.GeneralGraphController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="513.0" prefWidth="710.0" stylesheets="@../../css/label.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.graph.general.GeneralGraphController">
    <bottom>
       <ChoiceBox fx:id="choiceBoxGraph" prefHeight="37.0" prefWidth="262.0" BorderPane.alignment="CENTER_LEFT">
          <BorderPane.margin>
@@ -21,8 +21,8 @@
          <children>
             <HBox alignment="CENTER">
                <children>
-                  <Label text="Name Of Graph: " />
-                  <Text fx:id="nameOfGraphText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                  <Label styleClass="Label" text="Name Of Graph: " />
+                  <Text fx:id="nameOfGraphText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text" text="Text" />
                </children>
                <VBox.margin>
                   <Insets left="10.0" top="20.0" />
@@ -30,22 +30,22 @@
             </HBox>
             <HBox alignment="CENTER">
                <children>
-                  <Label text="Creator: " />
-                  <Text fx:id="creatorText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                  <Label styleClass="Label" text="Creator: " />
+                  <Text fx:id="creatorText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text" text="Text" />
                </children>
                <VBox.margin>
                   <Insets left="10.0" top="20.0" />
                </VBox.margin>
             </HBox>
-            <Label text="Price" underline="true">
+            <Label styleClass="Label" text="Price" underline="true">
                <VBox.margin>
                   <Insets left="10.0" top="20.0" />
                </VBox.margin>
             </Label>
             <HBox alignment="CENTER">
                <children>
-                  <Label text="Compilation: " />
-                  <Text fx:id="priceCompilationText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                  <Label styleClass="Label" text="Compilation: " />
+                  <Text fx:id="priceCompilationText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text" text="Text" />
                </children>
                <VBox.margin>
                   <Insets left="10.0" top="20.0" />
@@ -53,8 +53,8 @@
             </HBox>
             <HBox alignment="CENTER">
                <children>
-                  <Label text="Simulation: " />
-                  <Text fx:id="priceSimulationText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                  <Label styleClass="Label" text="Simulation: " />
+                  <Text fx:id="priceSimulationText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text" text="Text" />
                </children>
                <VBox.margin>
                   <Insets left="10.0" top="20.0" />

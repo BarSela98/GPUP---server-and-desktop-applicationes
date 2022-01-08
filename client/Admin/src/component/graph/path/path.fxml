@@ -129,23 +129,23 @@
          <children>
             <TableView id="table" fx:id="tableView" maxWidth="930.0" minHeight="720.0" minWidth="850.0" prefHeight="720.0" prefWidth="930.0" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS">
                <columns>
-                  <TableColumn fx:id="remarkTableCol" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" styleClass="tableColumn" />
-                  <TableColumn fx:id="nameTableCol" maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="150.0" styleClass="tableColumn" text="Name" />
-                  <TableColumn fx:id="typeTableCol" maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="150.0" styleClass="tableColumn" text="Type" />
-                  <TableColumn fx:id="requiredForTableCol" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="0.0" styleClass="tableColumn" text="Required For">
+                  <TableColumn fx:id="remarkTableCol" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
+                  <TableColumn fx:id="nameTableCol" maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="150.0" text="Name" />
+                  <TableColumn fx:id="typeTableCol" maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="150.0" text="Type" />
+                  <TableColumn fx:id="requiredForTableCol" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="0.0" text="Required For">
                      <columns>
-                        <TableColumn fx:id="directRequiredForTableCol" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" styleClass="tableColumn" text="Direct" />
-                        <TableColumn fx:id="totalRequiredForTableCol" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" styleClass="tableColumn" text="Total" />
+                        <TableColumn fx:id="directRequiredForTableCol" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" text="Direct" />
+                        <TableColumn fx:id="totalRequiredForTableCol" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" text="Total" />
                      </columns>
                   </TableColumn>
-                  <TableColumn fx:id="dependsOnTableCol" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="114.0" styleClass="tableColumn" text="Depends On">
+                  <TableColumn fx:id="dependsOnTableCol" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="114.0" text="Depends On">
                      <columns>
-                        <TableColumn fx:id="directDependsOnTableCol" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" styleClass="tableColumn" text="Direct" />
-                        <TableColumn fx:id="totalDependsOnTableCol" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" styleClass="tableColumn" text="Total" />
+                        <TableColumn fx:id="directDependsOnTableCol" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" text="Direct" />
+                        <TableColumn fx:id="totalDependsOnTableCol" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" text="Total" />
                      </columns>
                   </TableColumn>
-                  <TableColumn fx:id="serialSetTableCol" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="75.0" styleClass="tableColumn" text="Serial Sets" />
-                  <TableColumn fx:id="dataTableCol" maxWidth="220.0" minWidth="220.0" prefWidth="220.0" styleClass="tableColumn" text="Data" />
+                  <TableColumn fx:id="serialSetTableCol" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="75.0" text="Serial Sets" />
+                  <TableColumn fx:id="dataTableCol" maxWidth="220.0" minWidth="220.0" prefWidth="220.0" text="Data" />
                </columns>
             </TableView>
          </children>

@@ -1,0 +1,14 @@
+
+.Label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: black;
+    -fx-font-size: 20px;
+    -fx-font-family:"Times New Roman";
+}
+
+.Text {
+    -fx-alignment: CENTER;
+    -fx-text-fill: black;
+    -fx-font-size: 20px;
+    -fx-font-family:"Times New Roman";
+}
