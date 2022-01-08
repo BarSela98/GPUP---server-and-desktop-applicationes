@@ -1,4 +1,4 @@
-package engine.mission;
+package gpup.servlets;
 
 public class MissionManger {
 }

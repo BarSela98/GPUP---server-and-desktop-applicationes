@@ -1,6 +1,7 @@
 package component.graph.excute;
 
-import component.graph.main.mainGraphController;
+import ODT.TargetTable;
+import component.graph.main.MainGraphController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -21,7 +22,7 @@ import java.io.File;
 
 public class missionAdminController {
     private final SimpleBooleanProperty runTask;
-    private mainGraphController mainController;
+    private MainGraphController mainController;
     private final SimpleBooleanProperty isCompiler;
     private final ObservableSet<CheckBox> selectedCheckBoxes = FXCollections.observableSet();
     private final IntegerBinding numCheckBoxesSelected = Bindings.size(selectedCheckBoxes);
@@ -104,7 +105,7 @@ public class missionAdminController {
     /// set all the details to run this task pane
     private void configureCheckBoxTask(CheckBox checkBox) {
     }
-    public void setMainController(mainGraphController mainController) {
+    public void setMainController(MainGraphController mainController) {
         this.mainController = mainController;
         setTableCol();
         setToggles();
@@ -155,17 +156,20 @@ public class missionAdminController {
     void executeMission(ActionEvent event) {
 
     }
+    public void updateTable() {
+        tableView.setItems(mainController.getItems());
+    }
 
     @FXML private GridPane gridPaneTAsk;
-    @FXML private TableView<?> tableView;
-    @FXML private TableColumn<?, CheckBox> remarkTableCol;
-    @FXML private TableColumn<?, String> nameTableCol;
-    @FXML private TableColumn<?, String> CreatorTableCol;
-    @FXML private TableColumn<?, Integer> rootCol;
-    @FXML private TableColumn<?, Integer> middleCol;
-    @FXML private TableColumn<?, Integer> leafCol;
-    @FXML private TableColumn<?, Integer> IndependentsCol;
-    @FXML private TableColumn<?, Integer> workersCol;
+    @FXML private TableView<TargetTable> tableView;
+    @FXML private TableColumn<TargetTable, CheckBox> remarkTableCol;
+    @FXML private TableColumn<TargetTable, String> nameTableCol;
+    @FXML private TableColumn<TargetTable, String> CreatorTableCol;
+    @FXML private TableColumn<TargetTable, Integer> rootCol;
+    @FXML private TableColumn<TargetTable, Integer> middleCol;
+    @FXML private TableColumn<TargetTable, Integer> leafCol;
+    @FXML private TableColumn<TargetTable, Integer> IndependentsCol;
+    @FXML private TableColumn<TargetTable, Integer> workersCol;
     @FXML private HBox hboxTask;
     @FXML private Button clearButton;
     @FXML private Label taskMangerTitle;
@@ -191,7 +195,4 @@ public class missionAdminController {
     @FXML private VBox vbox11;
     @FXML private Text simulationPrice;
     @FXML private Text compilationPrice;
-
-
-
 }

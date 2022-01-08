@@ -55,7 +55,6 @@ public class UsersListController implements Closeable {
     }
 
     private void updateUsersList(List<User> usersNames) {
-
         Platform.runLater(() -> {
             ObservableList<User> items = tableViewUsers.getItems();
             items.clear();

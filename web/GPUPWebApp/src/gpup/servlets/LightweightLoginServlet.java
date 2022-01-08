@@ -1,5 +1,4 @@
 package gpup.servlets;
-import engine.users.UserManager;
 import gpup.constants.Constants;
 import gpup.utils.ServletUtils;
 import gpup.utils.SessionUtils;

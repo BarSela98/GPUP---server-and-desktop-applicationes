@@ -1,6 +1,5 @@
 package gpup.servlets;
 
-import engine.users.UserManager;
 import gpup.utils.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

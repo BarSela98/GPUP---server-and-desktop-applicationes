@@ -1,25 +1,31 @@
 package component.graph.path;
 
-import component.graph.main.mainGraphController;
+import ODT.Target;
+import ODT.TargetTable;
+import ODT.information.Information;
+import component.graph.main.MainGraphController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import utility.Utility;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class pathController {
-    private mainGraphController mainController;
+    private MainGraphController mainController;
     private SimpleBooleanProperty isSourceSelected;
     private SimpleBooleanProperty isDestinationSelected;
     private ObservableSet<CheckBox> selectedCheckBoxes = FXCollections.observableSet();
@@ -31,8 +37,9 @@ public class pathController {
         isDestinationSelected = new SimpleBooleanProperty(false);
     }
     @FXML public void initialize() {
-       // setDefault();
+        setDefault();
         setBinding();
+        setTableCol();
         /// Default is path toggle selected
         toggleButtonWhatIf.setOpacity(0.3);
         toggleButtonCycle.setOpacity(0.3);
@@ -72,11 +79,15 @@ public class pathController {
             }
         }) ;
     }
-    /*
+
     public void setTableCol(){
-        mainController.setGeneralTableCol(nameTableCol, typeTableCol, dataTableCol, serialSetTableCol,
-                directRequiredForTableCol, directDependsOnTableCol,
-                totalRequiredForTableCol, totalDependsOnTableCol);
+        nameTableCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        typeTableCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+        dataTableCol.setCellValueFactory(new PropertyValueFactory<>("userData"));
+        directRequiredForTableCol.setCellValueFactory(new PropertyValueFactory<>("directRequiredForTableCol"));
+        directDependsOnTableCol.setCellValueFactory(new PropertyValueFactory<>("directDependsOnTableCol"));
+        totalRequiredForTableCol.setCellValueFactory(new PropertyValueFactory<>("totalRequiredForTableCol"));
+        totalDependsOnTableCol.setCellValueFactory(new PropertyValueFactory<>("totalDependsOnTableCol"));
         remarkTableCol.setCellValueFactory(new PropertyValueFactory<>("checkBoxPath"));
     }
     public void setDefault(){
@@ -84,12 +95,10 @@ public class pathController {
         toggleButtonWhatIf.setSelected(false);
         toggleButtonCycle.setSelected(false);
         // add all the option for the depends-on comboBox
-        depenceComboBox.getItems().add(engine.Dependence.REQUIRED_FOR);
-        depenceComboBox.getItems().add(engine.Dependence.DEPENDS_ON);
-        depenceComboBox.setValue(engine.Dependence.DEPENDS_ON);
+        depenceComboBox.getItems().add(Utility.Dependence.REQUIRED_FOR);
+        depenceComboBox.getItems().add(Utility.Dependence.DEPENDS_ON);
+        depenceComboBox.setValue(Utility.Dependence.DEPENDS_ON);
     }
-
-     */
 
     /**
      * manage the display run button
@@ -113,19 +122,18 @@ public class pathController {
                 unselectedCheckBoxes.forEach(cb -> cb.setDisable(false));
         });
     }
-    public void setMainController(mainGraphController mainController) {
+    public void setMainController(MainGraphController mainController) {
         this.mainController = mainController;
        // setTableCol();
         groupToggle();
     }
-    /*
-    public void show() {
-        tableView.setItems(mainController.getObservableList());
-        for (int i = 0 ; i< mainController.getObservableList().size();++i)
-            configureCheckBox(mainController.getObservableList().get(i).getCheckBoxPath());
+    public void updatePath() {
+        tableView.setItems(mainController.getItems());
+        for (int i = 0 ; i< mainController.getItems().size();++i)
+            configureCheckBox(mainController.getItems().get(i).getCheckBoxPath());
     }
 
-     */
+
     /**
      * configure checkBox - when it selects add to list, unselect remove from list
      * @param checkBox
@@ -154,10 +162,10 @@ public class pathController {
 ////// set on action button
 
     @FXML void setForRun(ActionEvent event) {
-        /*
+        
         int x = 0;
-        ObservableList<targetTable> data = tableView.getItems();
-        for (targetTable p : data)
+        ObservableList<TargetTable> data = tableView.getItems();
+        for (TargetTable p : data)
         {
             if(p.getCheckBoxPath().isSelected()) {
                 if (x == 0) {
@@ -179,24 +187,18 @@ public class pathController {
         }
     }
 
-     */
-    }
-
     /**
      * clear all checkBox
      * @param event
      */
-
     @FXML void clearAction(ActionEvent event) {
-    /*
-        ObservableList<targetTable> data = tableView.getItems();
-        for (targetTable p : data)
+    
+        ObservableList<TargetTable> data = tableView.getItems();
+        for (TargetTable p : data)
         {
             if(p.getCheckBoxPath().isSelected())
                 p.getCheckBoxPath().setSelected(false);
         }
-
-     */
     }
     @FXML void switchAction(ActionEvent event) {
         if (isDestinationSelected.get() && isSourceSelected.get()) {
@@ -206,21 +208,21 @@ public class pathController {
         }
     }
     @FXML void runButtonAction(ActionEvent event) {
-        /*
+        
         Information info = null;
         try {
 
             if (isDestinationSelected.get() && isSourceSelected.get() && toggleButtonPath.isSelected())
-                info = mainController.getEngine().findAPathBetweenTwoTargets(sourceText.getText(), destinationText.getText(), depenceComboBox.getValue());
+                info = mainController.getGraph().getEngine().findAPathBetweenTwoTargets(sourceText.getText(), destinationText.getText(), depenceComboBox.getValue());
 
             else if (isSourceSelected.get()){
 
                 if (toggleButtonCycle.isSelected())
-                    info = mainController.getEngine().circuitDetection(sourceText.getText());
+                    info = mainController.getGraph().getEngine().circuitDetection(sourceText.getText());
 
                 if (toggleButtonWhatIf.isSelected()){
                     List<String> whatIfList = new ArrayList<>();
-                    mainController.getEngine().whatIf(sourceText.getText(),whatIfList , depenceComboBox.getValue());
+                    mainController.getGraph().getEngine().whatIf(sourceText.getText(),whatIfList , depenceComboBox.getValue());
                     pathListView.getItems().clear();
                     whatIfList.remove(0);
                     pathListView.getItems().add(whatIfList.toString());
@@ -233,28 +235,24 @@ public class pathController {
             }
 
         }
-        catch (Exception e){new errorMain(e);}
-          */
+        catch (Exception e){}
     }
 
 
 
 ////// fxml member
-/*
-    @FXML private TableView<targetTable> tableView;
-    @FXML private TableColumn<targetTable,Boolean> remarkTableCol;
-    @FXML private TableColumn<targetTable, String> nameTableCol;
-    @FXML private TableColumn<targetTable, Target.Type> typeTableCol;
-    @FXML private TableColumn<targetTable, Integer> directRequiredForTableCol;
-    @FXML private TableColumn<targetTable, Integer> totalRequiredForTableCol;
-    @FXML private TableColumn<targetTable, Integer> directDependsOnTableCol;
-    @FXML private TableColumn<targetTable, Integer> totalDependsOnTableCol;
-    @FXML private TableColumn<targetTable, String> dataTableCol;
-    @FXML private TableColumn<targetTable, Integer> serialSetTableCol;
-    @FXML private TableColumn<targetTable, Integer> dependsOnTableCol;
-    @FXML private TableColumn<targetTable, Integer> requiredForTableCol;
-    @FXML private ComboBox<engine.Dependence> depenceComboBox;
-     */
+
+    @FXML private TableView<TargetTable> tableView;
+    @FXML private TableColumn<TargetTable,Boolean> remarkTableCol;
+    @FXML private TableColumn<TargetTable, String> nameTableCol;
+    @FXML private TableColumn<TargetTable, Target.Type> typeTableCol;
+    @FXML private TableColumn<TargetTable, Integer> directRequiredForTableCol;
+    @FXML private TableColumn<TargetTable, Integer> totalRequiredForTableCol;
+    @FXML private TableColumn<TargetTable, Integer> directDependsOnTableCol;
+    @FXML private TableColumn<TargetTable, Integer> totalDependsOnTableCol;
+    @FXML private TableColumn<TargetTable, String> dataTableCol;
+    @FXML private ComboBox<Utility.Dependence> depenceComboBox;
+
     @FXML private ListView<String> pathListView;
 
     @FXML private Text sourceText;

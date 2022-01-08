@@ -27,6 +27,9 @@ public class Constants {
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginShortResponse";
     // list of user
     public final static String USERS_LIST = FULL_SERVER_PATH + "/userslist";
+    // graph
+    public final static String GRAPH_LIST = FULL_SERVER_PATH + "/graphlist";
+    public final static String GRAPH = FULL_SERVER_PATH + "/select/graph";
     // load xml
     public final static String LOAD_XML_FILE = FULL_SERVER_PATH + "/file/xml/load";
 
@@ -38,4 +41,5 @@ public class Constants {
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();
+    ///  http://localhost:8080/GPUP/file/xml/load
 }

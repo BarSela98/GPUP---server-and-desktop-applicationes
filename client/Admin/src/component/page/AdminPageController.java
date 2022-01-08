@@ -3,8 +3,7 @@ package component.page;
 import component.api.AdminCommands;
 import component.chat.ChatAreaRefresher;
 import component.chat.model.ChatLinesWithVersion;
-import component.graph.excute.missionAdminController;
-import component.graph.main.mainGraphController;
+import component.graph.main.MainGraphController;
 import component.mainApp.AdminAppMainController;
 import component.usersList.UsersListController;
 import javafx.application.Platform;
@@ -15,22 +14,22 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.Constants;
 import util.http.HttpClientUtil;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Timer;
 import java.util.stream.Collectors;
 
@@ -40,7 +39,7 @@ import static util.Constants.*;
 public class AdminPageController implements AdminCommands, Closeable {
     @FXML private UsersListController usersListComponentController;
     @FXML private BorderPane usersListComponent;
-    @FXML private mainGraphController graphAdminComponentController;
+    @FXML private MainGraphController graphAdminComponentController;
     @FXML private BorderPane graphAdminComponent;
     @FXML private Text nameOfAdmin;
     @FXML private TabPane tabPanAdmin;
@@ -61,21 +60,26 @@ public class AdminPageController implements AdminCommands, Closeable {
         autoUpdate = new SimpleBooleanProperty(true);
     }
     @FXML public void initialize() {
-        if (usersListComponentController != null) {
+        if (usersListComponentController != null && graphAdminComponentController != null) {
             usersListComponentController.setMainController(this);
+            graphAdminComponentController.setMainController(this);
         }
         autoScroll.bind(autoScrollButton.selectedProperty());
         chatVersionLabel.textProperty().bind(Bindings.concat("Chat Version: ", chatVersion.asString()));
     }
     public void setActive() {
         usersListComponentController.startListRefresher();
-        startListRefresher();
+       // mainGraphController.startGraphListRefresher();
+        graphAdminComponentController.startGraphListRefresher();
+        starChatRefresher();
+
       //  chatAreaAdminComponentController.startListRefresher();
     }
     public void setInActive() {
         try {
             close();
             usersListComponentController.close();
+            graphAdminComponentController.close();
         } catch (Exception ignored) {}
     }
     public void setAppMainController(AdminAppMainController adminAppMainController) {
@@ -85,15 +89,55 @@ public class AdminPageController implements AdminCommands, Closeable {
     @FXML void quitButton(ActionEvent event) {
         logout();
     }
-    @FXML void loadButton(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource(MISSION_FXML_RESOURCE_LOCATION);
-        fxmlLoader.setLocation(url);
-        Parent root = fxmlLoader.load(url.openStream());
-        missionAdminController controller = fxmlLoader.getController();
-        Tab tab1 = new Tab("Planes", root);
-        tabPanAdmin.getTabs().add(tab1);
+    @FXML void loadButton(ActionEvent event) throws Exception {
+
+        File file = new FileChooser().showOpenDialog(new Stage());
+
+        if (file != null) {
+            String finalUrl = HttpUrl
+                    .parse(LOAD_XML_FILE)
+                    .newBuilder()
+                    .build()
+                    .toString();
+            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                    .addFormDataPart("file", file.getPath())
+                    .build();
+
+            HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
+
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    Platform.runLater(() ->
+                            //errorMessageProperty.set("Something went wrong: " + e.getMessage())
+                            System.out.println("error")
+                    );
+
+
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.code() != 200) {
+                        String responseBody = response.body().string();
+
+                        Platform.runLater(() ->
+                                ///errorMessageProperty.set("Something went wrong: " + responseBody)
+                                System.out.println(responseBody)
+                        );
+
+
+                    } else {
+                        Platform.runLater(() -> {
+                            System.out.println("good");
+                        });
+                    }
+                }
+            });
+        }
     }
+
+
     @Override public void logout() {
         adminAppMainController.switchToLogin();
     }
@@ -155,7 +199,7 @@ public class AdminPageController implements AdminCommands, Closeable {
             });
         }
     }
-    public void startListRefresher() {
+    public void starChatRefresher() {
         chatAreaRefresher = new ChatAreaRefresher(chatVersion, autoUpdate, this::updateChatLines);
         timer = new Timer();
         timer.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);

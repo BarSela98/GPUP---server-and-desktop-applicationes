@@ -1,4 +1,4 @@
-package engine.users;
+package gpup.servlets;
 
 import ODT.User;
 

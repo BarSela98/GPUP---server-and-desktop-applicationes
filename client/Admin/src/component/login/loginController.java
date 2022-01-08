@@ -72,7 +72,6 @@ public class loginController {
                     Platform.runLater(() -> {
                        adminAppMainController.updateUserName(userName);
                        adminAppMainController.switchToAdminPage();
-
                     });
                 }
             }
