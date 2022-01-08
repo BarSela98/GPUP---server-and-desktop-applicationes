@@ -1,5 +1,6 @@
-package component.graphAdmin;
+package component.graph.excute;
 
+import component.graph.main.mainAppController;
 import component.page.AdminPageController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
@@ -21,7 +22,7 @@ import java.io.File;
 
 public class missionAdminController {
     private final SimpleBooleanProperty runTask;
-    private AdminPageController mainController;
+    private mainAppController mainController;
     private final SimpleBooleanProperty isCompiler;
     private final ObservableSet<CheckBox> selectedCheckBoxes = FXCollections.observableSet();
     private final IntegerBinding numCheckBoxesSelected = Bindings.size(selectedCheckBoxes);
@@ -29,7 +30,15 @@ public class missionAdminController {
     private Thread thread;
     private static final Object Lock = new Object();
 
+    public void setMainController(mainAppController mainController) {
+        this.mainController = mainController;
+        /*
+        mainController.setGeneralTableCol(nameTableCol, typeTableCol, dataTableCol, serialSetTableCol,
+                                            directRequiredForTableCol, directDependsOnTableCol,
+                                            totalRequiredForTableCol, totalDependsOnTableCol);
 
+         */
+    }
     public missionAdminController(){
     isCompiler = new SimpleBooleanProperty(true);
     runTask = new SimpleBooleanProperty(false);

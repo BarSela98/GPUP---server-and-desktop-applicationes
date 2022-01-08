@@ -3,7 +3,8 @@ package component.page;
 import component.api.AdminCommands;
 import component.chat.ChatAreaRefresher;
 import component.chat.model.ChatLinesWithVersion;
-import component.graphAdmin.missionAdminController;
+import component.graph.excute.missionAdminController;
+import component.graph.main.mainGraphController;
 import component.mainApp.AdminAppMainController;
 import component.usersList.UsersListController;
 import javafx.application.Platform;
@@ -39,6 +40,8 @@ import static util.Constants.*;
 public class AdminPageController implements AdminCommands, Closeable {
     @FXML private UsersListController usersListComponentController;
     @FXML private BorderPane usersListComponent;
+    @FXML private mainGraphController graphAdminComponentController;
+    @FXML private BorderPane graphAdminComponent;
     @FXML private Text nameOfAdmin;
     @FXML private TabPane tabPanAdmin;
     @FXML private ToggleButton autoScrollButton;
