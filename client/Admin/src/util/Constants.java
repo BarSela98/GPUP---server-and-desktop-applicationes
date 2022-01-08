@@ -23,12 +23,19 @@ public class Constants {
     private final static String BASE_URL = "http://" + BASE_DOMAIN + ":8080";
     private final static String CONTEXT_PATH = "/GPUP";
     private final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
-
+    // login
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginShortResponse";
+    // list of user
     public final static String USERS_LIST = FULL_SERVER_PATH + "/userslist";
+    // load xml
+    public final static String LOAD_XML_FILE = FULL_SERVER_PATH + "/userslist";
+
+
     // Chat
     public final static String SEND_CHAT_LINE = FULL_SERVER_PATH + "/pages/chatroom/sendChat";
     public final static String CHAT_LINES_LIST = FULL_SERVER_PATH + "/chat";
+
+
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();
 }

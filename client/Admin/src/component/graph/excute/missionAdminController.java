@@ -1,7 +1,6 @@
 package component.graph.excute;
 
-import component.graph.main.mainAppController;
-import component.page.AdminPageController;
+import component.graph.main.mainGraphController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -22,7 +21,7 @@ import java.io.File;
 
 public class missionAdminController {
     private final SimpleBooleanProperty runTask;
-    private mainAppController mainController;
+    private mainGraphController mainController;
     private final SimpleBooleanProperty isCompiler;
     private final ObservableSet<CheckBox> selectedCheckBoxes = FXCollections.observableSet();
     private final IntegerBinding numCheckBoxesSelected = Bindings.size(selectedCheckBoxes);
@@ -30,15 +29,6 @@ public class missionAdminController {
     private Thread thread;
     private static final Object Lock = new Object();
 
-    public void setMainController(mainAppController mainController) {
-        this.mainController = mainController;
-        /*
-        mainController.setGeneralTableCol(nameTableCol, typeTableCol, dataTableCol, serialSetTableCol,
-                                            directRequiredForTableCol, directDependsOnTableCol,
-                                            totalRequiredForTableCol, totalDependsOnTableCol);
-
-         */
-    }
     public missionAdminController(){
     isCompiler = new SimpleBooleanProperty(true);
     runTask = new SimpleBooleanProperty(false);
@@ -114,7 +104,7 @@ public class missionAdminController {
     /// set all the details to run this task pane
     private void configureCheckBoxTask(CheckBox checkBox) {
     }
-    public void setMainController(AdminPageController mainController) {
+    public void setMainController(mainGraphController mainController) {
         this.mainController = mainController;
         setTableCol();
         setToggles();

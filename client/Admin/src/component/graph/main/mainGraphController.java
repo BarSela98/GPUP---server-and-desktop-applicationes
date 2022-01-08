@@ -1,8 +1,10 @@
 package component.graph.main;
 
 import component.graph.excute.missionAdminController;
+import component.graph.general.GeneralGraphController;
 import component.graph.path.pathController;
 import component.graph.table.tableController;
+import component.mainApp.AdminAppMainController;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
@@ -21,6 +23,7 @@ public class mainGraphController {
    // private final engine engine = new engineImpl();
     private final SimpleBooleanProperty isFileSelected;
     private final SimpleBooleanProperty  changeFile;
+    private AdminAppMainController mainController;
   //  private ObservableList<targetTable> items = FXCollections.observableArrayList();            /// list for table and path
   //  private ObservableList<targetTable> taskItem = FXCollections.observableArrayList();         /// list for task
 
@@ -30,12 +33,19 @@ public class mainGraphController {
     }
 
     @FXML public void initialize() {
-     if(pathComponentController != null && tableComponentController != null && taskComponentController != null){
+     if(pathComponentController != null && tableComponentController != null && taskComponentController != null && generalComponentController != null){
       pathComponentController.setMainController(this);
       tableComponentController.setMainController(this);
       taskComponentController.setMainController(this);
+      generalComponentController.setMainController(this);
      }
     }
+
+     public void setMainController(AdminAppMainController mainController) {
+         this.mainController = mainController;
+     }
+
+
     /*
     public SimpleBooleanProperty isFileSelected(){
         return isFileSelected;
@@ -259,6 +269,8 @@ public class mainGraphController {
     @FXML private tableController tableComponentController;
     @FXML private BorderPane executeComponent;
     @FXML private missionAdminController taskComponentController;
+    @FXML private BorderPane generalComponent;
+    @FXML private GeneralGraphController generalComponentController;
 
 }
 

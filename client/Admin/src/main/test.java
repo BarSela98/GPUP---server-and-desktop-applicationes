@@ -1,6 +1,4 @@
 package main;
-
-import component.graph.main.mainAppController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,12 +18,12 @@ public class test extends Application {
         primaryStage.setTitle("G.P.U.P - Admin");
         //  import static util.Constants.*;
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource("/component/graph/main/mainGraph.fxml");
+        URL url = getClass().getResource("/component/page/adminPage.fxml");
         fxmlLoader.setLocation(url);
         Parent root = fxmlLoader.load(url.openStream());
         Scene scene = new Scene(root, 500, 300);
         primaryStage.setScene(scene);
-        mainAppController controller = fxmlLoader.getController();
+        //AdminPageController controller = fxmlLoader.getController();
         primaryStage.show();
     }
 

@@ -1,6 +1,6 @@
 package component.graph.table;
 
-import component.graph.main.mainAppController;
+import component.graph.main.mainGraphController;
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -10,9 +10,9 @@ import javafx.scene.text.Text;
 
 
 public class tableController {
-    private mainAppController mainController;
+    private mainGraphController mainController;
 
-    public void setMainController(mainAppController mainController) {
+    public void setMainController(mainGraphController mainController) {
         this.mainController = mainController;
         /*
         mainController.setGeneralTableCol(nameTableCol, typeTableCol, dataTableCol, serialSetTableCol,

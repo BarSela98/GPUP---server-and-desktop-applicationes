@@ -5,13 +5,16 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="814.0" prefWidth="1306.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.graph.main.mainAppController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="814.0" prefWidth="1306.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.graph.main.mainGraphController">
    <center>
       <TabPane prefHeight="400.0" prefWidth="642.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
           <Tab text="Genarel">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="619.0" prefWidth="1293.0" />
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="619.0" prefWidth="1293.0">
+                     <children>
+                        <fx:include source="../general/generalGraph.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children></AnchorPane>
             </content>
           </Tab>
           <Tab text="Table">

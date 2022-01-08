@@ -1,7 +1,6 @@
 package component.graph.path;
 
-
-import component.graph.main.mainAppController;
+import component.graph.main.mainGraphController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -20,7 +19,7 @@ import javafx.scene.text.Text;
 
 
 public class pathController {
-    private mainAppController mainController;
+    private mainGraphController mainController;
     private SimpleBooleanProperty isSourceSelected;
     private SimpleBooleanProperty isDestinationSelected;
     private ObservableSet<CheckBox> selectedCheckBoxes = FXCollections.observableSet();
@@ -114,7 +113,7 @@ public class pathController {
                 unselectedCheckBoxes.forEach(cb -> cb.setDisable(false));
         });
     }
-    public void setMainController(mainAppController mainController) {
+    public void setMainController(mainGraphController mainController) {
         this.mainController = mainController;
        // setTableCol();
         groupToggle();
