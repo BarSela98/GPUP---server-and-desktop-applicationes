@@ -109,6 +109,13 @@ public class Graph {
         this.nameOfCreator = nameOfCreator;
         engine = new EngineImp(targetMap);
     }
+    /** Targets information
+     *  @return all the information about the graph:
+     *  amount of roots
+     *  amount of leaves
+     *  amount of middles
+     *  amount of independents
+     */
     public void targetsInformation() throws Exception{
 
         amountOfTargets = targetMap.entrySet().size();          // count all the targets in the map

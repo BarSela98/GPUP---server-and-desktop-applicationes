@@ -1,11 +1,13 @@
 package component.graph.excute;
 
+import ODT.Target;
 import ODT.TargetTable;
 import component.graph.main.MainGraphController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,8 +19,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import utility.Utility;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class missionAdminController {
     private final SimpleBooleanProperty runTask;
@@ -26,10 +31,35 @@ public class missionAdminController {
     private final SimpleBooleanProperty isCompiler;
     private final ObservableSet<CheckBox> selectedCheckBoxes = FXCollections.observableSet();
     private final IntegerBinding numCheckBoxesSelected = Bindings.size(selectedCheckBoxes);
-    private boolean showFinish;
-    private Thread thread;
-    private static final Object Lock = new Object();
 
+    ////private static final Object Lock = new Object();
+
+    @FXML public void initialize() {
+        setComboBox();
+        executeButton.setDisable(true);
+        simulationBox.disableProperty().bind(isCompiler);
+        compilerBox.disableProperty().bind(isCompiler.not());
+        numCheckBoxesSelected.addListener((obs, oldSelectedCount, newSelectedCount) -> displayRunButton());
+        isCompiler.addListener((obs, oldSelectedCount, newSelectedCount) -> {
+            if (isCompiler.getValue()) {
+                compilerToggle.setStyle(mainController.getToggleColor());
+                compilerToggle.setOpacity(1);
+                simulationToggle.setOpacity(0.3);
+            }
+            else {
+                simulationToggle.setStyle(mainController.getToggleColor());
+                simulationToggle.setOpacity(1);
+                compilerToggle.setOpacity(0.3);
+            }
+        });
+        selectAll.selectedProperty().addListener((obs, oldSelectedCount, newSelectedCount)->{
+            if (newSelectedCount){
+                ObservableList<TargetTable> data = tableView.getItems();
+                for (TargetTable p : data)
+                    p.getCheckBoxTask().setSelected(true);
+            }
+        });
+    }
     public missionAdminController(){
     isCompiler = new SimpleBooleanProperty(true);
     runTask = new SimpleBooleanProperty(false);
@@ -41,10 +71,7 @@ public class missionAdminController {
      */
     public void displayRunButton(){
         if (compilerToggle.isSelected()) {
-            if  (sourceFolderText.getText().equals("") || targetFolderText.getText().equals("") || selectedCheckBoxes.size() == 0)
-                executeButton.setDisable(true);
-            else
-                executeButton.setDisable(false);
+            executeButton.setDisable(sourceFolderText.getText().equals("") || targetFolderText.getText().equals("") || selectedCheckBoxes.size() == 0);
         }
         else executeButton.setDisable(selectedCheckBoxes.size() == 0);
     }
@@ -84,27 +111,6 @@ public class missionAdminController {
         displayRunButton();
     }
 
-    @FXML public void initialize() {
-        setComboBox();
-        executeButton.setDisable(true);
-        simulationBox.disableProperty().bind(isCompiler);
-        compilerBox.disableProperty().bind(isCompiler.not());
-        isCompiler.addListener((obs, oldSelectedCount, newSelectedCount) -> {
-            if (isCompiler.getValue()) {
-                compilerToggle.setStyle("-fx-background-color: linear-gradient(#2A5058, #61a2b1)");
-                compilerToggle.setOpacity(1);
-                simulationToggle.setOpacity(0.3);
-            }
-            else {
-                simulationToggle.setStyle("-fx-background-color: linear-gradient(#2A5058, #61a2b1)");
-                simulationToggle.setOpacity(1);
-                compilerToggle.setOpacity(0.3);
-            }
-        });
-    }
-    /// set all the details to run this task pane
-    private void configureCheckBoxTask(CheckBox checkBox) {
-    }
     public void setMainController(MainGraphController mainController) {
         this.mainController = mainController;
         setTableCol();
@@ -112,16 +118,6 @@ public class missionAdminController {
         setSpinner();
     }
 
-
-    public void setTableCol(){
-        nameTableCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        CreatorTableCol.setCellValueFactory(new PropertyValueFactory<>("creator"));
-        rootCol.setCellValueFactory(new PropertyValueFactory<>("root"));
-        middleCol.setCellValueFactory(new PropertyValueFactory<>("middle"));
-        leafCol.setCellValueFactory(new PropertyValueFactory<>("leaf"));
-        IndependentsCol.setCellValueFactory(new PropertyValueFactory<>("independents"));
-        workersCol.setCellValueFactory(new PropertyValueFactory<>("workers"));
-    }
     public void setComboBox(){
         scratchOrIncremental.getItems().add("Scratch");
         scratchOrIncremental.getItems().add("Incremental");
@@ -147,29 +143,72 @@ public class missionAdminController {
         spinner.getValueFactory().valueProperty().bindBidirectional(formatter3.valueProperty());
     }
 
-    @FXML
-    void clearAction(ActionEvent event) {
-
+    @FXML void clearAction(ActionEvent event) {
+        selectAll.setSelected(false);
+        ObservableList<TargetTable> data = tableView.getItems();
+        for (TargetTable p : data)
+        {
+            if(p.getCheckBoxTask().isSelected())
+                p.getCheckBoxTask().setSelected(false);
+        }
     }
-
-    @FXML
-    void executeMission(ActionEvent event) {
+    /**
+     * if "root" target - select all the target with the dependence
+     * @param d
+     */
+    public void getAllTargetWith(Utility.Dependence d ){
+        List<String> newList = new ArrayList();
+        try{
+            for (int i = 0 ; i < mainController.getItems().size();++i) {
+                if (mainController.getItems().get(i).getCheckBoxTask().isSelected()) {
+                    mainController.getGraph().getEngine().whatIf(mainController.getItems().get(i).getName(), newList, d);
+                    for (int k = 0; k < mainController.getItems().size(); ++k)
+                        if (newList.contains(mainController.getItems().get(k).getName())) {
+                            mainController.getItems().get(k).getCheckBoxTask().setSelected(true);
+                        }
+                }
+            }
+        }
+        catch (Exception e){
+          //  new errorMain(e);
+        }
+    }
+    @FXML void executeMission(ActionEvent event) {
 
     }
     public void updateTable() {
         tableView.setItems(mainController.getItems());
+        for (int i = 0 ; i< mainController.getItems().size();++i)
+            configureCheckBoxTask(mainController.getItems().get(i).getCheckBoxTask());
+    }
+    public void setTableCol(){
+        nameTableCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        typeTableCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+        directRequiredForTableCol.setCellValueFactory(new PropertyValueFactory<>("directRequiredForTableCol"));
+        directDependsOnTableCol.setCellValueFactory(new PropertyValueFactory<>("directDependsOnTableCol"));
+        totalRequiredForTableCol.setCellValueFactory(new PropertyValueFactory<>("totalRequiredForTableCol"));
+        totalDependsOnTableCol.setCellValueFactory(new PropertyValueFactory<>("totalDependsOnTableCol"));
+        dataTableCol.setCellValueFactory(new PropertyValueFactory<>("userData"));
+        remarkTableCol.setCellValueFactory(new PropertyValueFactory<>("checkBoxTask"));
+    }
+    private void configureCheckBoxTask(CheckBox checkBox) {
+        if (checkBox.isSelected())
+            selectedCheckBoxes.add(checkBox);
+
+        checkBox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+            if (isNowSelected) {
+                selectedCheckBoxes.add(checkBox);
+                if (withDepend.isSelected())
+                    getAllTargetWith(Utility.Dependence.DEPENDS_ON);
+                if (withRequired.isSelected())
+                    getAllTargetWith(Utility.Dependence.REQUIRED_FOR);
+            }
+            else
+                selectedCheckBoxes.remove(checkBox);
+        });
     }
 
     @FXML private GridPane gridPaneTAsk;
-    @FXML private TableView<TargetTable> tableView;
-    @FXML private TableColumn<TargetTable, CheckBox> remarkTableCol;
-    @FXML private TableColumn<TargetTable, String> nameTableCol;
-    @FXML private TableColumn<TargetTable, String> CreatorTableCol;
-    @FXML private TableColumn<TargetTable, Integer> rootCol;
-    @FXML private TableColumn<TargetTable, Integer> middleCol;
-    @FXML private TableColumn<TargetTable, Integer> leafCol;
-    @FXML private TableColumn<TargetTable, Integer> IndependentsCol;
-    @FXML private TableColumn<TargetTable, Integer> workersCol;
     @FXML private HBox hboxTask;
     @FXML private Button clearButton;
     @FXML private Label taskMangerTitle;
@@ -195,4 +234,24 @@ public class missionAdminController {
     @FXML private VBox vbox11;
     @FXML private Text simulationPrice;
     @FXML private Text compilationPrice;
+/// table
+    @FXML private TableView<TargetTable> tableView;
+    @FXML private TableColumn<TargetTable,Boolean> remarkTableCol;
+    @FXML private TableColumn<TargetTable, String> nameTableCol;
+    @FXML private TableColumn<TargetTable, Target.Type> typeTableCol;
+    @FXML private TableColumn<TargetTable, Integer> directRequiredForTableCol;
+    @FXML private TableColumn<TargetTable, Integer> totalRequiredForTableCol;
+    @FXML private TableColumn<TargetTable, Integer> directDependsOnTableCol;
+    @FXML private TableColumn<TargetTable, Integer> totalDependsOnTableCol;
+    @FXML private TableColumn<TargetTable, String> dataTableCol;
+    @FXML private TableColumn<TargetTable, Integer> dependsOnTableCol;
+    @FXML private TableColumn<TargetTable, String> requiredForTableCol;
+
+
+    @FXML private CheckBox withRequired;
+    @FXML private CheckBox withDepend;
+
+    ////
+    @FXML private CheckBox selectAll;
+
 }

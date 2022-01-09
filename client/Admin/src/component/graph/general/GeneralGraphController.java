@@ -7,24 +7,24 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.text.Text;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.Constants;
 import util.http.HttpClientUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static util.Constants.GSON_INSTANCE;
-import static util.Constants.REFRESH_RATE;
+import static util.Constants.*;
 
 public class GeneralGraphController {
     private Timer timer;
@@ -84,10 +84,54 @@ public class GeneralGraphController {
     public void updateGraphOnScene(Graph graph) {
         nameOfGraphText.setText(graph.getGraphName());
         creatorText.setText(graph.getNameOfCreator());
-        priceSimulationText.setText(String.valueOf(graph.getPriceForSimulation()));
-        priceCompilationText.setText(String.valueOf(graph.getPriceForCompilation()));
     }
+    @FXML void loadGraphButton(ActionEvent event) throws Exception {
 
+        File file = new FileChooser().showOpenDialog(new Stage());
+
+        if (file != null) {
+            String finalUrl = HttpUrl
+                    .parse(LOAD_XML_FILE)
+                    .newBuilder()
+                    .build()
+                    .toString();
+            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                    .addFormDataPart("file", file.getPath())
+                    .build();
+
+            HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
+
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    Platform.runLater(() ->
+                            //errorMessageProperty.set("Something went wrong: " + e.getMessage())
+                            System.out.println("error")
+                    );
+
+
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.code() != 200) {
+                        String responseBody = response.body().string();
+
+                        Platform.runLater(() ->
+                                ///errorMessageProperty.set("Something went wrong: " + responseBody)
+                                System.out.println(responseBody)
+                        );
+
+
+                    } else {
+                        Platform.runLater(() -> {
+                            System.out.println("good");
+                        });
+                    }
+                }
+            });
+        }
+    }
     public GeneralGraphController(){
          autoUpdate = new SimpleBooleanProperty(true);
          totalGraph = new SimpleIntegerProperty(0);
@@ -127,6 +171,4 @@ public class GeneralGraphController {
     @FXML private ChoiceBox<String> choiceBoxGraph;
     @FXML private Text nameOfGraphText;
     @FXML private Text creatorText;
-    @FXML private Text priceSimulationText;
-    @FXML private Text priceCompilationText;
 }

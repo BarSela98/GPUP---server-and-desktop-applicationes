@@ -1,5 +1,6 @@
 package component.graph.table;
 
+import ODT.Graph;
 import ODT.Target;
 import ODT.TargetTable;
 import component.graph.main.MainGraphController;
@@ -25,7 +26,15 @@ public class tableController {
 
     }
     public void updateTable() {
+        Graph graph = mainController.getGraph();
         tableView.setItems(mainController.getItems());
+        priceSimulationText.setText(String.valueOf(graph.getPriceForSimulation()));
+        priceCompilationText.setText(String.valueOf(graph.getPriceForCompilation()));
+        targetNumberText.setText(String.valueOf(graph.getAmountOfTargets()));
+        middleNumberText.setText(String.valueOf(graph.getAmountOfMiddles()));
+        rootsNumberText.setText(String.valueOf(graph.getAmountOfRoots()));
+        indepNumberText.setText(String.valueOf(graph.getAmountOfIndependents()));
+        leavesNumberText.setText(String.valueOf(graph.getAmountOfLevies()));
     }
 
     public void setTableCol(){
@@ -49,14 +58,13 @@ public class tableController {
     @FXML private TableColumn<TargetTable, Integer> totalDependsOnTableCol;
     @FXML private TableColumn<TargetTable, String> dataTableCol;
 
-
-
+    @FXML private Text priceCompilationText;
+    @FXML private Text priceSimulationText;
     @FXML private Text targetNumberText;
     @FXML private Text leavesNumberText;
     @FXML private Text middleNumberText;
     @FXML private Text rootsNumberText;
     @FXML private Text indepNumberText;
-    @FXML private Text serialSetText;
     @FXML private VBox vboxTable;
     @FXML private HBox hboxTable;
     @FXML private BorderPane borderPaneTable;

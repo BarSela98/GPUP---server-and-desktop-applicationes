@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="750.0" prefWidth="1300.0" styleClass="background" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.graph.path.pathController">
+<BorderPane minHeight="0.0" minWidth="0.0" prefHeight="700.0" prefWidth="1200.0" styleClass="background" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.graph.path.pathController">
    <bottom>
       <GridPane fx:id="gridPanePath" prefHeight="25.0" styleClass="path" BorderPane.alignment="CENTER">
          <columnConstraints>
@@ -115,19 +115,16 @@
          </children>
       </GridPane>
    </bottom>
-   <stylesheets>
-      <URL value="@css/path.css" />
-   </stylesheets>
    <center>
-      <GridPane fx:id="gridPaneTablePath" styleClass="background" BorderPane.alignment="CENTER">
+      <GridPane fx:id="gridPaneTablePath" prefHeight="670.0" prefWidth="830.0" styleClass="background" BorderPane.alignment="CENTER">
         <columnConstraints>
-          <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" />
+          <ColumnConstraints hgrow="ALWAYS" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
         </rowConstraints>
          <children>
-            <TableView id="table" fx:id="tableView" maxWidth="930.0" minHeight="720.0" minWidth="850.0" prefHeight="720.0" prefWidth="930.0" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS">
+            <TableView id="table" fx:id="tableView" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS">
                <columns>
                   <TableColumn fx:id="remarkTableCol" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
                   <TableColumn fx:id="nameTableCol" maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="150.0" text="Name" />
@@ -144,30 +141,33 @@
                         <TableColumn fx:id="totalDependsOnTableCol" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" text="Total" />
                      </columns>
                   </TableColumn>
-                  <TableColumn fx:id="serialSetTableCol" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="75.0" text="Serial Sets" />
-                  <TableColumn fx:id="dataTableCol" maxWidth="220.0" minWidth="220.0" prefWidth="220.0" text="Data" />
+                  <TableColumn fx:id="dataTableCol" maxWidth="220.0" minWidth="137.0" prefWidth="186.0" text="Data" />
                </columns>
             </TableView>
          </children>
       </GridPane>
    </center>
    <right>
-      <VBox fx:id="vboxPath" prefHeight="715.0" prefWidth="367.0" styleClass="path" BorderPane.alignment="CENTER">
+      <VBox fx:id="vboxPath" prefHeight="720.0" prefWidth="380.0" styleClass="path" BorderPane.alignment="CENTER">
          <children>
-            <HBox alignment="CENTER" prefHeight="49.0" prefWidth="352.0" styleClass="tableColumn" VBox.vgrow="NEVER">
+            <HBox alignment="CENTER" styleClass="tableColumn" VBox.vgrow="NEVER">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
                <children>
-                  <Label prefHeight="43.0" prefWidth="144.0" text="Path between two targets">
+                  <Label prefHeight="43.0" prefWidth="379.0" styleClass="Label" text="Path between two targets">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </Label>
                </children>
             </HBox>
-            <ListView fx:id="pathListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="335.0" prefWidth="186.0" styleClass="path" VBox.vgrow="ALWAYS" />
+            <ListView fx:id="pathListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" styleClass="path" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
    </right>
+   <stylesheets>
+      <URL value="@css/path.css" />
+      <URL value="@../../css/label.css" />
+   </stylesheets>
 </BorderPane>

@@ -76,11 +76,6 @@
                                                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <Button mnemonicParsing="false" onAction="#loadButton" prefHeight="35.0" prefWidth="119.0" text="Load Graph">
-                                                   <GridPane.margin>
-                                                      <Insets bottom="30.0" left="30.0" right="30.0" />
-                                                   </GridPane.margin>
-                                                </Button>
                                                 <Button mnemonicParsing="false" onAction="#quitButton" prefHeight="35.0" prefWidth="91.0" text="Quit" GridPane.columnIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="30.0" left="30.0" right="30.0" />

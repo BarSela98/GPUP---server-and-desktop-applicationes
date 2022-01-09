@@ -21,7 +21,7 @@ public class test extends Application {
         URL url = getClass().getResource("/component/page/adminPage.fxml");
         fxmlLoader.setLocation(url);
         Parent root = fxmlLoader.load(url.openStream());
-        Scene scene = new Scene(root, 500, 300);
+        Scene scene = new Scene(root, 1200, 800);
         primaryStage.setScene(scene);
         //AdminPageController controller = fxmlLoader.getController();
         primaryStage.show();

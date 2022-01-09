@@ -20,20 +20,21 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import util.Constants;
 import util.http.HttpClientUtil;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.stream.Collectors;
 
-import static util.Constants.*;
+import static util.Constants.CHAT_LINE_FORMATTING;
+import static util.Constants.REFRESH_RATE;
 
 
 public class AdminPageController implements AdminCommands, Closeable {
@@ -85,58 +86,9 @@ public class AdminPageController implements AdminCommands, Closeable {
     public void setAppMainController(AdminAppMainController adminAppMainController) {
         this.adminAppMainController = adminAppMainController;
     }
-
     @FXML void quitButton(ActionEvent event) {
         logout();
     }
-    @FXML void loadButton(ActionEvent event) throws Exception {
-
-        File file = new FileChooser().showOpenDialog(new Stage());
-
-        if (file != null) {
-            String finalUrl = HttpUrl
-                    .parse(LOAD_XML_FILE)
-                    .newBuilder()
-                    .build()
-                    .toString();
-            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                    .addFormDataPart("file", file.getPath())
-                    .build();
-
-            HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
-
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-                    Platform.runLater(() ->
-                            //errorMessageProperty.set("Something went wrong: " + e.getMessage())
-                            System.out.println("error")
-                    );
-
-
-                }
-
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    if (response.code() != 200) {
-                        String responseBody = response.body().string();
-
-                        Platform.runLater(() ->
-                                ///errorMessageProperty.set("Something went wrong: " + responseBody)
-                                System.out.println(responseBody)
-                        );
-
-
-                    } else {
-                        Platform.runLater(() -> {
-                            System.out.println("good");
-                        });
-                    }
-                }
-            });
-        }
-    }
-
 
     @Override public void logout() {
         adminAppMainController.switchToLogin();
