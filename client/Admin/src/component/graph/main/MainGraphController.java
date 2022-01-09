@@ -29,12 +29,14 @@ public class MainGraphController {
     private final SimpleBooleanProperty isFileSelected;
     private final SimpleBooleanProperty  changeFile;
     private AdminPageController mainController;
+    private ObservableList<TargetTable> items = FXCollections.observableArrayList();
+
 
     public ObservableList<TargetTable> getItems() {
         return items;
     }
 
-    private ObservableList<TargetTable> items = FXCollections.observableArrayList();
+
 
     public MainGraphController() {
         isFileSelected = new SimpleBooleanProperty(false);
