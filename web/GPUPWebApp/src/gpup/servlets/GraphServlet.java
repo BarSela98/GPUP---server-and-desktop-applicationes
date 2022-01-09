@@ -26,9 +26,7 @@ public class GraphServlet extends HttpServlet {
             try (PrintWriter out = response.getWriter()) {
                 Gson gson = new Gson();
                 GraphManger graphManger = ServletUtils.getGraphManager(getServletContext());
-                System.out.println("get graph by name");
                 Graph graph = graphManger.getGraphByName(graphNameFromParameter);
-                System.out.println("\ngraph == " + graph.getGraphName() );
                 String json = gson.toJson(graph);
                 out.println(json);
                 out.flush();

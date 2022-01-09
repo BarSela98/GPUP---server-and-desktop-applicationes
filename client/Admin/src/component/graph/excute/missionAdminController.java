@@ -1,8 +1,11 @@
 package component.graph.excute;
 
+import ODT.Mission;
 import ODT.Target;
 import ODT.TargetTable;
+import com.google.gson.Gson;
 import component.graph.main.MainGraphController;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -19,11 +22,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
+import util.http.HttpClientUtil;
 import utility.Utility;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static util.Constants.ADD_MISSION;
 
 public class missionAdminController {
     private final SimpleBooleanProperty runTask;
@@ -173,9 +182,102 @@ public class missionAdminController {
           //  new errorMain(e);
         }
     }
-    @FXML void executeMission(ActionEvent event) {
+
+    /*
+        @FXML void runTask(ActionEvent event) {
+    try{
+        showFinish =false;
+        boolean fromScratch = scratchOrIncremental.getValue().equals("scratch");;
+        List<Target> targetsToRun=new ArrayList<>();
+        for(targetTable t:tableView.getItems()){
+            if(t.getCheckBoxTask().isSelected()){
+                targetsToRun.add(mainController.getEngine().getMap().get(t.getName()));
+            }
+        }
+
+        if(simulationToggle.isSelected()) {
+            thread = new Thread("runSimulation"){
+                public void run(){
+                    try{
+                        mainController.getEngine().taskSetUp(ProcessingTimeSpinner.getValue(),
+                                randomCheckBox.isSelected(), (float) successSpinner.getValue()/100, (float)successWithWarningSpinner.getValue()/100, fromScratch, "simulation", numOfTreadsSpinner.getValue(), targetsToRun);
+                    }
+                    catch (Exception e){new errorMain(e);}
+                }
+            };
+            thread.start();
+            threadForUpdateInformation();
+        }
+        else if (compilerToggle.isSelected() && !sourceFolderText.getText().equals("") && !targetFolderText.getText().equals("")) {
+            thread = new Thread("runCompiler"){
+                public void run(){
+                    try{
+                        mainController.getEngine().compile(fromScratch,"compilation",numOfTreadsSpinner.getValue(),targetsToRun,targetFolderText.getText(),sourceFolderText.getText());
+                    }
+                    catch (Exception e){new errorMain(e);}
+                }
+            };
+            thread.start();
+            threadForUpdateInformation();
+        }
 
     }
+    catch (Exception e){new errorMain(e);}
+}
+     */
+    @FXML void executeMission(ActionEvent event) {
+        if (nameOfMissionText.getText().equals(""))
+            return;
+
+        List<Target> targetsToRun=new ArrayList<>();
+        // list of targets that choose
+        for(TargetTable t:tableView.getItems()){
+            if(t.getCheckBoxTask().isSelected()){
+                targetsToRun.add(mainController.getGraph().getTargetMap().get(t.getName()));
+            }
+        }
+        Mission mission = new Mission(nameOfMissionText.getText(),mainController.getGraph().getNameOfCreator(),targetsToRun);
+        String json = new Gson().toJson(mission);
+//////////////////////////////////////////////////////////////////////////////////////////
+        String finalUrl = HttpUrl
+                .parse(ADD_MISSION)
+                .newBuilder()
+                .build()
+                .toString();
+
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, json);
+        HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        System.out.println("Something went wrong: " + e.getMessage())
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+
+                    Platform.runLater(() ->
+                            System.out.println("Something went wrong: " + responseBody)
+                    );
+
+                } else {
+                    Platform.runLater(() -> {
+                        try {
+                            System.out.println(response.body().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
     public void updateTable() {
         tableView.setItems(mainController.getItems());
         for (int i = 0 ; i< mainController.getItems().size();++i)
@@ -247,7 +349,7 @@ public class missionAdminController {
     @FXML private TableColumn<TargetTable, Integer> dependsOnTableCol;
     @FXML private TableColumn<TargetTable, String> requiredForTableCol;
 
-
+    @FXML private TextField nameOfMissionText;
     @FXML private CheckBox withRequired;
     @FXML private CheckBox withDepend;
 

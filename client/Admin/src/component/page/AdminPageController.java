@@ -1,5 +1,7 @@
 package component.page;
 
+import ODT.Mission;
+import ODT.TargetTable;
 import component.api.AdminCommands;
 import component.chat.ChatAreaRefresher;
 import component.chat.model.ChatLinesWithVersion;
@@ -12,12 +14,12 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import okhttp3.Call;
@@ -30,6 +32,7 @@ import util.http.HttpClientUtil;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.List;
 import java.util.Timer;
 import java.util.stream.Collectors;
 
@@ -48,6 +51,17 @@ public class AdminPageController implements AdminCommands, Closeable {
     @FXML private TextArea chatLineTextArea;
     @FXML private TextArea mainChatLinesTextArea;
     @FXML private Label chatVersionLabel;
+    @FXML private TableColumn<TargetTable, String> nameOfMissionCol;
+    @FXML private TableColumn<TargetTable, String> nameOfGraphCol;
+    @FXML private TableColumn<TargetTable, String> rootCol;
+    @FXML private TableColumn<TargetTable, String> middleCol;
+    @FXML private TableColumn<TargetTable, String> leafCol;
+    @FXML private TableColumn<TargetTable, String> independentsCol;
+    @FXML private TableColumn<TargetTable, String> workersCol;
+    @FXML private TableView<Mission> tableViewMission;
+    private ObservableList<Mission> missionItem = FXCollections.observableArrayList();
+
+
     private AdminAppMainController adminAppMainController;
     private final IntegerProperty chatVersion;
     private final BooleanProperty autoScroll;
@@ -55,10 +69,16 @@ public class AdminPageController implements AdminCommands, Closeable {
     private Timer timer;
     private ChatAreaRefresher chatAreaRefresher;
 
+    private final BooleanProperty autoUpdateMission;
+    private Timer timerMission;
+    private MissionListRefresher missionRefresher;
+
+
     public AdminPageController() {
         chatVersion = new SimpleIntegerProperty();
         autoScroll = new SimpleBooleanProperty();
         autoUpdate = new SimpleBooleanProperty(true);
+        autoUpdateMission = new SimpleBooleanProperty(true);
     }
     @FXML public void initialize() {
         if (usersListComponentController != null && graphAdminComponentController != null) {
@@ -67,13 +87,15 @@ public class AdminPageController implements AdminCommands, Closeable {
         }
         autoScroll.bind(autoScrollButton.selectedProperty());
         chatVersionLabel.textProperty().bind(Bindings.concat("Chat Version: ", chatVersion.asString()));
+        setTableCol();
+        tableViewMission.setItems(missionItem);
     }
     public void setActive() {
         usersListComponentController.startListRefresher();
        // mainGraphController.startGraphListRefresher();
         graphAdminComponentController.startGraphListRefresher();
         starChatRefresher();
-
+        starMissionRefresher();
       //  chatAreaAdminComponentController.startListRefresher();
     }
     public void setInActive() {
@@ -86,9 +108,11 @@ public class AdminPageController implements AdminCommands, Closeable {
     public void setAppMainController(AdminAppMainController adminAppMainController) {
         this.adminAppMainController = adminAppMainController;
     }
+
     @FXML void quitButton(ActionEvent event) {
         logout();
     }
+
 
     @Override public void logout() {
         adminAppMainController.switchToLogin();
@@ -156,6 +180,32 @@ public class AdminPageController implements AdminCommands, Closeable {
         timer = new Timer();
         timer.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);
     }
+
+    private void updateMissionLines(List<Mission> missions) {
+        Platform.runLater(() -> {
+            ObservableList<Mission> items = tableViewMission.getItems();
+            items.clear();
+            items.addAll(missions);
+        });
+    }
+
+    public void starMissionRefresher() {
+        missionRefresher = new MissionListRefresher(autoUpdate, this::updateMissionLines);
+        timer = new Timer();
+        timer.schedule(missionRefresher, REFRESH_RATE, REFRESH_RATE);
+    }
+
+    public void setTableCol(){
+        nameOfMissionCol.setCellValueFactory(new PropertyValueFactory<>("nameOfMission"));
+     //   nameOfGraphCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+        rootCol.setCellValueFactory(new PropertyValueFactory<>("amountOfRoot"));
+        middleCol.setCellValueFactory(new PropertyValueFactory<>("amountOfMiddle"));
+       // leafCol.setCellValueFactory(new PropertyValueFactory<>("directDependsOnTableCol"));
+        independentsCol.setCellValueFactory(new PropertyValueFactory<>("amountOfIndependents"));
+      //  workersCol.setCellValueFactory(new PropertyValueFactory<>("totalDependsOnTableCol"));
+    }
+
+
     @Override public void close() throws IOException {
         chatVersion.set(0);
         chatLineTextArea.clear();

@@ -26,7 +26,7 @@ public class LoadFileServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/plain");
         String usernameFromSession = SessionUtils.getUsername(request);
-        GraphManger g= new GraphManger();
+        GraphManger g = new GraphManger();
         GraphManger graphManager = ServletUtils.getGraphManager(getServletContext());
         PrintWriter out = response.getWriter();
 

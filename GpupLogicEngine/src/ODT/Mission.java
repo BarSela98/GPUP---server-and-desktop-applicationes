@@ -1,10 +1,31 @@
 package ODT;
 
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Mission {
+    public Mission(String nameOfMission, String nameOfCreator, List<Target> targetToExecute) {
+        this.nameOfMission = nameOfMission;
+        this.nameOfCreator = nameOfCreator;
+        this.targetToExecute = targetToExecute;
+    }
+
+    @Override
+    public String toString() {
+        return "Mission{" +
+                "nameOfMission='" + nameOfMission + '\'' +
+                ", nameOfCreator='" + nameOfCreator + '\'' +
+                ", amountOfTarget=" + amountOfTarget +
+                ", amountOfRoot=" + amountOfRoot +
+                ", amountOfMiddle=" + amountOfMiddle +
+                ", amountOfIndependents=" + amountOfIndependents +
+                ", priceOfMission=" + priceOfMission +
+                ", workers=" + workers +
+                ", statusOfMission=" + statusOfMission +
+                ", targetToExecute=" + targetToExecute +
+                '}';
+    }
+
     public enum StatusOfMission {Done,Waiting,inProgress}
 
     private String nameOfMission;

@@ -9,6 +9,7 @@
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -116,9 +117,10 @@
                      <rowConstraints>
                         <RowConstraints maxHeight="194.0" minHeight="10.0" prefHeight="69.0" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="389.0" minHeight="10.0" prefHeight="184.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="162.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="316.0" minHeight="10.0" prefHeight="149.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="389.0" minHeight="10.0" prefHeight="198.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="139.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="316.0" minHeight="10.0" prefHeight="118.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="316.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="316.0" minHeight="10.0" prefHeight="52.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
@@ -144,7 +146,7 @@
                               <ComboBox fx:id="scratchOrIncremental" minHeight="21.0" prefHeight="26.0" prefWidth="200.0" />
                            </children>
                         </VBox>
-                        <BorderPane maxHeight="47.0" maxWidth="386.0" minHeight="46.0" minWidth="234.0" prefHeight="47.0" prefWidth="386.0" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.vgrow="NEVER">
+                        <BorderPane maxHeight="47.0" maxWidth="386.0" minHeight="46.0" minWidth="234.0" prefHeight="47.0" prefWidth="386.0" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.vgrow="NEVER">
                            <right>
                               <HBox alignment="TOP_CENTER" prefHeight="47.0" prefWidth="379.0" BorderPane.alignment="CENTER">
                                  <children>
@@ -255,9 +257,9 @@
                               </HBox>
                            </children>
                         </VBox>
-                        <VBox fx:id="vbox11" prefHeight="121.0" prefWidth="173.0" GridPane.rowIndex="4">
+                        <VBox fx:id="vbox11" prefHeight="113.0" prefWidth="377.0" GridPane.rowIndex="4">
                            <children>
-                              <Label id="titleLabel" alignment="CENTER" prefHeight="55.0" prefWidth="379.0" styleClass="background" text="Price" textAlignment="CENTER" VBox.vgrow="SOMETIMES" />
+                              <Label id="titleLabel" alignment="CENTER" prefHeight="30.0" prefWidth="377.0" styleClass="Text" text="Price" textAlignment="CENTER" VBox.vgrow="SOMETIMES" />
                               <HBox>
                                  <VBox.margin>
                                     <Insets left="10.0" top="23.0" />
@@ -286,6 +288,12 @@
                               </HBox>
                            </children>
                         </VBox>
+                        <HBox alignment="CENTER_LEFT" GridPane.rowIndex="5">
+                           <children>
+                              <Label prefHeight="23.0" prefWidth="183.0" styleClass="Label" text="Name Of Mission" />
+                              <TextField fx:id="nameOfMissionText" prefHeight="27.0" prefWidth="191.0" />
+                           </children>
+                        </HBox>
                      </children>
                   </GridPane>
                </children>

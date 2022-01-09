@@ -104,20 +104,20 @@
                                  <children>
                                     <BorderPane layoutX="363.0" layoutY="217.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <center>
-                                          <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                          <TableView fx:id="tableViewMission" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                              <columns>
                                                 <TableColumn prefWidth="47.0" />
-                                                <TableColumn prefWidth="149.0" text="Name Of Mission" />
-                                                <TableColumn prefWidth="142.0" text="Name Of Graph" />
+                                                <TableColumn fx:id="nameOfMissionCol" prefWidth="149.0" text="Name Of Mission" />
+                                                <TableColumn fx:id="nameOfGraphCol" prefWidth="142.0" text="Name Of Graph" />
                                                 <TableColumn prefWidth="142.0" text="Targets Information">
                                                    <columns>
-                                                      <TableColumn prefWidth="66.0" text="Root" />
-                                                      <TableColumn prefWidth="67.0" text="Middle " />
-                                                      <TableColumn prefWidth="74.0" text="Leaf " />
-                                                      <TableColumn prefWidth="106.0" text="Independents" />
+                                                      <TableColumn fx:id="rootCol" prefWidth="66.0" text="Root" />
+                                                      <TableColumn fx:id="middleCol" prefWidth="67.0" text="Middle " />
+                                                      <TableColumn fx:id="leafCol" prefWidth="74.0" text="Leaf " />
+                                                      <TableColumn fx:id="independentsCol" prefWidth="106.0" text="Independents" />
                                                    </columns>
                                                 </TableColumn>
-                                                <TableColumn prefWidth="74.0" text="Workers" />
+                                                <TableColumn fx:id="workersCol" prefWidth="74.0" text="Workers" />
                                                 <TableColumn prefWidth="142.0" text="Target - Progress " />
                                                 <TableColumn prefWidth="142.0" text="Progress " />
                                              </columns>
