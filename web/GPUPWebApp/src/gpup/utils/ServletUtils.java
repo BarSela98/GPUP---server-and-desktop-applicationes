@@ -2,6 +2,7 @@ package gpup.utils;
 
 import chat.ChatManager;
 import gpup.servlets.GraphManger;
+import gpup.servlets.MissionManger;
 import gpup.servlets.UserManager;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ public class ServletUtils {
 	private static final String USER_MANAGER_ATTRIBUTE_NAME = "userManager";
 	private static final String CHAT_MANAGER_ATTRIBUTE_NAME = "chatManager";
 	private static final String GRAPH_MANAGER_ATTRIBUTE_NAME = "graphManager";
+	private static final String MISSION_MANAGER_ATTRIBUTE_NAME = "missionManager";
 
 	/*
 	Note how the synchronization is done only on the question and\or creation of the relevant managers and once they exists -
@@ -30,6 +32,15 @@ public class ServletUtils {
 			}
 		}
 		return (UserManager) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
+	}
+	public static MissionManger getMissionManager(ServletContext servletContext) {
+
+		synchronized (userManagerLock) {
+			if (servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME) == null) {
+				servletContext.setAttribute(USER_MANAGER_ATTRIBUTE_NAME, new UserManager());
+			}
+		}
+		return (MissionManger) servletContext.getAttribute(MISSION_MANAGER_ATTRIBUTE_NAME);
 	}
 	public static GraphManger getGraphManager(ServletContext servletContext) {
 			if (servletContext.getAttribute(GRAPH_MANAGER_ATTRIBUTE_NAME) == null) {

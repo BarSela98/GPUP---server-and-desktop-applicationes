@@ -1,6 +1,5 @@
 package ODT;
 
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,5 +80,33 @@ public class Mission {
         this.statusOfMission = statusOfMission;
     }
 
-
+    private void fixTargetsStatues(){
+        boolean done;
+        do {
+           done=true;
+           for (Target t : targetToExecute) {
+               if (t.getStatus() == Target.Status.Frozen) {
+                   for (String s : t.getSetDependsOn()) {
+                       for (int i = 0; i < targetToExecute.size(); i++) {
+                           if (targetToExecute.get(i).getName().equals(s) && (targetToExecute.get(i).getStatus() == Target.Status.Success || targetToExecute.get(i).getStatus() == Target.Status.Warning)) {
+                               t.setStatus(Target.Status.Waiting);
+                               done = false;
+                           } else if (targetToExecute.get(i).getName().equals(s) && (targetToExecute.get(i).getStatus() == Target.Status.Failure || targetToExecute.get(i).getStatus() == Target.Status.Skipped)) {
+                               t.setStatus(Target.Status.Skipped);
+                               done = false;
+                           }
+                       }
+                   }
+               }
+           }
+        }while (!done);
+    }
+    public boolean checkIfMissionDone(){
+        for(Target t : targetToExecute){
+            if(t.getStatus()==Target.Status.Waiting||t.getStatus()==Target.Status.Frozen){
+                return false;
+            }
+        }
+        return true;
+    }
 }

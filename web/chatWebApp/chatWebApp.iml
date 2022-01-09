@@ -22,8 +22,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="okhttp-4.9.1" level="project" />
     <orderEntry type="library" name="gson-2.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Tomcat 10.0.14" level="application_server_libraries" />
     <orderEntry type="module" module-name="GpupLogicEngine" />
     <orderEntry type="module" module-name="GPUPWebApp" />
+    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>
