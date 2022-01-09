@@ -33,6 +33,15 @@ public class ServletUtils {
 		}
 		return (UserManager) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
 	}
+	public static MissionManger getMissionManager(ServletContext servletContext) {
+
+		synchronized (userManagerLock) {
+			if (servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME) == null) {
+				servletContext.setAttribute(USER_MANAGER_ATTRIBUTE_NAME, new UserManager());
+			}
+		}
+		return (MissionManger) servletContext.getAttribute(MISSION_MANAGER_ATTRIBUTE_NAME);
+	}
 	public static GraphManger getGraphManager(ServletContext servletContext) {
 			if (servletContext.getAttribute(GRAPH_MANAGER_ATTRIBUTE_NAME) == null) {
 				servletContext.setAttribute(GRAPH_MANAGER_ATTRIBUTE_NAME, new GraphManger());

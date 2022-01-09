@@ -9,10 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.Constants;
 import util.http.HttpClientUtil;
@@ -37,6 +34,7 @@ public class loginController {
     @FXML void loginButtonAction(ActionEvent event) {
 
         String userName = userNameTextField.getText();
+        String[] asd={"asd","rthtr","dfgr"};
         if (userName.isEmpty()) {
             errorMessageProperty.set("User name is empty. You can't login with empty user name");
             return;
@@ -50,7 +48,6 @@ public class loginController {
                 .addQueryParameter("role", "Worker")
                 .build()
                 .toString();
-
         HttpClientUtil.runAsync(finalUrl, new Callback() {
 
             @Override
