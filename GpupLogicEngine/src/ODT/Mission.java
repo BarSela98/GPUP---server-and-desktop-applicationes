@@ -101,6 +101,24 @@ public class Mission {
     public void setStatusOfMission(StatusOfMission statusOfMission) {
         this.statusOfMission = statusOfMission;
     }
+    public void missionSetUp(boolean formScratch){
+        if(formScratch){
+            for(Target t : targetToExecute){
+                t.setStatus(Target.Status.Frozen);
+            }
+        }
+        else{
+            for(Target t : targetToExecute){
+                if(t.getStatus()==Target.Status.Failure||t.getStatus()==Target.Status.Skipped)
+                    t.setStatus(Target.Status.Frozen);
+            }
+        }
+        for(Target t : targetToExecute){
+            if(checkIfToTurnWait(t)){
+                t.setStatus(Target.Status.Waiting);
+            }
+        }
+    }
 
     private void fixTargetsStatues(){
         boolean done;
@@ -108,20 +126,38 @@ public class Mission {
            done=true;
            for (Target t : targetToExecute) {
                if (t.getStatus() == Target.Status.Frozen) {
-                   for (String s : t.getSetDependsOn()) {
-                       for (int i = 0; i < targetToExecute.size(); i++) {
-                           if (targetToExecute.get(i).getName().equals(s) && (targetToExecute.get(i).getStatus() == Target.Status.Success || targetToExecute.get(i).getStatus() == Target.Status.Warning)) {
-                               t.setStatus(Target.Status.Waiting);
-                               done = false;
-                           } else if (targetToExecute.get(i).getName().equals(s) && (targetToExecute.get(i).getStatus() == Target.Status.Failure || targetToExecute.get(i).getStatus() == Target.Status.Skipped)) {
-                               t.setStatus(Target.Status.Skipped);
-                               done = false;
-                           }
-                       }
+                   if(checkIfToTurnWait(t)){
+                       t.setStatus(Target.Status.Waiting);
+                       done=false;
+                   }
+                   else if(checkIfToTurnSkipped(t)){
+                       t.setStatus(Target.Status.Skipped);
+                       done=false;
                    }
                }
            }
         }while (!done);
+    }
+    private boolean checkIfToTurnWait(Target t){
+        for (String s : t.getSetDependsOn()){
+            for (int i = 0; i < targetToExecute.size(); i++){
+                if (targetToExecute.get(i).getName().equals(s) && !(targetToExecute.get(i).getStatus() == Target.Status.Success || targetToExecute.get(i).getStatus() == Target.Status.Warning)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean checkIfToTurnSkipped(Target t){
+        for (String s : t.getSetDependsOn()){
+            for (int i = 0; i < targetToExecute.size(); i++){
+                if (targetToExecute.get(i).getName().equals(s) && (targetToExecute.get(i).getStatus() == Target.Status.Failure || targetToExecute.get(i).getStatus() == Target.Status.Skipped)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     public boolean checkIfMissionDone(){
         for(Target t : targetToExecute){
