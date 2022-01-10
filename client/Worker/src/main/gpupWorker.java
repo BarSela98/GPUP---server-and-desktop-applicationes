@@ -95,7 +95,14 @@ public class gpupWorker extends Application {
         curThreads++;
         Thread thread =new Thread(t);
         thread.start();
-        while (thread.isAlive());
+        try {
+            Thread.sleep(10);
+            while (t.isRunning()){
+                Thread.sleep(10);
+            }
+        }
+        catch (Exception e){}
+
 
         curThreads--;
         updateTargetInMission(t);
