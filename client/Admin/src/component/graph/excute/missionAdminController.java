@@ -3,6 +3,7 @@ package component.graph.excute;
 import ODT.*;
 import com.google.gson.Gson;
 import component.graph.main.MainGraphController;
+import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
@@ -231,21 +232,16 @@ public class missionAdminController {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        System.out.println("Something went wrong: " + e.getMessage())
-                );
+                Platform.runLater(() -> new errorMain(e));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-
-                    Platform.runLater(() ->
-                            System.out.println("Something went wrong: " + responseBody)
-                    );
-
-                } else {
+                    Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                }
+                else{
                     Platform.runLater(() -> {
                         try {
                             System.out.println(response.body().string());

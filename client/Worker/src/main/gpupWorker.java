@@ -1,20 +1,25 @@
 package main;
 
 import ODT.Target;
+import com.google.gson.Gson;
 import component.mainApp.WorkerAppMainController;
+import error.errorMain;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
-import com.google.gson.*;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
 import static util.Constants.MAIN_PAGE_FXML_RESOURCE_LOCATION;
+import static utility.Constants.UPDATE_TARGET_IN_MISSION;
 
 public class gpupWorker extends Application {
 
@@ -105,5 +110,33 @@ public class gpupWorker extends Application {
     }
     public void addTargetToList(Target t){
         targetsToExecute.add(t);
+    }
+    public void updateTargetInMission(Target t){
+        String json = new Gson().toJson(t);
+        String finalUrl = HttpUrl
+                .parse(UPDATE_TARGET_IN_MISSION)
+                .newBuilder()
+                .build()
+                .toString();
+
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, json);
+        HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> new errorMain(e));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                }
+                else{
+                    Platform.runLater(() -> {Platform.runLater(() -> System.out.println("update target"));});
+                }
+            }
+        });
     }
 }

@@ -54,19 +54,16 @@ public class GeneralGraphController {
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Platform.runLater(() ->
-                            System.out.println(e)
-                    );
+                    Platform.runLater(() -> new errorMain(e));
                 }
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (response.code() != 200) {
                         String responseBody = response.body().string();
-                        Platform.runLater(() ->
-                                        System.out.println(responseBody)
-                        );
-                    } else {
+                        Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                    }
+                    else{
                         String jsonArrayOfUsersNames = response.body().string();
                         Graph graph = GSON_INSTANCE.fromJson(jsonArrayOfUsersNames, Graph.class);
                         Platform.runLater(() -> {
