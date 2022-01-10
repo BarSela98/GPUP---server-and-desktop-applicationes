@@ -1,5 +1,8 @@
 package ODT;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.concurrent.Worker;
 import utility.Utility;
 
 import java.util.List;
@@ -24,6 +27,13 @@ public class Mission {
     private Utility.TypeOfRunning typeOfRunning;
     private Simulation simulation;
     private Compilation compilation;
+    private List<Worker> workerList;
+    private int workerListSize;
+    private boolean isRunning;
+
+
+
+
 
 
     public Mission(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask,Utility.TypeOfRunning typeOfRunning ,Compilation compilation) {
@@ -34,28 +44,7 @@ public class Mission {
         this.priceOfMission = compilation.getPriceOfCompilation();
         this.whichTask = whichTask;
         this.typeOfRunning = typeOfRunning;
-
-
-        amountOfTarget = 0;
-        amountOfRoot = 0;
-        amountOfMiddle = 0;
-        amountOfIndependents = 0;
-        amountOfLeaf = 0;
-
-        for (Target t: targets) {
-            Target.Type type = t.getType();
-            amountOfTarget++;
-            if (type == Target.Type.ROOT)
-                amountOfRoot++;
-            else if (type == Target.Type.INDEPENDENTS)
-                amountOfIndependents++;
-            else if (type == Target.Type.MIDDLE)
-                amountOfMiddle++;
-            else if (type == Target.Type.LEAF)
-                amountOfLeaf++;
-        }
-        priceOfAllMission = priceOfMission * amountOfTarget;
-
+        missionBuilder();
     }
     public Mission(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning , Simulation simulation) {
         this.simulation = simulation;
@@ -66,7 +55,10 @@ public class Mission {
         this.priceOfMission = simulation.getPriceOfSimulation();
         this.whichTask = whichTask;
         this.typeOfRunning = typeOfRunning;
-
+        missionBuilder();
+    }
+    public void missionBuilder(){
+        workerListSize = 0;
         amountOfTarget = 0;
         amountOfRoot = 0;
         amountOfMiddle = 0;
@@ -78,15 +70,45 @@ public class Mission {
             amountOfTarget++;
             if (type == Target.Type.ROOT)
                 amountOfRoot++;
-            else if (type == Target.Type.INDEPENDENTS)
+            else if (type == Target.Type.INDEPENDENTS){
                 amountOfIndependents++;
+                waitingTargetToExecute.add(t);
+            }
             else if (type == Target.Type.MIDDLE)
                 amountOfMiddle++;
-            else if (type == Target.Type.LEAF)
+            else if (type == Target.Type.LEAF){
                 amountOfLeaf++;
+                waitingTargetToExecute.add(t);
+            }
         }
         priceOfAllMission = priceOfMission * amountOfTarget;
+    }
 
+    public void addWorkerToMission(Worker worker) {
+        if(!workerList.contains(worker)) {
+            workerList.add(worker);
+            workerListSize++;
+        }
+    }
+    public void removeWorkerFromMission(Worker worker) {
+        if(workerList.contains(worker)){
+            workerList.remove(worker);
+            workerListSize--;
+        }
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
+
+    public int getWorkerListSize() {
+        return workerListSize;
+    }
+    public void setWorkerListSize(int workerListSize) {
+        this.workerListSize = workerListSize;
     }
 
     public int getPriceOfAllMission() {
@@ -178,6 +200,18 @@ public class Mission {
     }
     public void setStatusOfMission(StatusOfMission statusOfMission) {
         this.statusOfMission = statusOfMission;
+    }
+
+    public void doMission(){
+        while(isRunning){
+            for (Worker worker : workerList)
+            {
+                if (worker.isAvailable() && waitingTargetToExecute.size() != 0){
+                    worker.addTargetToList(waitingTargetToExecute.get(0));
+                    waitingTargetToExecute.remove(0);
+                }
+            }
+        }
     }
 
     public void missionSetUp(boolean formScratch){

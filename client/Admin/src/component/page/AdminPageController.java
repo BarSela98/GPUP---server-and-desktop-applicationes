@@ -190,7 +190,7 @@ public class AdminPageController implements AdminCommands, Closeable {
         leafCol.setCellValueFactory(new PropertyValueFactory<>("amountOfLeaf"));
         independentsCol.setCellValueFactory(new PropertyValueFactory<>("amountOfIndependents"));
         priceOfAllMissionCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
-      //  workersCol.setCellValueFactory(new PropertyValueFactory<>("totalDependsOnTableCol"));
+        workersCol.setCellValueFactory(new PropertyValueFactory<>("workerListSize"));
     }
 
 
