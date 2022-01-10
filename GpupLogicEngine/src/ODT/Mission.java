@@ -16,6 +16,14 @@ import java.util.List;
 import java.util.Random;
 
 public class Mission {
+
+    @Override
+    public String toString() {
+        return "Mission{" +
+                "isRunning=" + isRunning +
+                '}';
+    }
+
     public enum StatusOfMission {Done, Waiting, inProgress}
 
     private String nameOfMission;
@@ -27,7 +35,6 @@ public class Mission {
     private int amountOfLeaf;
     private int priceOfMission;
     private int priceOfAllMission;
-    private int workers;
     private Utility.WhichTask whichTask;
     private StatusOfMission statusOfMission;
     private List<Target> targets;
@@ -40,24 +47,106 @@ public class Mission {
     private boolean isRunning;
     private boolean isPause;
     private boolean isStop;
+    public Mission(Mission m){
+
+        this.nameOfMission = m.getNameOfMission();
+        this.nameOfCreator  = m.getNameOfCreator();
+        this.amountOfTarget = m.getAmountOfTarget();
+        this.amountOfRoot = m.getAmountOfRoot();
+        this.amountOfMiddle = m.getAmountOfMiddle();
+        this.amountOfIndependents = m.getAmountOfIndependents();
+        this.amountOfLeaf = m.getAmountOfLeaf();
+        this.priceOfMission = m.getPriceOfMission();
+        this.priceOfAllMission = m.getPriceOfAllMission();
+        this.whichTask = m.getWhichTask();
+        this.statusOfMission = m.getStatusOfMission();
+        this.targets = m.getTargets();
+        this.waitingTargetToExecute = m.getWaitingTargetToExecute();
+        this.typeOfRunning = m.getTypeOfRunning();
+        this.simulation = m.getSimulation();
+        this.compilation = m.getCompilation();
+        this.workerList = m.getWorkerList();
+        this.workerListSize = m.getWorkerListSize();
+        this.isRunning = m.getIsRunning();
+        this.isPause = m.isPause();
+        this.isStop = m.isStop();
+    }
+
+
+    public List<gpupWorker> getWorkerList() {
+        return workerList;
+    }
+
+    public void setWorkerList(List<gpupWorker> workerList) {
+        this.workerList = workerList;
+    }
+
+    public int getWorkerListSize() {
+        return workerListSize;
+    }
+
+    public void setWorkerListSize(int workerListSize) {
+        this.workerListSize = workerListSize;
+    }
+
+
+
+
+
+    public Utility.WhichTask getWhichTask() {
+        return whichTask;
+    }
+
+    public void setWhichTask(Utility.WhichTask whichTask) {
+        this.whichTask = whichTask;
+    }
+
+    public Utility.TypeOfRunning getTypeOfRunning() {
+        return typeOfRunning;
+    }
+
+    public void setTypeOfRunning(Utility.TypeOfRunning typeOfRunning) {
+        this.typeOfRunning = typeOfRunning;
+    }
+
+    public Simulation getSimulation() {
+        return simulation;
+    }
+
+    public void setSimulation(Simulation simulation) {
+        this.simulation = simulation;
+    }
+
+    public Compilation getCompilation() {
+        return compilation;
+    }
+
+    public void setCompilation(Compilation compilation) {
+        this.compilation = compilation;
+    }
 
     public void setStatus(String statusOfMission) {
         switch (statusOfMission) {
-            case "run", "resume" -> this.setRunning(true);
-            case "pause" -> this.setPause(true);
-            case "stop" -> this.setStop(true);
+            case "run":
+                this.setIsRunning(true);
+                break;
+            case "pause":
+                this.setPause(true);
+                break;
+            case "resume":
+                this.setIsRunning(true);
+                break;
+            case "stop":
+                this.setStop(true);
+                break;
         }
     }
 
-
-
-
-
-    public boolean isRunning() {
+    public boolean getIsRunning() {
         return isRunning;
     }
 
-    public void setRunning(boolean running) {
+    public void setIsRunning(boolean running) {
         isRunning = running;
         if (isRunning){
             isPause = false;
@@ -88,9 +177,6 @@ public class Mission {
             isRunning = false;
         }
     }
-
-
-
     public Mission(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Compilation compilation) {
         this.compilation = compilation;
         this.nameOfMission = nameOfMission;
@@ -102,6 +188,8 @@ public class Mission {
         missionBuilder();
         compilationSetUp();
     }
+
+
 
     public Mission(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Simulation simulation) {
         this.simulation = simulation;
@@ -125,6 +213,9 @@ public class Mission {
         amountOfMiddle = 0;
         amountOfIndependents = 0;
         amountOfLeaf = 0;
+        this.isRunning = false;
+        this.isStop = false;
+        this.isPause = false;
 
         for (Target t : targets) {
             t.setMission(nameOfMission);
@@ -228,13 +319,6 @@ public class Mission {
     }
     public void setPriceOfMission(int priceOfMission) {
         this.priceOfMission = priceOfMission;
-    }
-
-    public int getWorkers() {
-        return workers;
-    }
-    public void setWorkers(int workers) {
-        this.workers = workers;
     }
 
     public StatusOfMission getStatusOfMission() {

@@ -25,4 +25,9 @@ public class MissionManger {
             throw new Exception("graph name not exsit");
         return missionList.get(name);
     }
+    public synchronized void setStatusOfMissionByName(String name, String status)throws Exception{
+        if(!missionList.containsKey(name))
+            throw new Exception("graph name not exsit");
+        missionList.get(name).setStatus(status);
+    }
 }

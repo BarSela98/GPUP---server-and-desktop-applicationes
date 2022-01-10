@@ -1,6 +1,5 @@
 package gpup.servlets.mission;
 
-import ODT.Mission;
 import gpup.servlets.MissionManger;
 import gpup.utils.ServletUtils;
 import jakarta.servlet.annotation.WebServlet;
@@ -28,13 +27,13 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_CONFLICT);
         else {
                 MissionManger missionManger = ServletUtils.getMissionManager(getServletContext());
-                Mission mission = missionManger.getMissionByName(nameOfMission);
-                mission.setStatus(statusOfMission);
+                missionManger.setStatusOfMissionByName(nameOfMission,statusOfMission);
                 response.setStatus(HttpServletResponse.SC_OK);
+                System.out.println(missionManger.getMissionByName(nameOfMission).getIsRunning());
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+      //      e.printStackTrace();
         }
     }
 }

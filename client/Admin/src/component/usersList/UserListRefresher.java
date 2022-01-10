@@ -1,14 +1,11 @@
 package component.usersList;
 
 import ODT.User;
-import error.errorMain;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
-import static utility.Constants.*;
 import util.http.HttpClientUtil;
 
 import java.io.IOException;
@@ -16,6 +13,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.function.Consumer;
+
+import static utility.Constants.GSON_INSTANCE;
+import static utility.Constants.USERS_LIST;
 
 
 
@@ -42,14 +42,14 @@ public class UserListRefresher extends TimerTask {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> new errorMain(e));
+             //   Platform.runLater(() -> new errorMain(e));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> new errorMain(new Exception("Users list - Response code: "+response.code()+"\nResponse body: "+responseBody)));
+            //        Platform.runLater(() -> new errorMain(new Exception("Users list - Response code: "+response.code()+"\nResponse body: "+responseBody)));
                 }
                 else {
                     String jsonArrayOfUsersNames = response.body().string();

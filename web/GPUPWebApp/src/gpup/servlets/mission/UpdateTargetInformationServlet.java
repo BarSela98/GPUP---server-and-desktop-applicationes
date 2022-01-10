@@ -31,7 +31,7 @@ public class UpdateTargetInformationServlet extends HttpServlet {
             mission.updateTarget(target);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
-            response.getOutputStream().print(e.toString());
+         //   response.getOutputStream().print(e.toString());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }

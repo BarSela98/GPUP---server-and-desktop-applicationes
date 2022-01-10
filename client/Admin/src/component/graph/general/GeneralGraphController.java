@@ -2,7 +2,6 @@ package component.graph.general;
 
 import ODT.Graph;
 import component.graph.main.MainGraphController;
-import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -54,14 +53,14 @@ public class GeneralGraphController {
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Platform.runLater(() -> new errorMain(e));
+                //    Platform.runLater(() -> new errorMain(e));
                 }
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (response.code() != 200) {
                         String responseBody = response.body().string();
-                        Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                    //    Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
                     }
                     else{
                         String jsonArrayOfUsersNames = response.body().string();
@@ -101,16 +100,16 @@ public class GeneralGraphController {
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Platform.runLater(() -> new errorMain(e));
+                  //  Platform.runLater(() -> new errorMain(e));
                 }
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (response.code() != 200) {
                         String responseBody = response.body().string();
-                        Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                     //   Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
                     } else {
-                        Platform.runLater(() -> System.out.println("load graph successful"));
+                    //    Platform.runLater(() -> System.out.println("load graph successful"));
                     }
                 }
             });

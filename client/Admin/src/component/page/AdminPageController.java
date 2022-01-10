@@ -1,13 +1,13 @@
 package component.page;
 
-import ODT.Mission;
-import ODT.TargetTable;
+import ODT.MissionInTable;
 import component.api.AdminCommands;
 import component.chat.ChatAreaRefresher;
 import component.chat.model.ChatLinesWithVersion;
 import component.graph.main.MainGraphController;
 import component.mainApp.AdminAppMainController;
 import component.usersList.UsersListController;
+import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -50,16 +50,17 @@ public class AdminPageController implements AdminCommands, Closeable {
     @FXML private TextArea chatLineTextArea;
     @FXML private TextArea mainChatLinesTextArea;
     @FXML private Label chatVersionLabel;
-    @FXML private TableColumn<TargetTable, String> nameOfMissionCol;
-    @FXML private TableColumn<TargetTable, String> nameOfCreatorCol;
-    @FXML private TableColumn<TargetTable, String> rootCol;
-    @FXML private TableColumn<TargetTable, String> middleCol;
-    @FXML private TableColumn<TargetTable, String> leafCol;
-    @FXML private TableColumn<TargetTable, String> independentsCol;
-    @FXML private TableColumn<TargetTable, String> workersCol;
-    @FXML private TableColumn<TargetTable, String> priceOfAllMissionCol;
-    @FXML private TableView<Mission> tableViewMission;
-    private ObservableList<Mission> missionItem = FXCollections.observableArrayList();
+    @FXML private TableColumn<MissionInTable, String> nameOfMissionCol;
+    @FXML private TableColumn<MissionInTable, String> nameOfCreatorCol;
+    @FXML private TableColumn<MissionInTable, String> rootCol;
+    @FXML private TableColumn<MissionInTable, String> middleCol;
+    @FXML private TableColumn<MissionInTable, String> leafCol;
+    @FXML private TableColumn<MissionInTable, String> independentsCol;
+    @FXML private TableColumn<MissionInTable, Boolean> workersCol;   ////////////////////////////
+    @FXML private TableColumn<MissionInTable, String> priceOfAllMissionCol;
+    @FXML private TableColumn<MissionInTable, CheckBox> remarkCol;
+    @FXML private TableView<MissionInTable> tableViewMission;
+    private ObservableList<MissionInTable> missionItem = FXCollections.observableArrayList();
 
 
     private AdminAppMainController adminAppMainController;
@@ -107,9 +108,56 @@ public class AdminPageController implements AdminCommands, Closeable {
     public void setAppMainController(AdminAppMainController adminAppMainController) {
         this.adminAppMainController = adminAppMainController;
     }
-
     @FXML void quitButton(ActionEvent event) {
         logout();
+    }
+
+    @FXML void playButton(ActionEvent event) {
+        changeStatusOfMission("run");
+    }
+    @FXML void stopButton(ActionEvent event) {
+        changeStatusOfMission("stop");
+    }
+    @FXML void pauseButton(ActionEvent event) {
+        changeStatusOfMission("pause");
+    }
+    @FXML void resumeButton(ActionEvent event) {
+        changeStatusOfMission("resume");
+    }
+
+    public synchronized void changeStatusOfMission(String status){
+        String name = "";
+
+        for (MissionInTable m :tableViewMission.getItems()){
+            if (m.getCheckBox().isSelected())
+                name = m.getNameOfMission();
+        }
+
+        String finalUrl = HttpUrl
+                .parse(CHANGE_STATUS_OF_MISSION)
+                .newBuilder()
+                .addQueryParameter("missionname", tableViewMission.getItems().get(0).getNameOfMission())
+                .addQueryParameter("missionstatus", status)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> new errorMain(e));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {////
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                }
+                else{
+                    Platform.runLater(() -> System.out.println("changeStatusOfMission "));
+                }
+            }
+        });
     }
 
 
@@ -136,13 +184,14 @@ public class AdminPageController implements AdminCommands, Closeable {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                Platform.runLater(() -> new errorMain(e));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (!response.isSuccessful()) {
-
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
                 }
             }
         });
@@ -179,8 +228,6 @@ public class AdminPageController implements AdminCommands, Closeable {
         timer = new Timer();
         timer.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);
     }
-
-
     public void setTableCol(){
         nameOfMissionCol.setCellValueFactory(new PropertyValueFactory<>("nameOfMission"));
         nameOfCreatorCol.setCellValueFactory(new PropertyValueFactory<>("nameOfCreator"));
@@ -189,21 +236,25 @@ public class AdminPageController implements AdminCommands, Closeable {
         leafCol.setCellValueFactory(new PropertyValueFactory<>("amountOfLeaf"));
         independentsCol.setCellValueFactory(new PropertyValueFactory<>("amountOfIndependents"));
         priceOfAllMissionCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
-        workersCol.setCellValueFactory(new PropertyValueFactory<>("workerListSize"));
+        //workersCol.setCellValueFactory(new PropertyValueFactory<>("workerListSize"));
+        workersCol.setCellValueFactory(new PropertyValueFactory<>("isRunning"));
+
+        remarkCol.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
     }
-
-
     public void starMissionRefresher() {
         missionRefresher = new MissionListRefresher(autoUpdate, this::updateMissionLines);
         timer = new Timer();
-        timer.schedule(missionRefresher, REFRESH_RATE, REFRESH_RATE);
+        timer.schedule(missionRefresher, 5000, 5000);
     }
-    private void updateMissionLines(List<Mission> missions) {
+    private synchronized void updateMissionLines(List<MissionInTable> missions) {
+        System.out.println("------ " + missions.get(0).getIsRunning());
         Platform.runLater(() -> {
-            ObservableList<Mission> items = tableViewMission.getItems();
+            ObservableList<MissionInTable> items = tableViewMission.getItems();
+            for(int i = 0 ; i < items.size() ; ++i) /// update check box
+                missions.get(i).changeInformation(items.get(i));
+
             items.clear();
             items.addAll(missions);
-
         });
     }
     /**

@@ -3,8 +3,6 @@ package component.graph.excute;
 import ODT.*;
 import com.google.gson.Gson;
 import component.graph.main.MainGraphController;
-import error.errorMain;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -189,15 +187,20 @@ public class missionAdminController {
         Compilation compilation;
         Simulation simulation;
         Mission mission;
+        ArrayList<Target> targetsToRun=new ArrayList<>();
+
         if (nameOfMissionText.getText().equals(""))
             return;
 
-        if (scratchOrIncremental.getValue().equals("scratch"))
+        if (scratchOrIncremental.getValue().equals("Scratch"))
             typeOfRunning = Utility.TypeOfRunning.SCRATCH;
         else
             typeOfRunning = Utility.TypeOfRunning.INCREMENTAL;
 
-        List<Target> targetsToRun=new ArrayList<>();
+        System.out.println(scratchOrIncremental.getValue());
+
+
+
         // list of targets that choose
         for(TargetTable t:tableView.getItems()){
             if(t.getCheckBoxTask().isSelected()){
@@ -220,6 +223,7 @@ public class missionAdminController {
 
         String json = new Gson().toJson(mission);
 //////////////////////////////////////////////////////////////////////////////////////////
+        System.out.println("//////////////////////////////////////////////////////////////////////////////////////////");
         String finalUrl = HttpUrl
                 .parse(ADD_MISSION)
                 .newBuilder()
@@ -232,24 +236,28 @@ public class missionAdminController {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> new errorMain(e));
+              //  Platform.runLater(() -> new errorMain(e));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                  //  Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
                 }
+                /*
                 else{
+
                     Platform.runLater(() -> {
                         try {
-                            System.out.println(response.body().string());
+                           System.out.println(response.body().string());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     });
                 }
+
+                 */
             }
         });
     }

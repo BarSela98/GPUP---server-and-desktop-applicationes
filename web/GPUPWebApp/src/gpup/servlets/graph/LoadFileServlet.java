@@ -37,7 +37,7 @@ public class LoadFileServlet extends HttpServlet {
                 Xmlimpl xml = new Xmlimpl(readFromInputStream(part.getInputStream()));
                 graphManager.addGraph(new Graph(xml,usernameFromSession));
             } catch (Exception e) {
-                response.getOutputStream().print(e.toString());
+             //   response.getOutputStream().print(e.toString());
             }
         }
     }

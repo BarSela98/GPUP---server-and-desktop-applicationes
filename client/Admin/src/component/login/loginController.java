@@ -54,22 +54,6 @@ public class loginController {
                 .toString();
 
         HttpClientUtil.runAsync(finalUrl, new Callback() {
-/*
-OkHttpClient client = new OkHttpClient().newBuilder()
-  .build();
-Request request = new Request.Builder()
-  .url("http://localhost:8080/GPUP/file/xml/load?=&name=bar")
-  .method("GET", null)
-  .build();
-Response response = client.newCall(request).execute();
- */
-
-
-
-
-
-
-
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() ->

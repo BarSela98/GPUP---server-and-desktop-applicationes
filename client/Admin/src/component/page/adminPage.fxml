@@ -106,7 +106,7 @@
                                        <center>
                                           <TableView fx:id="tableViewMission" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                              <columns>
-                                                <TableColumn prefWidth="47.0" />
+                                                <TableColumn fx:id="remarkCol" prefWidth="47.0" />
                                                 <TableColumn fx:id="nameOfMissionCol" prefWidth="149.0" text="Name Of Mission" />
                                                 <TableColumn fx:id="nameOfCreatorCol" prefWidth="142.0" text="Name Of Graph" />
                                                 <TableColumn prefWidth="142.0" text="Targets Information">
@@ -127,22 +127,22 @@
                                        <bottom>
                                           <HBox alignment="CENTER" prefHeight="58.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
                                              <children>
-                                                <Button mnemonicParsing="false" prefWidth="100.0" text="Play">
+                                                <Button mnemonicParsing="false" onAction="#playButton" prefWidth="100.0" text="Play">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                                                    </HBox.margin>
                                                 </Button>
-                                                <Button mnemonicParsing="false" prefWidth="100.0" text="Pause">
+                                                <Button mnemonicParsing="false" onAction="#pauseButton" prefWidth="100.0" text="Pause">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                                                    </HBox.margin>
                                                 </Button>
-                                                <Button mnemonicParsing="false" prefWidth="100.0" text="Resume">
+                                                <Button mnemonicParsing="false" onAction="#resumeButton" prefWidth="100.0" text="Resume">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                                                    </HBox.margin>
                                                 </Button>
-                                                <Button mnemonicParsing="false" prefWidth="100.0" text="Stop">
+                                                <Button mnemonicParsing="false" onAction="#stopButton" prefWidth="100.0" text="Stop">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                                                    </HBox.margin>
