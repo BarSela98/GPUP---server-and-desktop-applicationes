@@ -273,6 +273,7 @@ public class Target implements Serializable,Runnable {
     }
     public void run () {
         //comment blocks in this part needs to be moved to engine
+        isRunning=true;
         try {
             if (compile) {//compile task
                 String temp = "";
@@ -435,6 +436,7 @@ public class Target implements Serializable,Runnable {
         s.subSize();
         infor = new infoThread(infoThread.InOrOut.OUT, System.currentTimeMillis() , engineImpl.getWorkingThreads(), s.getSize() );
         */
+        isRunning=false;
         } catch (Exception e) {
 
         }
