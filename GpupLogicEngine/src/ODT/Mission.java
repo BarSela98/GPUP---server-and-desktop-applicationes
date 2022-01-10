@@ -23,6 +23,7 @@ public class Mission {
     private Utility.TypeOfRunning typeOfRunning;
     private Simulation simulation;
     private Compilation compilation;
+
     public Mission(String nameOfMission, String nameOfCreator, List<Target> targetToExecute, Utility.WhichTask whichTask,Utility.TypeOfRunning typeOfRunning ,Compilation compilation) {
         this.compilation = compilation;
         this.nameOfMission = nameOfMission;
@@ -54,15 +55,6 @@ public class Mission {
         priceOfAllMission = priceOfMission * amountOfTarget;
 
     }
-
-    public int getPriceOfAllMission() {
-        return priceOfAllMission;
-    }
-
-    public void setPriceOfAllMission(int priceOfAllMission) {
-        this.priceOfAllMission = priceOfAllMission;
-    }
-
     public Mission(String nameOfMission, String nameOfCreator, List<Target> targetToExecute, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning , Simulation simulation) {
         this.simulation = simulation;
 
@@ -95,26 +87,16 @@ public class Mission {
 
     }
 
-    @Override
-    public String toString() {
-        return "Mission{" +
-                "nameOfMission='" + nameOfMission + '\'' +
-                ", nameOfCreator='" + nameOfCreator + '\'' +
-                ", amountOfTarget=" + amountOfTarget +
-                ", amountOfRoot=" + amountOfRoot +
-                ", amountOfMiddle=" + amountOfMiddle +
-                ", amountOfIndependents=" + amountOfIndependents +
-                ", priceOfMission=" + priceOfMission +
-                ", workers=" + workers +
-                ", statusOfMission=" + statusOfMission +
-                ", targetToExecute=" + targetToExecute +
-                '}';
+    public int getPriceOfAllMission() {
+        return priceOfAllMission;
+    }
+    public void setPriceOfAllMission(int priceOfAllMission) {
+        this.priceOfAllMission = priceOfAllMission;
     }
 
     public int getAmountOfLeaf() {
         return amountOfLeaf;
     }
-
     public void setAmountOfLeaf(int amountOfLeaf) {
         this.amountOfLeaf = amountOfLeaf;
     }
@@ -122,7 +104,6 @@ public class Mission {
     public List<Target> getTargetToExecute() {
         return targetToExecute;
     }
-
     public void setTargetToExecute(List<Target> targetToExecute) {
         this.targetToExecute = targetToExecute;
     }

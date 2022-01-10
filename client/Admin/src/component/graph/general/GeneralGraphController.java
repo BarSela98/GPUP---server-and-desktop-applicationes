@@ -2,6 +2,7 @@ package component.graph.general;
 
 import ODT.Graph;
 import component.graph.main.MainGraphController;
+import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -85,7 +86,7 @@ public class GeneralGraphController {
         nameOfGraphText.setText(graph.getGraphName());
         creatorText.setText(graph.getNameOfCreator());
     }
-    @FXML void loadGraphButton(ActionEvent event) throws Exception {
+    @FXML void loadGraphButton(ActionEvent event) {
 
         File file = new FileChooser().showOpenDialog(new Stage());
 
@@ -103,30 +104,16 @@ public class GeneralGraphController {
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-                    Platform.runLater(() ->
-                            //errorMessageProperty.set("Something went wrong: " + e.getMessage())
-                            System.out.println("error")
-                    );
-
-
+                    Platform.runLater(() -> new errorMain(e));
                 }
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (response.code() != 200) {
                         String responseBody = response.body().string();
-
-                        Platform.runLater(() ->
-                                ///errorMessageProperty.set("Something went wrong: " + responseBody)
-                                System.out.println(responseBody)
-                        );
-
-
+                        Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
                     } else {
-                        Platform.runLater(() -> {
-                            System.out.println("good");
-                        });
+                        Platform.runLater(() -> System.out.println("load graph successful"));
                     }
                 }
             });

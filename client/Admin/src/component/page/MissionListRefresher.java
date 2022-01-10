@@ -1,6 +1,8 @@
 package component.page;
 
 import ODT.Mission;
+import error.errorMain;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -23,7 +25,7 @@ public class MissionListRefresher extends TimerTask {
 
 
     public MissionListRefresher(BooleanProperty shouldUpdate, Consumer<List<Mission>> MissionsListConsumer) {
-        this.shouldUpdate = shouldUpdate;
+         this.shouldUpdate = shouldUpdate;
         this.MissionsListConsumer = MissionsListConsumer;
     }
 
@@ -38,14 +40,19 @@ public class MissionListRefresher extends TimerTask {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("error");
+                Platform.runLater(() -> new errorMain(e));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String jsonArrayOfMissionsNames = response.body().string();
-                Mission[] MissionsNames = GSON_INSTANCE.fromJson(jsonArrayOfMissionsNames, Mission[].class);
-                MissionsListConsumer.accept(Arrays.asList(MissionsNames));
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> new errorMain(new Exception("Mission list - Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                } else {
+                    String jsonArrayOfMissionsNames = response.body().string();
+                    Mission[] MissionsNames = GSON_INSTANCE.fromJson(jsonArrayOfMissionsNames, Mission[].class);
+                    MissionsListConsumer.accept(Arrays.asList(MissionsNames));
+                }
             }
         });
     }

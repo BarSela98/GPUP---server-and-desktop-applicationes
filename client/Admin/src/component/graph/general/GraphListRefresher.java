@@ -1,5 +1,7 @@
 package component.graph.general;
 
+import error.errorMain;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -37,13 +39,20 @@ public class GraphListRefresher extends TimerTask {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> new errorMain(e));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String jsonArrayOfUsersNames = response.body().string();
-                String[] graphsNames = GSON_INSTANCE.fromJson(jsonArrayOfUsersNames, String[].class);
-                graphListConsumer.accept(Arrays.asList(graphsNames));
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                }
+                else{
+                        String jsonArrayOfUsersNames = response.body().string();
+                        String[] graphsNames = GSON_INSTANCE.fromJson(jsonArrayOfUsersNames, String[].class);
+                        graphListConsumer.accept(Arrays.asList(graphsNames));
+                }
             }
         });
     }

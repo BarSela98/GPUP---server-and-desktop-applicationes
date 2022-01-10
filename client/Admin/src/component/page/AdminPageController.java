@@ -201,7 +201,6 @@ public class AdminPageController implements AdminCommands, Closeable {
     }
     private void updateMissionLines(List<Mission> missions) {
         Platform.runLater(() -> {
-            System.out.println("update mission line");
             ObservableList<Mission> items = tableViewMission.getItems();
             items.clear();
             items.addAll(missions);

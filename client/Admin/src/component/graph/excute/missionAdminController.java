@@ -44,6 +44,7 @@ public class missionAdminController {
     @FXML public void initialize() {
         setComboBox();
         executeButton.setDisable(true);
+        simulationToggle.setOpacity(0.3);
         simulationBox.disableProperty().bind(isCompiler);
         compilerBox.disableProperty().bind(isCompiler.not());
         numCheckBoxesSelected.addListener((obs, oldSelectedCount, newSelectedCount) -> displayRunButton());
@@ -181,48 +182,6 @@ public class missionAdminController {
         }
     }
 
-    /*
-        @FXML void runTask(ActionEvent event) {
-    try{
-        showFinish =false;
-        boolean fromScratch = scratchOrIncremental.getValue().equals("scratch");;
-        List<Target> targetsToRun=new ArrayList<>();
-        for(targetTable t:tableView.getItems()){
-            if(t.getCheckBoxTask().isSelected()){
-                targetsToRun.add(mainController.getEngine().getMap().get(t.getName()));
-            }
-        }
-
-        if(simulationToggle.isSelected()) {
-            thread = new Thread("runSimulation"){
-                public void run(){
-                    try{
-                        mainController.getEngine().taskSetUp(ProcessingTimeSpinner.getValue(),
-                                randomCheckBox.isSelected(), (float) successSpinner.getValue()/100, (float)successWithWarningSpinner.getValue()/100, fromScratch, "simulation", numOfTreadsSpinner.getValue(), targetsToRun);
-                    }
-                    catch (Exception e){new errorMain(e);}
-                }
-            };
-            thread.start();
-            threadForUpdateInformation();
-        }
-        else if (compilerToggle.isSelected() && !sourceFolderText.getText().equals("") && !targetFolderText.getText().equals("")) {
-            thread = new Thread("runCompiler"){
-                public void run(){
-                    try{
-                        mainController.getEngine().compile(fromScratch,"compilation",numOfTreadsSpinner.getValue(),targetsToRun,targetFolderText.getText(),sourceFolderText.getText());
-                    }
-                    catch (Exception e){new errorMain(e);}
-                }
-            };
-            thread.start();
-            threadForUpdateInformation();
-        }
-
-    }
-    catch (Exception e){new errorMain(e);}
-}
-     */
     @FXML void executeMission(ActionEvent event) {
         Utility.WhichTask whichTask;
         Utility.TypeOfRunning typeOfRunning;

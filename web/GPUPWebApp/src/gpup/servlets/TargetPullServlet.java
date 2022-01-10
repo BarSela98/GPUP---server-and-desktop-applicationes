@@ -13,7 +13,7 @@ public class TargetPullServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, @NotNull HttpServletResponse response) throws IOException {
-        /*
+/*
         response.setContentType("text/plain;charset=UTF-8");
 
         System.out.println("where am i");
@@ -32,6 +32,6 @@ public class TargetPullServlet extends HttpServlet {
             }
             else{
                 temp+=m.charAt(i);
-            }  */
+            } */
         }
 }

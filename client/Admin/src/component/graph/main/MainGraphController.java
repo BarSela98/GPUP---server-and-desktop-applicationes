@@ -31,18 +31,13 @@ public class MainGraphController {
     private AdminPageController mainController;
     private ObservableList<TargetTable> items = FXCollections.observableArrayList();
 
-
-    public ObservableList<TargetTable> getItems() {
-        return items;
-    }
-
-
-
     public MainGraphController() {
         isFileSelected = new SimpleBooleanProperty(false);
         changeFile = new SimpleBooleanProperty(false);
     }
-
+    public ObservableList<TargetTable> getItems() {
+        return items;
+    }
     public void setGraph(Graph graph) {
         this.graph = graph;
     }
