@@ -21,6 +21,7 @@ public class gpupWorker extends Application {
     int threadsNum;
     int curThreads;
     ArrayList<String> tasks;
+    ArrayList<Target> targetsToExecute;
     public final static Gson gson = new Gson();
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -88,5 +89,11 @@ public class gpupWorker extends Application {
     }
     public static void main(String[] args) {
         launch(args);
+    }
+    public boolean isAvailable(){
+        return threadsNum>curThreads;
+    }
+    public void addTargetToList(Target t){
+        targetsToExecute.add(t);
     }
 }

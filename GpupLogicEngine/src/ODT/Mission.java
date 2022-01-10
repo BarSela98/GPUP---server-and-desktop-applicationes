@@ -3,12 +3,22 @@ package ODT;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Worker;
+import main.gpupWorker;
 import utility.Utility;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Random;
 
 public class Mission {
-    public enum StatusOfMission {Done,Waiting,inProgress}
+    public enum StatusOfMission {Done, Waiting, inProgress}
 
     private String nameOfMission;
     private String nameOfCreator;
@@ -27,16 +37,12 @@ public class Mission {
     private Utility.TypeOfRunning typeOfRunning;
     private Simulation simulation;
     private Compilation compilation;
-    private List<Worker> workerList;
+    private List<gpupWorker> workerList;
     private int workerListSize;
     private boolean isRunning;
 
 
-
-
-
-
-    public Mission(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask,Utility.TypeOfRunning typeOfRunning ,Compilation compilation) {
+    public Mission(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Compilation compilation) {
         this.compilation = compilation;
         this.nameOfMission = nameOfMission;
         this.nameOfCreator = nameOfCreator;
@@ -45,8 +51,10 @@ public class Mission {
         this.whichTask = whichTask;
         this.typeOfRunning = typeOfRunning;
         missionBuilder();
+        compilationSetUp();
     }
-    public Mission(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning , Simulation simulation) {
+
+    public Mission(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Simulation simulation) {
         this.simulation = simulation;
 
         this.nameOfMission = nameOfMission;
@@ -56,8 +64,10 @@ public class Mission {
         this.whichTask = whichTask;
         this.typeOfRunning = typeOfRunning;
         missionBuilder();
+        simulationSetUp();
     }
-    public void missionBuilder(){
+
+    public void missionBuilder() {
         workerListSize = 0;
         amountOfTarget = 0;
         amountOfRoot = 0;
@@ -65,51 +75,30 @@ public class Mission {
         amountOfIndependents = 0;
         amountOfLeaf = 0;
 
-        for (Target t: targets) {
+        for (Target t : targets) {
             Target.Type type = t.getType();
             amountOfTarget++;
             if (type == Target.Type.ROOT)
                 amountOfRoot++;
             else if (type == Target.Type.INDEPENDENTS){
                 amountOfIndependents++;
-                waitingTargetToExecute.add(t);
             }
             else if (type == Target.Type.MIDDLE)
                 amountOfMiddle++;
-            else if (type == Target.Type.LEAF){
-                amountOfLeaf++;
-                waitingTargetToExecute.add(t);
-            }
-        }
-        priceOfAllMission = priceOfMission * amountOfTarget;
-    }
-
-    public void addWorkerToMission(Worker worker) {
-        if(!workerList.contains(worker)) {
-            workerList.add(worker);
-            workerListSize++;
+        else if (type == Target.Type.LEAF) {
+            amountOfLeaf++;
         }
     }
-    public void removeWorkerFromMission(Worker worker) {
-        if(workerList.contains(worker)){
-            workerList.remove(worker);
-            workerListSize--;
-        }
+    if(typeOfRunning==Utility.TypeOfRunning.SCRATCH){
+        missionSetUp(true);
     }
+    else{
+        missionSetUp(false);
+    }
+    priceOfAllMission =priceOfMission *amountOfTarget;
 
-    public boolean isRunning() {
-        return isRunning;
-    }
-    public void setRunning(boolean running) {
-        isRunning = running;
-    }
+}
 
-    public int getWorkerListSize() {
-        return workerListSize;
-    }
-    public void setWorkerListSize(int workerListSize) {
-        this.workerListSize = workerListSize;
-    }
 
     public int getPriceOfAllMission() {
         return priceOfAllMission;
@@ -121,6 +110,7 @@ public class Mission {
     public int getAmountOfLeaf() {
         return amountOfLeaf;
     }
+
     public void setAmountOfLeaf(int amountOfLeaf) {
         this.amountOfLeaf = amountOfLeaf;
     }
@@ -204,7 +194,7 @@ public class Mission {
 
     public void doMission(){
         while(isRunning){
-            for (Worker worker : workerList)
+            for (gpupWorker worker : workerList)
             {
                 if (worker.isAvailable() && waitingTargetToExecute.size() != 0){
                     worker.addTargetToList(waitingTargetToExecute.get(0));
@@ -216,19 +206,21 @@ public class Mission {
 
     public void missionSetUp(boolean formScratch){
         if(formScratch){
-            for(Target t : targetToExecute){
+            for(Target t : targets){
                 t.setStatus(Target.Status.Frozen);
             }
         }
         else{
-            for(Target t : targetToExecute){
+            for(Target t : targets){
                 if(t.getStatus()==Target.Status.Failure||t.getStatus()==Target.Status.Skipped)
                     t.setStatus(Target.Status.Frozen);
             }
         }
-        for(Target t : targetToExecute){
+        for(Target t : targets){
             if(checkIfToTurnWait(t)){
                 t.setStatus(Target.Status.Waiting);
+                t.setStartWaitingTime(System.currentTimeMillis());
+                waitingTargetToExecute.add(t);
             }
         }
     }
@@ -236,10 +228,12 @@ public class Mission {
         boolean done;
         do {
            done=true;
-           for (Target t : targetToExecute) {
+           for (Target t : targets) {
                if (t.getStatus() == Target.Status.Frozen) {
                    if(checkIfToTurnWait(t)){
                        t.setStatus(Target.Status.Waiting);
+                       t.setStartWaitingTime(System.currentTimeMillis());
+                       waitingTargetToExecute.add(t);
                        done=false;
                    }
                    else if(checkIfToTurnSkipped(t)){
@@ -252,18 +246,31 @@ public class Mission {
     }
     private boolean checkIfToTurnWait(Target t){
         for (String s : t.getSetDependsOn()){
-            for (int i = 0; i < targetToExecute.size(); i++){
-                if (targetToExecute.get(i).getName().equals(s) && !(targetToExecute.get(i).getStatus() == Target.Status.Success || targetToExecute.get(i).getStatus() == Target.Status.Warning)) {
+            for (int i = 0; i < targets.size(); i++){
+                if (targets.get(i).getName().equals(s) && !(targets.get(i).getStatus() == Target.Status.Success || targets.get(i).getStatus() == Target.Status.Warning)) {
                     return false;
                 }
             }
         }
         return true;
     }
+
     private boolean checkIfToTurnSkipped(Target t){
         for (String s : t.getSetDependsOn()){
-            for (int i = 0; i < targetToExecute.size(); i++){
-                if (targetToExecute.get(i).getName().equals(s) && (targetToExecute.get(i).getStatus() == Target.Status.Failure || targetToExecute.get(i).getStatus() == Target.Status.Skipped)) {
+            for (int i = 0; i < targets.size(); i++){
+                if (targets.get(i).getName().equals(s) && (targets.get(i).getStatus() == Target.Status.Failure || targets.get(i).getStatus() == Target.Status.Skipped)) {
+                    t.setStatus(Target.Status.Skipped);
+                    t.setSimTimeString("00:00:00:00");
+                    try {
+                        File f = new File(t.getPath());
+                        f.createNewFile();
+                        FileWriter w = new FileWriter(t.getPath());
+                        w.write("Target name: " + t.getName() + "\n\r" +
+                                "Target result: " + t.getStatus().name() + "\n\r" +
+                                "Target time : 00:00:00:00 \n\r");
+                        w.close();
+                    }
+                    catch (Exception e){}
                     return true;
                 }
             }
@@ -271,11 +278,55 @@ public class Mission {
         return false;
     }
     public boolean checkIfMissionDone(){
-        for(Target t : targetToExecute){
+        for(Target t : targets){
             if(t.getStatus()==Target.Status.Waiting||t.getStatus()==Target.Status.Frozen){
                 return false;
             }
         }
         return true;
+    }
+    private void simulationSetUp(){
+        int randomTime;
+        Random r = new Random();
+        String path="c\\gpup-working-dir";//temp value
+        try {
+            path= openDir("simulation");
+        }
+        catch (Exception e){}
+        for(Target t:targets){
+            if(simulation.isRandom())
+                randomTime=r.nextInt(simulation.getTime())+1;
+            else
+                randomTime =simulation.getTime();
+            t.setCompile(false);
+            t.setRunTime(randomTime);
+            t.setSuccessChance(simulation.getSuccess());
+            t.setWarningChance(simulation.getWarning());
+            t.setPath(path);
+        }
+    }
+    private void compilationSetUp(){
+        String path="c\\gpup-working-dir";//temp value
+        try {
+            path= openDir("simulation");
+        }
+        catch (Exception e){}
+        for(Target t:targets){
+            t.setCompile(true);
+            t.setSource(compilation.getSourceFolder());
+            t.setCompileDest(compilation.getTargetFolder());
+            t.setPath(path);
+        }
+    }
+    private String openDir(String taskType) throws IOException {//doesnt have path yet,this func create directory for simulation task
+        Path path= Paths.get("c\\gpup-working-dir");
+        Files.createDirectories(path);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.mm.yyyy HH.MM.SS");
+        LocalDateTime now = LocalDateTime.now();
+        String s =taskType+" "+dtf.format(now);
+        s= "c\\gpup-working-dir"+"\\"+s;
+        Path innerPath=Paths.get(s);
+        Files.createDirectories(innerPath);
+        return s;
     }
 }

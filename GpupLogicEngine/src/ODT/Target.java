@@ -1,6 +1,8 @@
 package ODT;
 
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.Serializable;
 
 import java.util.Random;
@@ -19,7 +21,7 @@ public class Target implements Serializable,Runnable {
     private int runTime = 0;
     private float successChance = 0;
     private float warningChance = 0;
-    private String simTimeString;
+    private String simTimeString="00:00:00";
     private String path;
     private boolean isInQueue;
     private boolean isRunning;
@@ -217,6 +219,12 @@ public class Target implements Serializable,Runnable {
     }
 
     public String getWaitingTime () {
+        long temp= System.currentTimeMillis()-startWaitingTime;
+        long millis = temp % 1000;
+        long second = (temp / 1000) % 60;
+        long minute = (temp / (1000 * 60)) % 60;
+        long hour = (temp / (1000 * 60 * 60)) % 24;
+        waitingTime=String.format("%02d:%02d:%02d.%d", hour, minute, second, millis);
         return waitingTime;
     }
 
@@ -403,6 +411,13 @@ public class Target implements Serializable,Runnable {
                 } else {
                     this.status = Status.Failure;
                 }
+                File f = new File(path);
+                f.createNewFile();
+                FileWriter w = new FileWriter(path);
+                w.write("Target name: " + this.name + "\n\r" +
+                        "Target result: " + this.status.name() + "\n\r" +
+                        "Target time :  \n\r");
+                w.close();
             /*
             if (!this.setRequiredFor.isEmpty()) {
                 for (String s : setRequiredFor) {
@@ -412,13 +427,7 @@ public class Target implements Serializable,Runnable {
             }
              */
             }/*
-        File f = new File(path);
-        f.createNewFile();
-        FileWriter w = new FileWriter(path);
-        w.write("Target name: " + this.name + "\n\r" +
-                "Target result: " + this.status.name() + "\n\r" +
-                "Target time :  \n\r");
-        w.close();
+
         isRunning = false;
         isInQueue = false;
         engineImpl.decrementWorkingThreads();
