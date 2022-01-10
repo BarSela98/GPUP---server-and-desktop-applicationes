@@ -108,7 +108,7 @@
                                              <columns>
                                                 <TableColumn prefWidth="47.0" />
                                                 <TableColumn fx:id="nameOfMissionCol" prefWidth="149.0" text="Name Of Mission" />
-                                                <TableColumn fx:id="nameOfGraphCol" prefWidth="142.0" text="Name Of Graph" />
+                                                <TableColumn fx:id="nameOfCreatorCol" prefWidth="142.0" text="Name Of Graph" />
                                                 <TableColumn prefWidth="142.0" text="Targets Information">
                                                    <columns>
                                                       <TableColumn fx:id="rootCol" prefWidth="66.0" text="Root" />
@@ -120,6 +120,7 @@
                                                 <TableColumn fx:id="workersCol" prefWidth="74.0" text="Workers" />
                                                 <TableColumn prefWidth="142.0" text="Target - Progress " />
                                                 <TableColumn prefWidth="142.0" text="Progress " />
+                                                <TableColumn fx:id="priceOfAllMissionCol" prefWidth="142.0" text="Price" />
                                              </columns>
                                           </TableView>
                                        </center>

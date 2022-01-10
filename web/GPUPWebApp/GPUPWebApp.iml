@@ -24,5 +24,6 @@
     <orderEntry type="library" name="okhttp-4.9.1" level="project" />
     <orderEntry type="library" name="gson-2.1" level="project" />
     <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="Tomcat 10.0.14" level="application_server_libraries" />
   </component>
 </module>

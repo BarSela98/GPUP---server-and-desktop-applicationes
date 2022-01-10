@@ -1,8 +1,6 @@
 package component.graph.excute;
 
-import ODT.Mission;
-import ODT.Target;
-import ODT.TargetTable;
+import ODT.*;
 import com.google.gson.Gson;
 import component.graph.main.MainGraphController;
 import javafx.application.Platform;
@@ -226,8 +224,18 @@ public class missionAdminController {
 }
      */
     @FXML void executeMission(ActionEvent event) {
+        Utility.WhichTask whichTask;
+        Utility.TypeOfRunning typeOfRunning;
+        Compilation compilation;
+        Simulation simulation;
+        Mission mission;
         if (nameOfMissionText.getText().equals(""))
             return;
+
+        if (scratchOrIncremental.getValue().equals("scratch"))
+            typeOfRunning = Utility.TypeOfRunning.SCRATCH;
+        else
+            typeOfRunning = Utility.TypeOfRunning.INCREMENTAL;
 
         List<Target> targetsToRun=new ArrayList<>();
         // list of targets that choose
@@ -236,7 +244,20 @@ public class missionAdminController {
                 targetsToRun.add(mainController.getGraph().getTargetMap().get(t.getName()));
             }
         }
-        Mission mission = new Mission(nameOfMissionText.getText(),mainController.getGraph().getNameOfCreator(),targetsToRun);
+
+        if (compilerToggle.isSelected()) {
+            whichTask =  Utility.WhichTask.COMPILATION;
+            int price = Integer.parseInt(compilationPrice.getText());
+            compilation = new Compilation(price,sourceFolderText.getText(),targetFolderText.getText());
+            mission = new Mission(nameOfMissionText.getText(),mainController.getGraph().getNameOfCreator(),targetsToRun,whichTask,typeOfRunning,compilation);
+
+        } else{
+            whichTask = Utility.WhichTask.SIMULATION;
+            int price = Integer.parseInt(simulationPrice.getText());
+            simulation = new Simulation(price,ProcessingTimeSpinner.getValue(),randomCheckBox.isSelected(), (float) successSpinner.getValue()/100, (float)successWithWarningSpinner.getValue()/100);
+            mission = new Mission(nameOfMissionText.getText(),mainController.getGraph().getNameOfCreator(),targetsToRun,whichTask,typeOfRunning,simulation);
+        }
+
         String json = new Gson().toJson(mission);
 //////////////////////////////////////////////////////////////////////////////////////////
         String finalUrl = HttpUrl
@@ -279,6 +300,8 @@ public class missionAdminController {
     }
 
     public void updateTable() {
+        compilationPrice.setText(String.valueOf(mainController.getGraph().getPriceForCompilation()));
+        simulationPrice.setText(String.valueOf(mainController.getGraph().getPriceForSimulation()));
         tableView.setItems(mainController.getItems());
         for (int i = 0 ; i< mainController.getItems().size();++i)
             configureCheckBoxTask(mainController.getItems().get(i).getCheckBoxTask());

@@ -52,12 +52,13 @@ public class AdminPageController implements AdminCommands, Closeable {
     @FXML private TextArea mainChatLinesTextArea;
     @FXML private Label chatVersionLabel;
     @FXML private TableColumn<TargetTable, String> nameOfMissionCol;
-    @FXML private TableColumn<TargetTable, String> nameOfGraphCol;
+    @FXML private TableColumn<TargetTable, String> nameOfCreatorCol;
     @FXML private TableColumn<TargetTable, String> rootCol;
     @FXML private TableColumn<TargetTable, String> middleCol;
     @FXML private TableColumn<TargetTable, String> leafCol;
     @FXML private TableColumn<TargetTable, String> independentsCol;
     @FXML private TableColumn<TargetTable, String> workersCol;
+    @FXML private TableColumn<TargetTable, String> priceOfAllMissionCol;
     @FXML private TableView<Mission> tableViewMission;
     private ObservableList<Mission> missionItem = FXCollections.observableArrayList();
 
@@ -92,17 +93,16 @@ public class AdminPageController implements AdminCommands, Closeable {
     }
     public void setActive() {
         usersListComponentController.startListRefresher();
-       // mainGraphController.startGraphListRefresher();
         graphAdminComponentController.startGraphListRefresher();
         starChatRefresher();
         starMissionRefresher();
-      //  chatAreaAdminComponentController.startListRefresher();
     }
     public void setInActive() {
         try {
             close();
             usersListComponentController.close();
             graphAdminComponentController.close();
+            close();
         } catch (Exception ignored) {}
     }
     public void setAppMainController(AdminAppMainController adminAppMainController) {
@@ -181,36 +181,40 @@ public class AdminPageController implements AdminCommands, Closeable {
         timer.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);
     }
 
-    private void updateMissionLines(List<Mission> missions) {
-        Platform.runLater(() -> {
-            ObservableList<Mission> items = tableViewMission.getItems();
-            items.clear();
-            items.addAll(missions);
-        });
+
+    public void setTableCol(){
+        nameOfMissionCol.setCellValueFactory(new PropertyValueFactory<>("nameOfMission"));
+        nameOfCreatorCol.setCellValueFactory(new PropertyValueFactory<>("nameOfCreator"));
+        rootCol.setCellValueFactory(new PropertyValueFactory<>("amountOfRoot"));
+        middleCol.setCellValueFactory(new PropertyValueFactory<>("amountOfMiddle"));
+        leafCol.setCellValueFactory(new PropertyValueFactory<>("amountOfLeaf"));
+        independentsCol.setCellValueFactory(new PropertyValueFactory<>("amountOfIndependents"));
+        priceOfAllMissionCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
+      //  workersCol.setCellValueFactory(new PropertyValueFactory<>("totalDependsOnTableCol"));
     }
+
 
     public void starMissionRefresher() {
         missionRefresher = new MissionListRefresher(autoUpdate, this::updateMissionLines);
         timer = new Timer();
         timer.schedule(missionRefresher, REFRESH_RATE, REFRESH_RATE);
     }
+    private void updateMissionLines(List<Mission> missions) {
+        Platform.runLater(() -> {
+            System.out.println("update mission line");
+            ObservableList<Mission> items = tableViewMission.getItems();
+            items.clear();
+            items.addAll(missions);
 
-    public void setTableCol(){
-        nameOfMissionCol.setCellValueFactory(new PropertyValueFactory<>("nameOfMission"));
-     //   nameOfGraphCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-        rootCol.setCellValueFactory(new PropertyValueFactory<>("amountOfRoot"));
-        middleCol.setCellValueFactory(new PropertyValueFactory<>("amountOfMiddle"));
-       // leafCol.setCellValueFactory(new PropertyValueFactory<>("directDependsOnTableCol"));
-        independentsCol.setCellValueFactory(new PropertyValueFactory<>("amountOfIndependents"));
-      //  workersCol.setCellValueFactory(new PropertyValueFactory<>("totalDependsOnTableCol"));
+        });
     }
-
-
+    /**
+     * close Mission Refresher
+     * @throws IOException
+     */
     @Override public void close() throws IOException {
-        chatVersion.set(0);
-        chatLineTextArea.clear();
-        if (chatAreaRefresher != null && timer != null) {
-            chatAreaRefresher.cancel();
+        if ( timer != null) {
+            missionRefresher.cancel();
             timer.cancel();
         }
     }

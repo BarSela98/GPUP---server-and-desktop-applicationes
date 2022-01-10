@@ -25,8 +25,8 @@ public class AddMissionServlet extends HttpServlet {
         String json = new BufferedReader(new InputStreamReader(request.getInputStream())).lines().collect(
                 Collectors.joining("\n"));
         //String json = request.getInputStream().toString();
-        Mission graphsNames = new Gson().fromJson(json, Mission.class);
-        missionManger.addMission(graphsNames);
+        Mission mission = new Gson().fromJson(json, Mission.class);
+        missionManger.addMission(mission);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
