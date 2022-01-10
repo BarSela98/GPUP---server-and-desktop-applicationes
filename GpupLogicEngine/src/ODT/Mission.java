@@ -76,6 +76,7 @@ public class Mission {
         amountOfLeaf = 0;
 
         for (Target t : targets) {
+            t.setMission(nameOfMission);
             Target.Type type = t.getType();
             amountOfTarget++;
             if (type == Target.Type.ROOT)
@@ -328,5 +329,12 @@ public class Mission {
         Path innerPath=Paths.get(s);
         Files.createDirectories(innerPath);
         return s;
+    }
+    public void updateTarget(Target tar){
+        for(Target t:targets){
+            if(t.getName().equals(tar.getName())){
+                t=tar;
+            }
+        }
     }
 }

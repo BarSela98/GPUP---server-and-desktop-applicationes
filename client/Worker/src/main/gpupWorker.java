@@ -35,6 +35,12 @@ public class gpupWorker extends Application {
         WorkerAppMainController controller = fxmlLoader.getController();
         controller.setStage(primaryStage);
         primaryStage.show();
+        Thread askForTargets=new Thread("askForTargets"){
+            public void run(){
+                pullTargets();
+            }
+        };
+
     }
 
     @Override
@@ -45,12 +51,14 @@ public class gpupWorker extends Application {
     public void connectToTask(String s){
         tasks.add(s);
     }
-    public void pullTargets(int num){
-        if(num>threadsNum-curThreads){
-            //invalid request
-            return;
+    public void pullTargets(){
+        while (true){
+            if(!targetsToExecute.isEmpty()){
+                execute(targetsToExecute.get(0));
+                targetsToExecute.remove(0);
+            }
         }
-       // ArrayList<Target> targets=requestTargets(num);
+
     }
     /*
     public ArrayList<Target> requestTargets(int num){
@@ -84,6 +92,8 @@ public class gpupWorker extends Application {
         thread.start();
         while (thread.isAlive());
         curThreads--;
+        Gson gson=new Gson();
+        String targetJson=gson.toJson(t);
         //send back to engine when done
         //if you get to this comment then your done
     }
