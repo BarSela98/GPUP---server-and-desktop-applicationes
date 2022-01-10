@@ -1,7 +1,7 @@
-package util;
-
+package utility;
 
 import com.google.gson.Gson;
+
 ////////////////////////////////  admin
 public class Constants {
 
@@ -35,6 +35,7 @@ public class Constants {
     // mission
     public final static String ADD_MISSION = FULL_SERVER_PATH + "/mission/add";
     public final static String MISSION_LIST = FULL_SERVER_PATH + "/missionlist";
+    public final static String UPDATE_TARGET_IN_MISSION = FULL_SERVER_PATH + "/mission/update/target";
 
     // Chat
     public final static String SEND_CHAT_LINE = FULL_SERVER_PATH + "/pages/chatroom/sendChat";

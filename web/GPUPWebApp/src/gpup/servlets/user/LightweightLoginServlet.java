@@ -1,5 +1,6 @@
-package gpup.servlets;
+package gpup.servlets.user;
 import gpup.constants.Constants;
+import gpup.servlets.UserManager;
 import gpup.utils.ServletUtils;
 import gpup.utils.SessionUtils;
 

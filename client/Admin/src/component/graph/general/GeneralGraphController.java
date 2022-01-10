@@ -16,7 +16,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
-import util.Constants;
 import util.http.HttpClientUtil;
 
 import java.io.File;
@@ -25,7 +24,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static util.Constants.*;
+import static utility.Constants.*;
+
 
 public class GeneralGraphController {
     private Timer timer;
@@ -44,7 +44,7 @@ public class GeneralGraphController {
 
             String selectedItem = choiceBoxGraph.getSelectionModel().getSelectedItem();
             String finalUrl = HttpUrl
-                    .parse(Constants.GRAPH)
+                    .parse(GRAPH)
                     .newBuilder()
                     .addQueryParameter("grapname", selectedItem)
                     .build()

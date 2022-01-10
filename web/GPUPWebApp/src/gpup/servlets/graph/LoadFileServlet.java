@@ -1,6 +1,7 @@
-package gpup.servlets;
+package gpup.servlets.graph;
 
 import ODT.Graph;
+import gpup.servlets.GraphManger;
 import gpup.utils.ServletUtils;
 import gpup.utils.SessionUtils;
 
