@@ -96,9 +96,9 @@ public class gpupWorker extends Application {
         Thread thread =new Thread(t);
         thread.start();
         while (thread.isAlive());
+
         curThreads--;
-        Gson gson=new Gson();
-        String targetJson=gson.toJson(t);
+        updateTargetInMission(t);
         //send back to engine when done
         //if you get to this comment then your done
     }
