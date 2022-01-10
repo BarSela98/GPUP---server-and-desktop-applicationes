@@ -19,16 +19,18 @@ public class Mission {
     private int workers;
     private Utility.WhichTask whichTask;
     private StatusOfMission statusOfMission;
-    private List<Target> targetToExecute;
+    private List<Target> targets;
+    private List<Target> waitingTargetToExecute;
     private Utility.TypeOfRunning typeOfRunning;
     private Simulation simulation;
     private Compilation compilation;
 
-    public Mission(String nameOfMission, String nameOfCreator, List<Target> targetToExecute, Utility.WhichTask whichTask,Utility.TypeOfRunning typeOfRunning ,Compilation compilation) {
+
+    public Mission(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask,Utility.TypeOfRunning typeOfRunning ,Compilation compilation) {
         this.compilation = compilation;
         this.nameOfMission = nameOfMission;
         this.nameOfCreator = nameOfCreator;
-        this.targetToExecute = targetToExecute;
+        this.targets = targets;
         this.priceOfMission = compilation.getPriceOfCompilation();
         this.whichTask = whichTask;
         this.typeOfRunning = typeOfRunning;
@@ -40,7 +42,7 @@ public class Mission {
         amountOfIndependents = 0;
         amountOfLeaf = 0;
 
-        for (Target t: targetToExecute) {
+        for (Target t: targets) {
             Target.Type type = t.getType();
             amountOfTarget++;
             if (type == Target.Type.ROOT)
@@ -55,12 +57,12 @@ public class Mission {
         priceOfAllMission = priceOfMission * amountOfTarget;
 
     }
-    public Mission(String nameOfMission, String nameOfCreator, List<Target> targetToExecute, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning , Simulation simulation) {
+    public Mission(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning , Simulation simulation) {
         this.simulation = simulation;
 
         this.nameOfMission = nameOfMission;
         this.nameOfCreator = nameOfCreator;
-        this.targetToExecute = targetToExecute;
+        this.targets = targets;
         this.priceOfMission = simulation.getPriceOfSimulation();
         this.whichTask = whichTask;
         this.typeOfRunning = typeOfRunning;
@@ -71,7 +73,7 @@ public class Mission {
         amountOfIndependents = 0;
         amountOfLeaf = 0;
 
-        for (Target t: targetToExecute) {
+        for (Target t: targets) {
             Target.Type type = t.getType();
             amountOfTarget++;
             if (type == Target.Type.ROOT)
@@ -101,11 +103,18 @@ public class Mission {
         this.amountOfLeaf = amountOfLeaf;
     }
 
-    public List<Target> getTargetToExecute() {
-        return targetToExecute;
+    public List<Target> getWaitingTargetToExecute() {
+        return waitingTargetToExecute;
     }
-    public void setTargetToExecute(List<Target> targetToExecute) {
-        this.targetToExecute = targetToExecute;
+    public void setWaitingTargetToExecute(List<Target> targetToExecute) {
+        this.waitingTargetToExecute = waitingTargetToExecute;
+    }
+
+    public List<Target> getTargets() {
+        return targets;
+    }
+    public void setTargets(List<Target> targets) {
+        this.targets = targets;
     }
 
     public String getNameOfMission() {
@@ -170,6 +179,7 @@ public class Mission {
     public void setStatusOfMission(StatusOfMission statusOfMission) {
         this.statusOfMission = statusOfMission;
     }
+
     public void missionSetUp(boolean formScratch){
         if(formScratch){
             for(Target t : targetToExecute){
@@ -188,7 +198,6 @@ public class Mission {
             }
         }
     }
-
     private void fixTargetsStatues(){
         boolean done;
         do {
@@ -217,7 +226,6 @@ public class Mission {
         }
         return true;
     }
-
     private boolean checkIfToTurnSkipped(Target t){
         for (String s : t.getSetDependsOn()){
             for (int i = 0; i < targetToExecute.size(); i++){
