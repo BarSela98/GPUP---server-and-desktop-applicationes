@@ -1,8 +1,5 @@
 package ODT;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.concurrent.Worker;
 import main.gpupWorker;
 import utility.Utility;
 
@@ -14,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -68,6 +66,8 @@ public class Mission {
     }
 
     public void missionBuilder() {
+        this.workerList = new ArrayList<>();
+        this.waitingTargetToExecute = new ArrayList<>();
         workerListSize = 0;
         amountOfTarget = 0;
         amountOfRoot = 0;
