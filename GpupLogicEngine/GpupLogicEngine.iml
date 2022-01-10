@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Exception" />
     <orderEntry type="module" module-name="Worker" />
+    <orderEntry type="library" name="gson-2.1" level="project" />
   </component>
 </module>

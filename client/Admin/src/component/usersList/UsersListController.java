@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static util.Constants.REFRESH_RATE;
+import static utility.Constants.*;
 
 public class UsersListController implements Closeable {
    AdminPageController adminPageController;

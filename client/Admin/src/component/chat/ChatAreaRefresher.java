@@ -11,14 +11,15 @@ import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
-import util.Constants;
 import util.http.HttpClientUtil;
 
 import java.io.IOException;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
-import static util.Constants.GSON_INSTANCE;
+import static utility.Constants.CHAT_LINES_LIST;
+import static utility.Constants.GSON_INSTANCE;
+
 
 
 public class ChatAreaRefresher extends TimerTask {
@@ -47,7 +48,7 @@ public class ChatAreaRefresher extends TimerTask {
 
         //noinspection ConstantConditions
         String finalUrl = HttpUrl
-                .parse(Constants.CHAT_LINES_LIST)
+                .parse(CHAT_LINES_LIST)
                 .newBuilder()
                 .addQueryParameter("chatversion", String.valueOf(chatVersion.get()))
                 .build()
@@ -69,7 +70,6 @@ public class ChatAreaRefresher extends TimerTask {
                 }
                 else{
                     String rawBody = response.body().string();
-
                     ChatLinesWithVersion chatLinesWithVersion = GSON_INSTANCE.fromJson(rawBody, ChatLinesWithVersion.class);
                     chatlinesConsumer.accept(chatLinesWithVersion);
                 }

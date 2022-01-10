@@ -10,7 +10,7 @@ import util.http.HttpClientUtil;
 
 import java.io.IOException;
 import java.net.URL;
-import static util.Constants.*;
+import static utility.Constants.*;
 //import static util.Constants.MAIN_PAGE_ADMIN_FXML_RESOURCE_LOCATION;
 
 public class gpupAdmin extends Application {

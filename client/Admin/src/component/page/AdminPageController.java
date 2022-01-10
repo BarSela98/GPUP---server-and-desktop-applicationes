@@ -27,7 +27,6 @@ import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
-import util.Constants;
 import util.http.HttpClientUtil;
 
 import java.io.Closeable;
@@ -36,8 +35,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.stream.Collectors;
 
-import static util.Constants.CHAT_LINE_FORMATTING;
-import static util.Constants.REFRESH_RATE;
+import static utility.Constants.*;
+
 
 
 public class AdminPageController implements AdminCommands, Closeable {
@@ -128,7 +127,7 @@ public class AdminPageController implements AdminCommands, Closeable {
     @FXML void sendButtonClicked(ActionEvent event) {
         String chatLine = chatLineTextArea.getText();
         String finalUrl = HttpUrl
-                .parse(Constants.SEND_CHAT_LINE)
+                .parse(SEND_CHAT_LINE)
                 .newBuilder()
                 .addQueryParameter("userstring", chatLine)
                 .build()

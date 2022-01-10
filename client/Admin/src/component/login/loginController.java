@@ -15,10 +15,11 @@ import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
-import util.Constants;
 import util.http.HttpClientUtil;
 
 import java.io.IOException;
+
+import static utility.Constants.LOGIN_PAGE;
 
 
 public class loginController {
@@ -45,7 +46,7 @@ public class loginController {
 
         //noinspection ConstantConditions
         String finalUrl = HttpUrl
-                .parse(Constants.LOGIN_PAGE)
+                .parse(LOGIN_PAGE)
                 .newBuilder()
                 .addQueryParameter("username", userName)
                 .addQueryParameter("role", "Admin")

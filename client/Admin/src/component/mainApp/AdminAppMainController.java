@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 
-import static util.Constants.*;
+import static utility.Constants.*;
 
 public class AdminAppMainController {
 
