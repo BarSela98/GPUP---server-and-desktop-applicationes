@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Set;
+import java.util.Collection;
 @WebServlet(name = "MissionListServlet", urlPatterns = {"/missionlist"})
 public class MissionListServlet extends HttpServlet {
 
@@ -20,7 +20,7 @@ public class MissionListServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             Gson gson = new Gson();
             MissionManger missionManager = ServletUtils.getMissionManager(getServletContext());
-            Set<Mission> missionsList = missionManager.getMissionList();
+            Collection<Mission> missionsList = missionManager.getMissionList().values();
             String json = gson.toJson(missionsList);
             out.println(json);
             out.flush();

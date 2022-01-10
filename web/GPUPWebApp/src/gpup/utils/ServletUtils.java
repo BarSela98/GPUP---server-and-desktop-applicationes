@@ -23,6 +23,7 @@ public class ServletUtils {
 	 */
 	private static final Object userManagerLock = new Object();
 	private static final Object chatManagerLock = new Object();
+	private static final Object missionManagerLock = new Object();
 
 	public static UserManager getUserManager(ServletContext servletContext) {
 
@@ -34,10 +35,9 @@ public class ServletUtils {
 		return (UserManager) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
 	}
 	public static MissionManger getMissionManager(ServletContext servletContext) {
-
-		synchronized (userManagerLock) {
-			if (servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME) == null) {
-				servletContext.setAttribute(USER_MANAGER_ATTRIBUTE_NAME, new UserManager());
+		synchronized (missionManagerLock) {
+			if (servletContext.getAttribute(MISSION_MANAGER_ATTRIBUTE_NAME) == null) {
+				servletContext.setAttribute(MISSION_MANAGER_ATTRIBUTE_NAME, new MissionManger());
 			}
 		}
 		return (MissionManger) servletContext.getAttribute(MISSION_MANAGER_ATTRIBUTE_NAME);
@@ -68,10 +68,4 @@ public class ServletUtils {
 		return INT_PARAMETER_ERROR;
 	}
 
-    public static MissionManger getMissionManager(ServletContext servletContext) {
-		if (servletContext.getAttribute(MISSION_MANAGER_ATTRIBUTE_NAME) == null) {
-			servletContext.setAttribute(MISSION_MANAGER_ATTRIBUTE_NAME, new MissionManger());
-		}
-		return (MissionManger) servletContext.getAttribute(MISSION_MANAGER_ATTRIBUTE_NAME);
-    }
 }

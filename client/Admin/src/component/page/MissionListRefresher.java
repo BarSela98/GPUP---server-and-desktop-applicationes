@@ -38,6 +38,7 @@ public class MissionListRefresher extends TimerTask {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                System.out.println("error");
             }
 
             @Override

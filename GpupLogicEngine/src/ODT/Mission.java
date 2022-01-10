@@ -1,13 +1,98 @@
 package ODT;
 
-import java.util.ArrayList;
+import utility.Utility;
+
 import java.util.List;
 
 public class Mission {
-    public Mission(String nameOfMission, String nameOfCreator, List<Target> targetToExecute) {
+    public enum StatusOfMission {Done,Waiting,inProgress}
+
+    private String nameOfMission;
+    private String nameOfCreator;
+    private int amountOfTarget;
+    private int amountOfRoot;
+    private int amountOfMiddle;
+    private int amountOfIndependents;
+    private int amountOfLeaf;
+    private int priceOfMission;
+    private int priceOfAllMission;
+    private int workers;
+    private Utility.WhichTask whichTask;
+    private StatusOfMission statusOfMission;
+    private List<Target> targetToExecute;
+    private Utility.TypeOfRunning typeOfRunning;
+    private Simulation simulation;
+    private Compilation compilation;
+    public Mission(String nameOfMission, String nameOfCreator, List<Target> targetToExecute, Utility.WhichTask whichTask,Utility.TypeOfRunning typeOfRunning ,Compilation compilation) {
+        this.compilation = compilation;
         this.nameOfMission = nameOfMission;
         this.nameOfCreator = nameOfCreator;
         this.targetToExecute = targetToExecute;
+        this.priceOfMission = compilation.getPriceOfCompilation();
+        this.whichTask = whichTask;
+        this.typeOfRunning = typeOfRunning;
+
+
+        amountOfTarget = 0;
+        amountOfRoot = 0;
+        amountOfMiddle = 0;
+        amountOfIndependents = 0;
+        amountOfLeaf = 0;
+
+        for (Target t: targetToExecute) {
+            Target.Type type = t.getType();
+            amountOfTarget++;
+            if (type == Target.Type.ROOT)
+                amountOfRoot++;
+            else if (type == Target.Type.INDEPENDENTS)
+                amountOfIndependents++;
+            else if (type == Target.Type.MIDDLE)
+                amountOfMiddle++;
+            else if (type == Target.Type.LEAF)
+                amountOfLeaf++;
+        }
+        priceOfAllMission = priceOfMission * amountOfTarget;
+
+    }
+
+    public int getPriceOfAllMission() {
+        return priceOfAllMission;
+    }
+
+    public void setPriceOfAllMission(int priceOfAllMission) {
+        this.priceOfAllMission = priceOfAllMission;
+    }
+
+    public Mission(String nameOfMission, String nameOfCreator, List<Target> targetToExecute, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning , Simulation simulation) {
+        this.simulation = simulation;
+
+        this.nameOfMission = nameOfMission;
+        this.nameOfCreator = nameOfCreator;
+        this.targetToExecute = targetToExecute;
+        this.priceOfMission = simulation.getPriceOfSimulation();
+        this.whichTask = whichTask;
+        this.typeOfRunning = typeOfRunning;
+
+        amountOfTarget = 0;
+        amountOfRoot = 0;
+        amountOfMiddle = 0;
+        amountOfIndependents = 0;
+        amountOfLeaf = 0;
+
+        for (Target t: targetToExecute) {
+            Target.Type type = t.getType();
+            amountOfTarget++;
+            if (type == Target.Type.ROOT)
+                amountOfRoot++;
+            else if (type == Target.Type.INDEPENDENTS)
+                amountOfIndependents++;
+            else if (type == Target.Type.MIDDLE)
+                amountOfMiddle++;
+            else if (type == Target.Type.LEAF)
+                amountOfLeaf++;
+        }
+        priceOfAllMission = priceOfMission * amountOfTarget;
+
     }
 
     @Override
@@ -26,18 +111,21 @@ public class Mission {
                 '}';
     }
 
-    public enum StatusOfMission {Done,Waiting,inProgress}
+    public int getAmountOfLeaf() {
+        return amountOfLeaf;
+    }
 
-    private String nameOfMission;
-    private String nameOfCreator;
-    private int amountOfTarget;
-    private int amountOfRoot;
-    private int amountOfMiddle;
-    private int amountOfIndependents;
-    private int priceOfMission;
-    private int workers;
-    private StatusOfMission statusOfMission;
-    private List<Target> targetToExecute = new ArrayList<>();
+    public void setAmountOfLeaf(int amountOfLeaf) {
+        this.amountOfLeaf = amountOfLeaf;
+    }
+
+    public List<Target> getTargetToExecute() {
+        return targetToExecute;
+    }
+
+    public void setTargetToExecute(List<Target> targetToExecute) {
+        this.targetToExecute = targetToExecute;
+    }
 
     public String getNameOfMission() {
         return nameOfMission;

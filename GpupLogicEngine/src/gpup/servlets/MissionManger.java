@@ -4,16 +4,21 @@ import ODT.Mission;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class MissionManger {
 
-    private  Map<String,Mission> missionList = new HashMap<>();
+    private  Map<String,Mission> missionList;
 
-    public synchronized void addMission(Mission newMission){missionList.put(newMission.getNameOfMission(),newMission);}
+    public MissionManger() {
+        missionList = new HashMap<>();
+    }
 
-    public synchronized Set<Mission> getMissionList() {
-        return (Set<Mission>) missionList.values();
+    public synchronized void addMission(Mission newMission){
+        missionList.put(newMission.getNameOfMission(),newMission);
+    }
+
+    public synchronized Map<String,Mission> getMissionList() {
+        return missionList;
     }
     public synchronized Mission getMissionByName(String name)throws Exception{
         if(!missionList.containsKey(name))
