@@ -38,6 +38,57 @@ public class Mission {
     private List<gpupWorker> workerList;
     private int workerListSize;
     private boolean isRunning;
+    private boolean isPause;
+    private boolean isStop;
+
+    public void setStatus(String statusOfMission) {
+        switch (statusOfMission) {
+            case "run", "resume" -> this.setRunning(true);
+            case "pause" -> this.setPause(true);
+            case "stop" -> this.setStop(true);
+        }
+    }
+
+
+
+
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public void setRunning(boolean running) {
+        isRunning = running;
+        if (isRunning){
+            isPause = false;
+            isStop = false;
+        }
+    }
+
+    public boolean isPause() {
+        return isPause;
+    }
+
+    public void setPause(boolean pause) {
+        isPause = pause;
+        if (isPause){
+            isRunning = false;
+            isStop = false;
+        }
+    }
+
+    public boolean isStop() {
+        return isStop;
+    }
+
+    public void setStop(boolean stop) {
+        isStop = stop;
+        if (isStop){
+            isPause = false;
+            isRunning = false;
+        }
+    }
+
 
 
     public Mission(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Compilation compilation) {
@@ -194,15 +245,29 @@ public class Mission {
     }
 
     public void doMission(){
-        while(isRunning){
-            for (gpupWorker worker : workerList)
-            {
-                if (worker.isAvailable() && waitingTargetToExecute.size() != 0){
-                    worker.addTargetToList(waitingTargetToExecute.get(0));
-                    waitingTargetToExecute.remove(0);
+        Thread doMissionThread = new Thread(()->{
+            while (!isStop){
+                while(isRunning && !isStop && !isPause){
+                    fixTargetsStatues();
+                    for (gpupWorker worker : workerList)
+                    {
+                        if (worker.isAvailable() && waitingTargetToExecute.size() != 0){
+                            worker.addTargetToList(waitingTargetToExecute.get(0));
+                            waitingTargetToExecute.remove(0);
+                        }
+                    }
+                }
+                while(!isStop && isPause){
+                    for (gpupWorker worker : workerList)
+                    {
+                        if (worker.isAvailable() && waitingTargetToExecute.size() != 0){
+                            worker.addTargetToList(waitingTargetToExecute.get(0));
+                            waitingTargetToExecute.remove(0);
+                        }
+                    }
                 }
             }
-        }
+        });
     }
 
     public void missionSetUp(boolean formScratch){

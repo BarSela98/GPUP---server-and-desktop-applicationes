@@ -65,32 +65,6 @@ public class gpupWorker extends Application {
         }
 
     }
-    /*
-    public ArrayList<Target> requestTargets(int num){
-        String[] t=new String[tasks.size()];
-        for(int i=0;i<tasks.size();i++){
-            t[i]=tasks.get(i);
-        }
-        //send request with t and num
-        //get back array of json string targets and the number of targets sent n
-        int n=5;
-        String[] JsonTargets={"asd"};
-        Target[] tars=new Target[n];
-        for(int i=0;i<n;i++){
-            tars[i]=gson.fromJson(JsonTargets[i],Target.class);
-        }
-        Thread thread=new Thread("task"){
-            public void run(){
-                for(int i=0;i<n;i++){
-                    execute(tars[i]);
-                }
-            }
-        }
-
-
-    }
-
-     */
     public void execute(Target t){
         curThreads++;
         Thread thread =new Thread(t);
