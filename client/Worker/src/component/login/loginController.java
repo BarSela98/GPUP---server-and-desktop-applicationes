@@ -71,7 +71,7 @@ public class loginController {
                     );
                 } else {
                     Platform.runLater(() -> {
-                        workerAppMainController.updateUserName(userName);
+                        workerAppMainController.updateUser(userName,amountOfThreadSpinner.getValue());
                         workerAppMainController.switchToWorkerPage();
                         try {
                             String responseBody = response.body().string();

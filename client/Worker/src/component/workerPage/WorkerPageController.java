@@ -390,7 +390,13 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         return autoUpdate;
     }
 
+    public void setAmountOfResources(String amountOfResources) {
+        this.amountOfResources.setText(amountOfResources);
+    }
 
+    public void setYourCradit(String yourCradit) {
+        this.yourCradit.setText(yourCradit);
+    }
 
 
 

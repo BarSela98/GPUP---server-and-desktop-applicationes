@@ -92,8 +92,10 @@ public class WorkerAppMainController {
         this.primaryStage = primaryStage;
     }
 
-    public void updateUserName(String userName) {
+    public void updateUser(String userName , int amountOfResources) {
         currentUserName.set(userName);
         workerPageController.setNameOfWorker(userName);
+        workerPageController.setAmountOfResources(String.valueOf(amountOfResources));
+        workerPageController.setYourCradit(String.valueOf(0));
     }
 }
