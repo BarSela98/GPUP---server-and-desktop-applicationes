@@ -1,15 +1,17 @@
 package component.login;
+
 import component.mainApp.WorkerAppMainController;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import util.Constants;
 import util.http.HttpClientUtil;
@@ -22,11 +24,13 @@ public class loginController {
     @FXML private Button loginButton;
     @FXML private Button quitButton;
     @FXML public Label errorMessageLabel;
+    @FXML public Spinner amountOfThreadSpinner;
     private WorkerAppMainController workerAppMainController;
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
 
     @FXML public void initialize() {
         errorMessageLabel.textProperty().bind(errorMessageProperty);
+        amountOfThreadSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5, 1));
     }
     public void setAppMainController(WorkerAppMainController workerAppMainController) {
         this.workerAppMainController = workerAppMainController;
