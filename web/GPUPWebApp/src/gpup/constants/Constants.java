@@ -9,6 +9,7 @@ public class Constants {
     public static final String THREADS_NUM = "threadNum";
     public static final String MISSIONS = "missions";
     public static final String MISSIONS_NAME = "missionname";
+    public static final String WORKER_STATUS_IN_MISSION = "workerstatus";
     public static final String SIGN_UNSIGNED_WORKER = "sign";
     public static final String MISSIONS_STATUS = "missionstatus";
 

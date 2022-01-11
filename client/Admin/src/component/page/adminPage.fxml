@@ -119,7 +119,7 @@
                                                 </TableColumn>
                                                 <TableColumn fx:id="workersCol" prefWidth="74.0" text="Workers" />
                                                 <TableColumn prefWidth="142.0" text="Target - Progress " />
-                                                <TableColumn prefWidth="142.0" text="Progress " />
+                                                <TableColumn fx:id="ProgressCol" prefWidth="142.0" text="Progress " />
                                                 <TableColumn fx:id="priceOfAllMissionCol" prefWidth="142.0" text="Price" />
                                              </columns>
                                           </TableView>
@@ -127,22 +127,22 @@
                                        <bottom>
                                           <HBox alignment="CENTER" prefHeight="58.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
                                              <children>
-                                                <Button mnemonicParsing="false" onAction="#playButton" prefWidth="100.0" text="Play">
+                                                <Button fx:id="play" mnemonicParsing="false" onAction="#playButton" prefWidth="100.0" text="Play">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                                                    </HBox.margin>
                                                 </Button>
-                                                <Button mnemonicParsing="false" onAction="#pauseButton" prefWidth="100.0" text="Pause">
+                                                <Button fx:id="pause" mnemonicParsing="false" onAction="#pauseButton" prefWidth="100.0" text="Pause">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                                                    </HBox.margin>
                                                 </Button>
-                                                <Button mnemonicParsing="false" onAction="#resumeButton" prefWidth="100.0" text="Resume">
+                                                <Button fx:id="resume" mnemonicParsing="false" onAction="#resumeButton" prefWidth="100.0" text="Resume">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                                                    </HBox.margin>
                                                 </Button>
-                                                <Button mnemonicParsing="false" onAction="#stopButton" prefWidth="100.0" text="Stop">
+                                                <Button fx:id="stop" mnemonicParsing="false" onAction="#stopButton" prefWidth="100.0" text="Stop">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                                                    </HBox.margin>

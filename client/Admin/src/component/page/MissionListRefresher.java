@@ -1,8 +1,7 @@
 package component.page;
 
-import ODT.Mission;
+import engine.Mission;
 import ODT.MissionInTable;
-import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
@@ -43,14 +42,14 @@ public class MissionListRefresher extends TimerTask {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> new errorMain(e));
+                Platform.runLater(() -> System.out.println("MissionListRefresher " + e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    //      Platform.runLater(() -> new errorMain(new Exception("Mission list - Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                    Platform.runLater(() -> System.out.println("MissionListRefresher - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 } else {
                     String jsonArrayOfMissionsNames = response.body().string();
 

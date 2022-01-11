@@ -26,7 +26,7 @@ public class WorkerManager {
         return workerMap.containsKey(workerName);
     }
 
-    public WorkerObject getWorkerByName(String workerName) {
+    public synchronized WorkerObject getWorkerByName(String workerName) {
         return workerMap.get(workerName);
     }
 }

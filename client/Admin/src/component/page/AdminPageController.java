@@ -10,12 +10,14 @@ import component.usersList.UsersListController;
 import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -40,7 +42,260 @@ import static utility.Constants.*;
 
 
 public class AdminPageController implements AdminCommands, Closeable {
-    @FXML private UsersListController usersListComponentController;
+    private ObservableList<MissionInTable> missionItem = FXCollections.observableArrayList();
+    private AdminAppMainController adminAppMainController;
+    private final IntegerProperty chatVersion;
+    private final BooleanProperty autoScroll;
+    private final BooleanProperty autoUpdate;
+    private Timer timer;
+    private ChatAreaRefresher chatAreaRefresher;
+    private final BooleanProperty autoUpdateMission;
+    private MissionListRefresher missionRefresher;
+    private final int maxNumSelected =  1;
+    private ObservableSet<CheckBox> selectedCheckBoxes = FXCollections.observableSet();
+    private ObservableSet<CheckBox> unselectedCheckBoxes = FXCollections.observableSet();
+    private IntegerBinding numCheckBoxesSelected = Bindings.size(selectedCheckBoxes);
+    private SimpleBooleanProperty showButton;
+
+    public AdminPageController() {
+        chatVersion = new SimpleIntegerProperty();
+        autoScroll = new SimpleBooleanProperty();
+        autoUpdate = new SimpleBooleanProperty(true);
+        autoUpdateMission = new SimpleBooleanProperty(true);
+        showButton = new SimpleBooleanProperty(true);
+    }
+    @FXML public void initialize() {
+        if (usersListComponentController != null && graphAdminComponentController != null) {
+            usersListComponentController.setMainController(this);
+            graphAdminComponentController.setMainController(this);
+        }
+        autoScroll.bind(autoScrollButton.selectedProperty());
+        chatVersionLabel.textProperty().bind(Bindings.concat("Chat Version: ", chatVersion.asString()));
+        setTableCol();
+        tableViewMission.setItems(missionItem);
+
+        numCheckBoxesSelected.addListener((obs, oldSelectedCount, newSelectedCount) -> {
+            if (newSelectedCount.intValue() >= maxNumSelected){
+                unselectedCheckBoxes.forEach(cb -> cb.setDisable(true));
+                showButton.set(false);
+            }
+            else{
+                unselectedCheckBoxes.forEach(cb -> cb.setDisable(false));
+                showButton.set(true);
+            }
+        });
+        stop.disableProperty().bind(showButton);
+        play.disableProperty().bind(showButton);
+        resume.disableProperty().bind(showButton);
+        pause.disableProperty().bind(showButton);
+    }
+    public void setAppMainController(AdminAppMainController adminAppMainController) {
+        this.adminAppMainController = adminAppMainController;
+    }
+    public synchronized void changeStatusOfMission(String status){
+        String finalUrl = HttpUrl
+                .parse(CHANGE_STATUS_OF_MISSION)
+                .newBuilder()
+                .addQueryParameter("missionname", getSelectedMission().getNameOfMission())
+                .addQueryParameter("missionstatus", status)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> System.out.println("error in changeStatusOfMission in worker "+e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {////
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                }
+                else{
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> System.out.println(responseBody));
+                }
+            }
+        });
+    }
+    @FXML void quitButton(ActionEvent event) {
+        logout();
+    }
+    @FXML void playButton(ActionEvent event) {
+        changeStatusOfMission("run");
+    }
+    @FXML void stopButton(ActionEvent event) {
+        changeStatusOfMission("stop");
+    }
+    @FXML void pauseButton(ActionEvent event) {
+        changeStatusOfMission("pause");
+    }
+    @FXML void resumeButton(ActionEvent event) {
+        changeStatusOfMission("resume");
+    }
+    @Override public void logout() {
+        adminAppMainController.switchToLogin();
+    }
+    public void setNameOfAdmin(String userName) {
+        nameOfAdmin.setText(userName);
+    }
+
+/// table
+    private void configureCheckBox(CheckBox checkBox) {
+    if (checkBox.isSelected())
+        selectedCheckBoxes.add(checkBox);
+     else
+        unselectedCheckBoxes.add(checkBox);
+    checkBox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+        if (isNowSelected) {
+            unselectedCheckBoxes.remove(checkBox);
+            selectedCheckBoxes.add(checkBox);
+        } else {
+            selectedCheckBoxes.remove(checkBox);
+            unselectedCheckBoxes.add(checkBox);
+        }
+
+    });
+}
+    private MissionInTable getSelectedMission(){
+        for(MissionInTable m : tableViewMission.getItems()){
+            if (m.getCheckBox().isSelected()) {
+                return m;
+            }
+        }
+        return null;
+    }
+    public void setTableCol(){
+        nameOfMissionCol.setCellValueFactory(new PropertyValueFactory<>("nameOfMission"));
+        nameOfCreatorCol.setCellValueFactory(new PropertyValueFactory<>("nameOfCreator"));
+        rootCol.setCellValueFactory(new PropertyValueFactory<>("amountOfRoot"));
+        middleCol.setCellValueFactory(new PropertyValueFactory<>("amountOfMiddle"));
+        leafCol.setCellValueFactory(new PropertyValueFactory<>("amountOfLeaf"));
+        independentsCol.setCellValueFactory(new PropertyValueFactory<>("amountOfIndependents"));
+        priceOfAllMissionCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
+        workersCol.setCellValueFactory(new PropertyValueFactory<>("workerListSize"));
+        //workersCol.setCellValueFactory(new PropertyValueFactory<>("isRunning"));
+        remarkCol.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
+        remarkCol.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
+        ProgressCol.setCellValueFactory(new PropertyValueFactory<>("progress"));
+    }
+
+/// Chat
+    @FXML void sendButtonClicked(ActionEvent event) {
+        String chatLine = chatLineTextArea.getText();
+        String finalUrl = HttpUrl
+                .parse(SEND_CHAT_LINE)
+                .newBuilder()
+                .addQueryParameter("userstring", chatLine)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> System.out.println("error in sendButtonClicked in admin "+e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> System.out.println("sendButtonClicked  - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                } else {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> System.out.println(responseBody));
+                }
+            }
+        });
+
+        chatLineTextArea.clear();
+    }
+
+///Refresher
+    public void setActive() {
+        usersListComponentController.startListRefresher();
+        graphAdminComponentController.startGraphListRefresher();
+        starChatRefresher();
+        starMissionRefresher();
+    }
+    public void setInActive() {
+        try {
+            close();
+            usersListComponentController.close();
+            graphAdminComponentController.close();
+            close();
+        } catch (Exception ignored) {}
+    }
+    /**
+     * close Mission Refresher
+     * @throws IOException
+     */
+    @Override public void close() throws IOException {
+        if ( timer != null) {
+            missionRefresher.cancel();
+            timer.cancel();
+        }
+    }
+/// Chat Refresher
+    private void updateChatLines(ChatLinesWithVersion chatLinesWithVersion) {
+    if (chatLinesWithVersion.getVersion() != chatVersion.get()) {
+        String deltaChatLines = chatLinesWithVersion
+                .getEntries()
+                .stream()
+                .map(singleChatLine -> {
+                    long time = singleChatLine.getTime();
+                    return String.format(CHAT_LINE_FORMATTING, time, time, time, singleChatLine.getUsername(), singleChatLine.getChatString());
+                }).collect(Collectors.joining());
+
+        Platform.runLater(() -> {
+            chatVersion.set(chatLinesWithVersion.getVersion());
+
+            if (autoScroll.get()) {
+                mainChatLinesTextArea.appendText(deltaChatLines);
+                mainChatLinesTextArea.selectPositionCaret(mainChatLinesTextArea.getLength());
+                mainChatLinesTextArea.deselect();
+            } else {
+                int originalCaretPosition = mainChatLinesTextArea.getCaretPosition();
+                mainChatLinesTextArea.appendText(deltaChatLines);
+                mainChatLinesTextArea.positionCaret(originalCaretPosition);
+            }
+        });
+    }
+}
+    public void starChatRefresher() {
+        chatAreaRefresher = new ChatAreaRefresher(chatVersion, autoUpdate, this::updateChatLines);
+        timer = new Timer();
+        timer.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);
+    }
+/// Mission Refresher
+    public void starMissionRefresher() {
+    missionRefresher = new MissionListRefresher(autoUpdate, this::updateMissionLines);
+    timer = new Timer();
+    timer.schedule(missionRefresher, REFRESH_RATE, REFRESH_RATE);
+}
+    private synchronized void updateMissionLines(List<MissionInTable> missions) {
+        Platform.runLater(() -> {
+            unselectedCheckBoxes.clear();
+            selectedCheckBoxes.clear();
+            ObservableList<MissionInTable> items = tableViewMission.getItems();
+            for (MissionInTable mission : missions) { /// update check box
+                configureCheckBox(mission.getCheckBox());
+            }
+
+            for(int i = 0 ; i < items.size() ; ++i) { /// update check box
+                missions.get(i).changeInformation(items.get(i));
+            }
+
+
+            items.clear();
+            items.addAll(missions);
+        });
+    }
+
+/// fxml member
+@FXML private UsersListController usersListComponentController;
     @FXML private BorderPane usersListComponent;
     @FXML private MainGraphController graphAdminComponentController;
     @FXML private BorderPane graphAdminComponent;
@@ -60,210 +315,10 @@ public class AdminPageController implements AdminCommands, Closeable {
     @FXML private TableColumn<MissionInTable, String> priceOfAllMissionCol;
     @FXML private TableColumn<MissionInTable, CheckBox> remarkCol;
     @FXML private TableView<MissionInTable> tableViewMission;
-    private ObservableList<MissionInTable> missionItem = FXCollections.observableArrayList();
+    @FXML private TableColumn<MissionInTable, String> ProgressCol;
 
-
-    private AdminAppMainController adminAppMainController;
-    private final IntegerProperty chatVersion;
-    private final BooleanProperty autoScroll;
-    private final BooleanProperty autoUpdate;
-    private Timer timer;
-    private ChatAreaRefresher chatAreaRefresher;
-
-    private final BooleanProperty autoUpdateMission;
-
-    private MissionListRefresher missionRefresher;
-
-
-    public AdminPageController() {
-        chatVersion = new SimpleIntegerProperty();
-        autoScroll = new SimpleBooleanProperty();
-        autoUpdate = new SimpleBooleanProperty(true);
-        autoUpdateMission = new SimpleBooleanProperty(true);
-    }
-    @FXML public void initialize() {
-        if (usersListComponentController != null && graphAdminComponentController != null) {
-            usersListComponentController.setMainController(this);
-            graphAdminComponentController.setMainController(this);
-        }
-        autoScroll.bind(autoScrollButton.selectedProperty());
-        chatVersionLabel.textProperty().bind(Bindings.concat("Chat Version: ", chatVersion.asString()));
-        setTableCol();
-        tableViewMission.setItems(missionItem);
-    }
-    public void setActive() {
-        usersListComponentController.startListRefresher();
-        graphAdminComponentController.startGraphListRefresher();
-        starChatRefresher();
-        starMissionRefresher();
-    }
-    public void setInActive() {
-        try {
-            close();
-            usersListComponentController.close();
-            graphAdminComponentController.close();
-            close();
-        } catch (Exception ignored) {}
-    }
-    public void setAppMainController(AdminAppMainController adminAppMainController) {
-        this.adminAppMainController = adminAppMainController;
-    }
-    @FXML void quitButton(ActionEvent event) {
-        logout();
-    }
-
-    @FXML void playButton(ActionEvent event) {
-        changeStatusOfMission("run");
-    }
-    @FXML void stopButton(ActionEvent event) {
-        changeStatusOfMission("stop");
-    }
-    @FXML void pauseButton(ActionEvent event) {
-        changeStatusOfMission("pause");
-    }
-    @FXML void resumeButton(ActionEvent event) {
-        changeStatusOfMission("resume");
-    }
-
-    public synchronized void changeStatusOfMission(String status){
-        String name = "";
-
-        for (MissionInTable m :tableViewMission.getItems()){
-            if (m.getCheckBox().isSelected())
-                name = m.getNameOfMission();
-        }
-
-        String finalUrl = HttpUrl
-                .parse(CHANGE_STATUS_OF_MISSION)
-                .newBuilder()
-                .addQueryParameter("missionname", tableViewMission.getItems().get(0).getNameOfMission())
-                .addQueryParameter("missionstatus", status)
-                .build()
-                .toString();
-
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> new errorMain(e));
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {////
-                if (response.code() != 200) {
-                    String responseBody = response.body().string();
-                    Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
-                }
-                else{
-                    Platform.runLater(() -> System.out.println("changeStatusOfMission "));
-                }
-            }
-        });
-    }
-
-
-    @Override public void logout() {
-        adminAppMainController.switchToLogin();
-    }
-
-    /// chat
-    public void setNameOfAdmin(String userName) {
-        nameOfAdmin.setText(userName);
-    }
-    public BooleanProperty autoUpdatesProperty() {
-        return autoUpdate;
-    }
-    @FXML void sendButtonClicked(ActionEvent event) {
-        String chatLine = chatLineTextArea.getText();
-        String finalUrl = HttpUrl
-                .parse(SEND_CHAT_LINE)
-                .newBuilder()
-                .addQueryParameter("userstring", chatLine)
-                .build()
-                .toString();
-
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> new errorMain(e));
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() != 200) {
-                    String responseBody = response.body().string();
-                    Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
-                }
-            }
-        });
-
-        chatLineTextArea.clear();
-    }
-    private void updateChatLines(ChatLinesWithVersion chatLinesWithVersion) {
-        if (chatLinesWithVersion.getVersion() != chatVersion.get()) {
-            String deltaChatLines = chatLinesWithVersion
-                    .getEntries()
-                    .stream()
-                    .map(singleChatLine -> {
-                        long time = singleChatLine.getTime();
-                        return String.format(CHAT_LINE_FORMATTING, time, time, time, singleChatLine.getUsername(), singleChatLine.getChatString());
-                    }).collect(Collectors.joining());
-
-            Platform.runLater(() -> {
-                chatVersion.set(chatLinesWithVersion.getVersion());
-
-                if (autoScroll.get()) {
-                    mainChatLinesTextArea.appendText(deltaChatLines);
-                    mainChatLinesTextArea.selectPositionCaret(mainChatLinesTextArea.getLength());
-                    mainChatLinesTextArea.deselect();
-                } else {
-                    int originalCaretPosition = mainChatLinesTextArea.getCaretPosition();
-                    mainChatLinesTextArea.appendText(deltaChatLines);
-                    mainChatLinesTextArea.positionCaret(originalCaretPosition);
-                }
-            });
-        }
-    }
-    public void starChatRefresher() {
-        chatAreaRefresher = new ChatAreaRefresher(chatVersion, autoUpdate, this::updateChatLines);
-        timer = new Timer();
-        timer.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);
-    }
-    public void setTableCol(){
-        nameOfMissionCol.setCellValueFactory(new PropertyValueFactory<>("nameOfMission"));
-        nameOfCreatorCol.setCellValueFactory(new PropertyValueFactory<>("nameOfCreator"));
-        rootCol.setCellValueFactory(new PropertyValueFactory<>("amountOfRoot"));
-        middleCol.setCellValueFactory(new PropertyValueFactory<>("amountOfMiddle"));
-        leafCol.setCellValueFactory(new PropertyValueFactory<>("amountOfLeaf"));
-        independentsCol.setCellValueFactory(new PropertyValueFactory<>("amountOfIndependents"));
-        priceOfAllMissionCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
-        workersCol.setCellValueFactory(new PropertyValueFactory<>("workerListSize"));
-        //workersCol.setCellValueFactory(new PropertyValueFactory<>("isRunning"));
-        remarkCol.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
-    }
-    public void starMissionRefresher() {
-        missionRefresher = new MissionListRefresher(autoUpdate, this::updateMissionLines);
-        timer = new Timer();
-        timer.schedule(missionRefresher, 5000, 5000);
-    }
-    private synchronized void updateMissionLines(List<MissionInTable> missions) {
-        Platform.runLater(() -> {
-            ObservableList<MissionInTable> items = tableViewMission.getItems();
-            for(int i = 0 ; i < items.size() ; ++i) /// update check box
-                missions.get(i).changeInformation(items.get(i));
-
-            items.clear();
-            items.addAll(missions);
-        });
-    }
-    /**
-     * close Mission Refresher
-     * @throws IOException
-     */
-    @Override public void close() throws IOException {
-        if ( timer != null) {
-            missionRefresher.cancel();
-            timer.cancel();
-        }
-    }
-
+    @FXML private Button stop;
+    @FXML private Button play;
+    @FXML private Button resume;
+    @FXML private Button pause;
 }

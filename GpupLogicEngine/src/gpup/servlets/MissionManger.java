@@ -1,7 +1,7 @@
 package gpup.servlets;
 
-import ODT.Mission;
-import object.WorkerObject;
+import engine.Mission;
+import engine.Target;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,11 +32,18 @@ public class MissionManger {
         missionList.get(name).setStatus(status);
     }
 
-    public synchronized void signForMissionByName(WorkerObject worker, String missionNameFromParameter) {
+    public synchronized void signForMissionByName(String worker, String missionNameFromParameter) {
         missionList.get(missionNameFromParameter).workerSign(worker);
     }
 
-    public void removeWorkerForMissionByName(String workerName, String missionNameFromParameter) {
+    public synchronized void removeWorkerForMissionByName(String workerName, String missionNameFromParameter) {
         missionList.get(missionNameFromParameter).removeWorkerFromMission(workerName);
+    }
+
+    public synchronized void updateTarget(Target tar){
+        Mission m = missionList.get(tar.getMission());
+        System.out.println("update");
+        m.updateTarget(tar);
+        System.out.println("after update");
     }
 }

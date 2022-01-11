@@ -1,7 +1,7 @@
 package component.graph.table;
 
 import ODT.Graph;
-import ODT.Target;
+import engine.Target;
 import ODT.TargetTable;
 import component.graph.main.MainGraphController;
 import javafx.fxml.FXML;

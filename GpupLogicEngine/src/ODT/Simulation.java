@@ -18,7 +18,6 @@ public class Simulation{
     public int getPriceOfSimulation() {
         return priceOfSimulation;
     }
-
     public void setPriceOfSimulation(int priceOfSimulation) {
         this.priceOfSimulation = priceOfSimulation;
     }
@@ -26,7 +25,6 @@ public class Simulation{
     public int getTime() {
         return time;
     }
-
     public void setTime(int time) {
         this.time = time;
     }
@@ -34,7 +32,6 @@ public class Simulation{
     public boolean isRandom() {
         return random;
     }
-
     public void setRandom(boolean random) {
         this.random = random;
     }
@@ -42,7 +39,6 @@ public class Simulation{
     public float getSuccess() {
         return success;
     }
-
     public void setSuccess(float success) {
         this.success = success;
     }
@@ -50,12 +46,7 @@ public class Simulation{
     public float getWarning() {
         return warning;
     }
-
     public void setWarning(float warning) {
         this.warning = warning;
     }
-
-
-
-
 }

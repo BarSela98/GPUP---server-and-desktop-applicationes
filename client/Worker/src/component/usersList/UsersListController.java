@@ -60,7 +60,6 @@ public class UsersListController implements Closeable {
             totalUsers.set(usersNames.size());
         });
     }
-
     public void startListRefresher() {
         listRefresher = new UserListRefresher(autoUpdate, this::updateUsersList);
         timer = new Timer();

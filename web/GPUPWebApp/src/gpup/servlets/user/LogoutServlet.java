@@ -17,9 +17,10 @@ public class LogoutServlet extends HttpServlet {
 
         if (usernameFromSession != null) {
             System.out.println("Clearing session for " + usernameFromSession);
+            response.getWriter().write(usernameFromSession+" logout");
+            response.getWriter().flush();
             userManager.removeUser(usernameFromSession);
             SessionUtils.clearSession(request);
-
             // used mainly for the web version. irrelevant in the desktop client version
             response.sendRedirect(request.getContextPath() + "/index.html");
         }

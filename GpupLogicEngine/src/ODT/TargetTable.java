@@ -1,8 +1,9 @@
 package ODT;
 
+import engine.Target;
 import javafx.scene.control.CheckBox;
 
-public class TargetTable extends Target{
+public class TargetTable extends Target {
     private CheckBox checkBoxPath;
     private CheckBox checkBoxTask;
     private Integer directRequiredForTableCol;

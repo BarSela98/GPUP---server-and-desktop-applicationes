@@ -73,6 +73,12 @@ public class loginController {
                     Platform.runLater(() -> {
                        adminAppMainController.updateUserName(userName);
                        adminAppMainController.switchToAdminPage();
+                        try {
+                            String responseBody = response.body().string();
+                            System.out.println(responseBody);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     });
                 }
             }

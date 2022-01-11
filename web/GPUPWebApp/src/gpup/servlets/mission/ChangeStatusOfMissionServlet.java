@@ -27,13 +27,19 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_CONFLICT);
         else {
                 MissionManger missionManger = ServletUtils.getMissionManager(getServletContext());
-                missionManger.setStatusOfMissionByName(nameOfMission,statusOfMission);
+                if (!missionManger.getMissionByName(nameOfMission).getStatus().equals(statusOfMission)) {
+                    missionManger.setStatusOfMissionByName(nameOfMission, statusOfMission);
+                    if (statusOfMission.equals("run"))
+                        missionManger.getMissionByName(nameOfMission).doMission();
+                }
                 response.setStatus(HttpServletResponse.SC_OK);
-                System.out.println(missionManger.getMissionByName(nameOfMission).getIsRunning());
+                response.getWriter().write(statusOfMission + " (statusOfMission) change in mission: "+nameOfMission);
+                response.getWriter().flush();
             }
         }
         catch (Exception e) {
-      //      e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getOutputStream().print(e.toString());
         }
     }
 }

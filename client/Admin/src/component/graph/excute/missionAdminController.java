@@ -3,6 +3,9 @@ package component.graph.excute;
 import ODT.*;
 import com.google.gson.Gson;
 import component.graph.main.MainGraphController;
+import engine.Mission;
+import engine.Target;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -39,7 +42,10 @@ public class missionAdminController {
     private final IntegerBinding numCheckBoxesSelected = Bindings.size(selectedCheckBoxes);
 
     ////private static final Object Lock = new Object();
-
+    public missionAdminController(){
+        isCompiler = new SimpleBooleanProperty(true);
+        runTask = new SimpleBooleanProperty(false);
+    }
     @FXML public void initialize() {
         setComboBox();
         executeButton.setDisable(true);
@@ -67,10 +73,40 @@ public class missionAdminController {
             }
         });
     }
-    public missionAdminController(){
-    isCompiler = new SimpleBooleanProperty(true);
-    runTask = new SimpleBooleanProperty(false);
-}
+
+    public void setMainController(MainGraphController mainController) {
+        this.mainController = mainController;
+        setTableCol();
+        setToggles();
+        setSpinner();
+    }
+
+    /// set for initialize
+    public void setComboBox(){
+        scratchOrIncremental.getItems().add("Scratch");
+        scratchOrIncremental.getItems().add("Incremental");
+        scratchOrIncremental.setValue("Scratch");
+    }
+    public void setToggles(){
+        compilerToggle.setSelected(true);
+        compilerToggle.setStyle("-fx-background-color: linear-gradient(#2A5058, #61a2b1)");
+        simulationToggle.setStyle("-fx-background-color: linear-gradient(#2A5058, #61a2b1)"); ///////////////
+    }
+    public void setSpinner(){
+        ProcessingTimeSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 1000));
+        successSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 100));
+        successWithWarningSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0));
+        spinnerManuallyTyping(ProcessingTimeSpinner);
+        spinnerManuallyTyping(successSpinner);
+        spinnerManuallyTyping(successWithWarningSpinner);
+    }
+    public void spinnerManuallyTyping (Spinner <Integer> spinner){
+        spinner.setEditable(true);
+        TextFormatter formatter3 = new TextFormatter(spinner.getValueFactory().getConverter(), spinner.getValueFactory().getValue());
+        spinner.getEditor().setTextFormatter(formatter3);
+        spinner.getValueFactory().valueProperty().bindBidirectional(formatter3.valueProperty());
+    }
+
     /**
      * manage when the run button show -
      * if the compiler selected - only when the target and source folder choose and target selected
@@ -117,39 +153,10 @@ public class missionAdminController {
         targetFolderText.setText(selectedDirectory.getPath());
         displayRunButton();
     }
-
-    public void setMainController(MainGraphController mainController) {
-        this.mainController = mainController;
-        setTableCol();
-        setToggles();
-        setSpinner();
-    }
-
-    public void setComboBox(){
-        scratchOrIncremental.getItems().add("Scratch");
-        scratchOrIncremental.getItems().add("Incremental");
-        scratchOrIncremental.setValue("Scratch");
-    }
-    public void setToggles(){
-        compilerToggle.setSelected(true);
-        compilerToggle.setStyle("-fx-background-color: linear-gradient(#2A5058, #61a2b1)");
-        simulationToggle.setStyle("-fx-background-color: linear-gradient(#2A5058, #61a2b1)"); ///////////////
-    }
-    public void setSpinner(){
-        ProcessingTimeSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 1000));
-        successSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 100));
-        successWithWarningSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0));
-        spinnerManuallyTyping(ProcessingTimeSpinner);
-        spinnerManuallyTyping(successSpinner);
-        spinnerManuallyTyping(successWithWarningSpinner);
-    }
-    public void spinnerManuallyTyping (Spinner <Integer> spinner){
-        spinner.setEditable(true);
-        TextFormatter formatter3 = new TextFormatter(spinner.getValueFactory().getConverter(), spinner.getValueFactory().getValue());
-        spinner.getEditor().setTextFormatter(formatter3);
-        spinner.getValueFactory().valueProperty().bindBidirectional(formatter3.valueProperty());
-    }
-
+    /**
+     * clear all check box
+     * @param event
+     */
     @FXML void clearAction(ActionEvent event) {
         selectAll.setSelected(false);
         ObservableList<TargetTable> data = tableView.getItems();
@@ -181,6 +188,10 @@ public class missionAdminController {
         }
     }
 
+    /**
+     * make a mission and send to mission manager
+     * @param event
+     */
     @FXML void executeMission(ActionEvent event) {
         Utility.WhichTask whichTask;
         Utility.TypeOfRunning typeOfRunning;
@@ -196,10 +207,6 @@ public class missionAdminController {
             typeOfRunning = Utility.TypeOfRunning.SCRATCH;
         else
             typeOfRunning = Utility.TypeOfRunning.INCREMENTAL;
-
-        System.out.println(scratchOrIncremental.getValue());
-
-
 
         // list of targets that choose
         for(TargetTable t:tableView.getItems()){
@@ -222,8 +229,6 @@ public class missionAdminController {
         }
 
         String json = new Gson().toJson(mission);
-//////////////////////////////////////////////////////////////////////////////////////////
-        System.out.println("//////////////////////////////////////////////////////////////////////////////////////////");
         String finalUrl = HttpUrl
                 .parse(ADD_MISSION)
                 .newBuilder()
@@ -236,32 +241,28 @@ public class missionAdminController {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-              //  Platform.runLater(() -> new errorMain(e));
+                Platform.runLater(() -> System.out.println("executeMission - error -"+e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                  //  Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
-                }
-                /*
-                else{
-
+                    Platform.runLater(() -> System.out.println("executeMission " + responseBody));
+                } else {
                     Platform.runLater(() -> {
                         try {
-                           System.out.println(response.body().string());
+                            String responseBody = response.body().string();
+                            System.out.println(responseBody);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     });
                 }
-
-                 */
             }
         });
     }
-
+/// table
     public void updateTable() {
         compilationPrice.setText(String.valueOf(mainController.getGraph().getPriceForCompilation()));
         simulationPrice.setText(String.valueOf(mainController.getGraph().getPriceForSimulation()));

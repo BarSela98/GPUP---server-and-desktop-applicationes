@@ -1,14 +1,13 @@
 package component.graph.main;
 
 import ODT.Graph;
-import ODT.Target;
+import engine.Target;
 import ODT.TargetTable;
 import component.graph.excute.missionAdminController;
 import component.graph.general.GeneralGraphController;
 import component.graph.path.pathController;
 import component.graph.table.tableController;
 import component.page.AdminPageController;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -24,17 +23,21 @@ import java.util.Map;
 public class MainGraphController {
     Graph graph;
     private final List<Rectangle> recList = new ArrayList<>();                                  /// shape for
-    private int time = 350;                                                                     /// time for animation
-    private String toggleColor = "-fx-background-color: linear-gradient(#2A5058, #61a2b1)";
-    private final SimpleBooleanProperty isFileSelected;
-    private final SimpleBooleanProperty  changeFile;
     private AdminPageController mainController;
     private ObservableList<TargetTable> items = FXCollections.observableArrayList();
 
-    public MainGraphController() {
-        isFileSelected = new SimpleBooleanProperty(false);
-        changeFile = new SimpleBooleanProperty(false);
+    @FXML public void initialize() {
+        if(pathComponentController != null && tableComponentController != null && missionAdminComponentController != null && generalComponentController != null){
+            pathComponentController.setMainController(this);
+            tableComponentController.setMainController(this);
+            missionAdminComponentController.setMainController(this);
+            generalComponentController.setMainController(this);
+        }
     }
+    public void setMainController(AdminPageController mainController) {
+        this.mainController = mainController;
+    }
+
     public ObservableList<TargetTable> getItems() {
         return items;
     }
@@ -45,20 +48,7 @@ public class MainGraphController {
         return  this.graph;
     }
 
-
-    @FXML public void initialize() {
-     if(pathComponentController != null && tableComponentController != null && missionAdminComponentController != null && generalComponentController != null){
-      pathComponentController.setMainController(this);
-      tableComponentController.setMainController(this);
-      missionAdminComponentController.setMainController(this);
-      generalComponentController.setMainController(this);
-     }
-    }
-
-     public void setMainController(AdminPageController mainController) {
-         this.mainController = mainController;
-     }
-     public void startGraphListRefresher() {
+    public void startGraphListRefresher() {
           generalComponentController.startGraphListRefresher();
      }
      public void close() {
@@ -93,7 +83,6 @@ public class MainGraphController {
         }
         catch (Exception e){}
     }
-
     /*
     public SimpleBooleanProperty isFileSelected(){
         return isFileSelected;
@@ -298,7 +287,10 @@ public class MainGraphController {
     }
 
     */
-    public String getToggleColor(){return toggleColor;}
+    public String getToggleColor(){
+        String toggleColor = "-fx-background-color: linear-gradient(#2A5058, #61a2b1)";
+        return toggleColor;}
+
     /// tab fxml
     @FXML private AnchorPane settingAnchorPane;
     @FXML private AnchorPane graphAnchorPane;

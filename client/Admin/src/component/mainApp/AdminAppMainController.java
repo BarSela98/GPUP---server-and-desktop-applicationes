@@ -18,7 +18,6 @@ import java.net.URL;
 import static utility.Constants.*;
 
 public class AdminAppMainController {
-
     @FXML private AnchorPane mainPanel;
     private final StringProperty currentUserName;
     private Parent loginComponent;
@@ -27,30 +26,15 @@ public class AdminAppMainController {
     private Parent adminPageComponent;
     private AdminPageController adminPageController;
 
-
-
-   // private final StringProperty currentUserName;
-
-    public AdminAppMainController() {
-        currentUserName = new SimpleStringProperty(JHON_DOE);
-    }
-
     @FXML public void initialize() {
-       // userGreetingLabel.textProperty().bind(Bindings.concat("Hello ", currentUserName));
+        // userGreetingLabel.textProperty().bind(Bindings.concat("Hello ", currentUserName));
         // prepare components
         loadLoginPage();
         loadAdminPage();
     }
-
-    private void setPanelTo(Parent pane) {
-        mainPanel.getChildren().clear();
-        mainPanel.getChildren().add(pane);
-        AnchorPane.setBottomAnchor(pane, 1.0);
-        AnchorPane.setTopAnchor(pane, 1.0);
-        AnchorPane.setLeftAnchor(pane, 1.0);
-        AnchorPane.setRightAnchor(pane, 1.0);
+    public AdminAppMainController() {
+        currentUserName = new SimpleStringProperty(JHON_DOE);
     }
-
     private void loadLoginPage() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -64,7 +48,6 @@ public class AdminAppMainController {
             e.printStackTrace();
         }
     }
-
     private void loadAdminPage() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -78,15 +61,12 @@ public class AdminAppMainController {
             e.printStackTrace();
         }
     }
-
-
     public void switchToAdminPage() {
         //setMainPanelTo(adminPageComponent);
         Scene scene = new Scene(adminPageComponent,1200,800);
         primaryStage.setScene(scene);
         adminPageController.setActive();
     }
-
     public void switchToLogin() {
         Platform.runLater(() -> {
             currentUserName.set(JHON_DOE);
@@ -100,7 +80,6 @@ public class AdminAppMainController {
         currentUserName.set(userName);
         adminPageController.setNameOfAdmin(userName);
     }
-
     private void setMainPanelTo(Parent pane) {
         mainPanel.getChildren().clear();
         mainPanel.getChildren().add(pane);

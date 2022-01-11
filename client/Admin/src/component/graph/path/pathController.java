@@ -1,6 +1,6 @@
 package component.graph.path;
 
-import ODT.Target;
+import engine.Target;
 import ODT.TargetTable;
 import ODT.information.Information;
 import component.graph.main.MainGraphController;

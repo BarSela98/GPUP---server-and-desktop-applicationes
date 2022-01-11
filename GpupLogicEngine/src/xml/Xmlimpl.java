@@ -1,6 +1,6 @@
 package xml;
 
-import ODT.Target;
+import engine.Target;
 import generated2.GPUPConfiguration;
 import generated2.GPUPDescriptor;
 import generated2.GPUPTarget;

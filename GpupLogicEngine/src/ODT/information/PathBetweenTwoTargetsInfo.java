@@ -1,6 +1,6 @@
 package ODT.information;
 
-import ODT.Targets;
+import engine.Targets;
 
 import java.util.List;
 

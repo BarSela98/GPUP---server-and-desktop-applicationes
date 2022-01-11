@@ -73,6 +73,12 @@ public class loginController {
                     Platform.runLater(() -> {
                         workerAppMainController.updateUserName(userName);
                         workerAppMainController.switchToWorkerPage();
+                        try {
+                            String responseBody = response.body().string();
+                            System.out.println(responseBody);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     });
                 }
             }

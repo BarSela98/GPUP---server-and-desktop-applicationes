@@ -1,6 +1,7 @@
 package component.usersList;
 
 import ODT.User;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -42,14 +43,14 @@ public class UserListRefresher extends TimerTask {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-             //   Platform.runLater(() -> new errorMain(e));
+                Platform.runLater(() -> System.out.println("UserListRefresher " + e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-            //        Platform.runLater(() -> new errorMain(new Exception("Users list - Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                    Platform.runLater(() -> System.out.println("UserListRefresher - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 }
                 else {
                     String jsonArrayOfUsersNames = response.body().string();

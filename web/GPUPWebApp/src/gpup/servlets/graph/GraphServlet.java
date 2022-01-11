@@ -33,7 +33,7 @@ public class GraphServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_OK);
             }
             catch (Exception e){
-               // response.getOutputStream().print(e.toString());
+                response.getOutputStream().print(e.toString());
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         }

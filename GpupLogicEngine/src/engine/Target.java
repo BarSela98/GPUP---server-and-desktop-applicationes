@@ -1,4 +1,4 @@
-package ODT;
+package engine;
 
 
 import java.io.File;
@@ -10,6 +10,14 @@ import java.util.Set;
 
 
 public class Target implements Serializable,Runnable {
+    public Target() {
+
+    }
+
+    public void updateInfo(Target tar) {
+        this.status = tar.status;
+    }
+
     public enum Type {INDEPENDENTS, LEAF, MIDDLE, ROOT}
     public enum Status {Waiting, Success, Warning, Skipped, Failure, Frozen}
     private String userData;
@@ -34,24 +42,29 @@ public class Target implements Serializable,Runnable {
     private String source;
     private String Mission;
 
-    public String getMission() {
-        return Mission;
-    }
-
-
-/**
- * ctor
- */
+    /**
+     * ctor
+     */
     public Target(String name, String userData, Set<String> setDependsOn, Set<String> setRequiredFor) {
         this.name = name;
         this.userData = userData;
         this.setDependsOn = setDependsOn;
         this.setRequiredFor = setRequiredFor;
     }
+    public Target(String name, Set setDependsOn, Set setRequiredFor) {
+        this.name = name;
+        this.setDependsOn = setDependsOn;
+        this.setRequiredFor = setRequiredFor;
+    }
 
+
+    public String getMission() {
+        return Mission;
+    }
     public void setMission(String mission) {
         Mission = mission;
     }
+
     /** Get name
      * @return name of target
      */
@@ -114,23 +127,12 @@ public class Target implements Serializable,Runnable {
     public void SetType (Type t){
         this.type = t;
     }
-
     public void SetUserData (String s){
         this.userData = s;
     }
-
     protected void SetStatus (Status status){
         this.status = status;
     }
-
-
-
-    public Target(String name, Set setDependsOn, Set setRequiredFor) {
-            this.name = name;
-            this.setDependsOn = setDependsOn;
-            this.setRequiredFor = setRequiredFor;
-    }
-    //getter and setters
     public boolean isRunning () {
         return isRunning;
     }
@@ -140,84 +142,63 @@ public class Target implements Serializable,Runnable {
     public void setUserData (String userData){
         this.userData = userData;
     }
-
     public void setName (String name){
         this.name = name;
     }
-
     public void setType (Type type){
         this.type = type;
     }
     public void setStatus (Status status){
         this.status = status;
     }
-
-
-
     public void setArrayDependsOn (Set setDependsOn){
         this.setDependsOn = setDependsOn;
     }
-
     public void setRequiredFor (Set setRequiredFor){
         this.setRequiredFor = setRequiredFor;
     }
-
     public int getRunTime () {
         return runTime;
     }
-
     public void setRunTime ( int runTime){
         this.runTime = runTime;
     }
-
     public float getSuccessChance () {
         return successChance;
     }
-
     public void setSuccessChance ( float successChance){
         this.successChance = successChance;
     }
-
     public float getWarningChance () {
         return warningChance;
     }
-
     public void setWarningChance ( float warningChance){
         this.warningChance = warningChance;
     }
-
     public String getSimTimeString () {
         return simTimeString;
     }
-
     public void setSimTimeString (String simTimeString){
         this.simTimeString = simTimeString;
     }
-
     public String getPath () {
         return path;
     }
-
     public void setPath (String path){
         this.path = path;
     }
-
     public boolean isInQueue () {
         return isInQueue;
     }
-
     public void setInQueue ( boolean inQueue){
         isInQueue = inQueue;
     }
-
     public long getStartWaitingTime () {
         return startWaitingTime;
     }
-
     public void setStartWaitingTime ( long startWaitingTime){
         this.startWaitingTime = startWaitingTime;
     }
-
     public String getWaitingTime () {
         long temp= System.currentTimeMillis()-startWaitingTime;
         long millis = temp % 1000;
@@ -227,47 +208,36 @@ public class Target implements Serializable,Runnable {
         waitingTime=String.format("%02d:%02d:%02d.%d", hour, minute, second, millis);
         return waitingTime;
     }
-
     public void setWaitingTime (String waitingTime){
         this.waitingTime = waitingTime;
     }
-
     public String getFailReason () {
         return failReason;
     }
-
     public void setFailReason (String failReason){
         this.failReason = failReason;
     }
-
     public boolean isNotSelected () {
         return notSelected;
     }
-
     public void setNotSelected ( boolean notSelected){
         this.notSelected = notSelected;
     }
-
     public boolean isCompile () {
         return compile;
     }
-
     public void setCompile ( boolean compile){
         this.compile = compile;
     }
-
     public String getCompileDest () {
         return compileDest;
     }
-
     public void setCompileDest (String compileDest){
         this.compileDest = compileDest;
     }
-
     public String getSource () {
         return source;
     }
-
     public void setSource (String source){
         this.source = source;
     }

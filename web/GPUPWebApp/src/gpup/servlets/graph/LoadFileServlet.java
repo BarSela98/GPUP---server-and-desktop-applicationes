@@ -37,12 +37,14 @@ public class LoadFileServlet extends HttpServlet {
                 Xmlimpl xml = new Xmlimpl(readFromInputStream(part.getInputStream()));
                 graphManager.addGraph(new Graph(xml,usernameFromSession));
             } catch (Exception e) {
-             //   response.getOutputStream().print(e.toString());
+               response.getOutputStream().print(e.toString());
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         }
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write(usernameFromSession +" (name of admin) add new file successfully");
+        response.getWriter().flush();
     }
-
-
     private String readFromInputStream(InputStream inputStream) {
         return new Scanner(inputStream).useDelimiter("\\Z").next();
     }

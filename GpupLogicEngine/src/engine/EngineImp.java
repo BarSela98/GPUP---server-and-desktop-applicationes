@@ -1,7 +1,5 @@
 package engine;
 
-import ODT.Target;
-import ODT.Targets;
 import ODT.information.CircuitDetectionInfo;
 import ODT.information.Information;
 import ODT.information.PathBetweenTwoTargetsInfo;

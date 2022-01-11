@@ -1,6 +1,6 @@
 package gpup.servlets.mission;
 
-import ODT.Mission;
+import engine.Mission;
 import com.google.gson.Gson;
 import gpup.servlets.MissionManger;
 import gpup.utils.ServletUtils;
@@ -25,9 +25,10 @@ public class AddMissionServlet extends HttpServlet {
         MissionManger missionManger = ServletUtils.getMissionManager(getServletContext());
         String json = new BufferedReader(new InputStreamReader(request.getInputStream())).lines().collect(
                 Collectors.joining("\n"));
-        //String json = request.getInputStream().toString();
         Mission mission = new Gson().fromJson(json, Mission.class);
         missionManger.addMission(mission);
         response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write(mission.getNameOfMission()+ " (name of mission) add to mission manager");
+        response.getWriter().flush();
     }
 }

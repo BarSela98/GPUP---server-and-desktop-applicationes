@@ -27,11 +27,17 @@ import static utility.Constants.*;
 
 
 public class GeneralGraphController {
+    private MainGraphController mainController;
+
     private Timer timer;
     private TimerTask listRefresher;
     private final BooleanProperty autoUpdate;
+
     private final IntegerProperty totalGraph;
-    private MainGraphController mainController;
+    @FXML private ChoiceBox<String> choiceBoxGraph;
+    @FXML private Text nameOfGraphText;
+    @FXML private Text creatorText;
+
 
     @FXML public void initialize(){
         choiceBoxGraph.valueProperty().addListener((a,b,c)->{
@@ -53,16 +59,15 @@ public class GeneralGraphController {
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                //    Platform.runLater(() -> new errorMain(e));
+                    Platform.runLater(() -> System.out.println("choose graph from comboBox - error -"+e.getMessage()));
                 }
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (response.code() != 200) {
                         String responseBody = response.body().string();
-                    //    Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
-                    }
-                    else{
+                        Platform.runLater(() -> System.out.println("choose graph from comboBox - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    } else{
                         String jsonArrayOfUsersNames = response.body().string();
                         Graph graph = GSON_INSTANCE.fromJson(jsonArrayOfUsersNames, Graph.class);
                         Platform.runLater(() -> {
@@ -78,6 +83,10 @@ public class GeneralGraphController {
             });
         });
     }
+    public void setMainController(MainGraphController mainController) {
+        this.mainController = mainController;
+    }
+
     public void updateGraphOnScene(Graph graph) {
         nameOfGraphText.setText(graph.getGraphName());
         creatorText.setText(graph.getNameOfCreator());
@@ -100,16 +109,17 @@ public class GeneralGraphController {
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                  //  Platform.runLater(() -> new errorMain(e));
+                    Platform.runLater(() -> System.out.println("Failed to load file - error -"+e.getMessage()));
                 }
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (response.code() != 200) {
                         String responseBody = response.body().string();
-                     //   Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                        Platform.runLater(() -> System.out.println("loadGraphButton - admin - Response code: "+response.code()+"\nResponse body: "+responseBody));
                     } else {
-                    //    Platform.runLater(() -> System.out.println("load graph successful"));
+                        String responseBody = response.body().string();
+                        Platform.runLater(() -> System.out.println(responseBody));
                     }
                 }
             });
@@ -144,14 +154,5 @@ public class GeneralGraphController {
             timer.cancel();
         }
     }
-    public void setMainController(MainGraphController mainController) {
-        this.mainController = mainController;
-    }
 
-
-
-
-    @FXML private ChoiceBox<String> choiceBoxGraph;
-    @FXML private Text nameOfGraphText;
-    @FXML private Text creatorText;
 }

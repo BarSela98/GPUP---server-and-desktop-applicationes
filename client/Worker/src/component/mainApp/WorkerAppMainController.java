@@ -26,28 +26,12 @@ public class WorkerAppMainController {
     private Parent workerPageComponent;
     private WorkerPageController workerPageController;
 
-
-
-   // private final StringProperty currentUserName;
-
     public WorkerAppMainController() {
         currentUserName = new SimpleStringProperty(JHON_DOE);
     }
-
     @FXML public void initialize() {
-       // userGreetingLabel.textProperty().bind(Bindings.concat("Hello ", currentUserName));
-        // prepare components
         loadLoginPage();
         loadWorkerPage();
-    }
-
-    private void setPanelTo(Parent pane) {
-        mainPanel.getChildren().clear();
-        mainPanel.getChildren().add(pane);
-        AnchorPane.setBottomAnchor(pane, 1.0);
-        AnchorPane.setTopAnchor(pane, 1.0);
-        AnchorPane.setLeftAnchor(pane, 1.0);
-        AnchorPane.setRightAnchor(pane, 1.0);
     }
 
     private void loadLoginPage() {
@@ -63,7 +47,6 @@ public class WorkerAppMainController {
             e.printStackTrace();
         }
     }
-
     private void loadWorkerPage() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -76,15 +59,12 @@ public class WorkerAppMainController {
             e.printStackTrace();
         }
     }
-
-
     public void switchToWorkerPage() {
         //setMainPanelTo(workerPageComponent);
         workerPageController.setActive();
         Scene scene = new Scene(workerPageComponent,1100,800);
         primaryStage.setScene(scene);
     }
-
     public void switchToLogin() {
         Platform.runLater(() -> {
             currentUserName.set(JHON_DOE);
@@ -94,11 +74,6 @@ public class WorkerAppMainController {
            // setMainPanelTo(loginComponent);
         });
     }
-    public void updateUserName(String userName) {
-        currentUserName.set(userName);
-        workerPageController.setNameOfWorker(userName);
-    }
-
     private void setMainPanelTo(Parent pane) {
         mainPanel.getChildren().clear();
         mainPanel.getChildren().add(pane);
@@ -113,8 +88,12 @@ public class WorkerAppMainController {
         mainPanel.setMinWidth(1000);
         mainPanel.setMaxWidth(1000);
     }
-
     public void setStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
+    }
+
+    public void updateUserName(String userName) {
+        currentUserName.set(userName);
+        workerPageController.setNameOfWorker(userName);
     }
 }
