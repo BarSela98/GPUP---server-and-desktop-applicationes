@@ -22,7 +22,6 @@ public class MissionListServlet extends HttpServlet {
             Gson gson = new Gson();
             MissionManger missionManager = ServletUtils.getMissionManager(getServletContext());
             Collection<Mission> missionsList = missionManager.getMissionList().values();
-            System.out.println(missionsList);
             String json = gson.toJson(missionsList);
             out.println(json);
             out.flush();

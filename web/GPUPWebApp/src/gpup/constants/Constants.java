@@ -3,6 +3,7 @@ package gpup.constants;
 public class Constants {
     public static final String USERNAME = "username";
     public static final String ROLE = "role";
+    public static final String AMOUNT_OF_THREAD = "threadSize";
     public static final String GRAPHNAME = "grapname";
     public static final String USER_NAME_ERROR = "username_error";
     public static final String THREADS_NUM = "threadNum";

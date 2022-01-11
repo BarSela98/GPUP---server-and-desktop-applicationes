@@ -1,15 +1,18 @@
 package gpup.servlets.user;
+
 import gpup.constants.Constants;
 import gpup.servlets.UserManager;
+import gpup.servlets.WorkerManager;
 import gpup.utils.ServletUtils;
 import gpup.utils.SessionUtils;
-
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
+
 import static gpup.constants.Constants.*;
 
 @WebServlet(name = "LightweightLoginServlet", urlPatterns = {"/loginShortResponse"})
@@ -26,6 +29,7 @@ public class LightweightLoginServlet extends HttpServlet {
 
             String usernameFromParameter = request.getParameter(USERNAME);
             String roleFromParameter = request.getParameter(ROLE);
+            String threadFromParameter = request.getParameter(AMOUNT_OF_THREAD);
 
             if (usernameFromParameter == null || usernameFromParameter.isEmpty()) {
                 //no username in session and no username in parameter - not standard situation. it's a conflict
@@ -59,7 +63,10 @@ public class LightweightLoginServlet extends HttpServlet {
                     else {
                         //add the new user to the users list
                         userManager.addUser(usernameFromParameter,roleFromParameter);
-
+                        if (roleFromParameter.equals("Worker")){
+                            WorkerManager workerManager = ServletUtils.getWorkerManager(getServletContext());
+                            workerManager.addWorker(usernameFromParameter,Integer.parseInt(threadFromParameter));
+                        }
                         //set the username in a session so it will be available on each request
                         //the true parameter means that if a session object does not exists yet
                         //create a new one

@@ -24,7 +24,7 @@ public class loginController {
     @FXML private Button loginButton;
     @FXML private Button quitButton;
     @FXML public Label errorMessageLabel;
-    @FXML public Spinner amountOfThreadSpinner;
+    @FXML public Spinner<Integer> amountOfThreadSpinner;
     private WorkerAppMainController workerAppMainController;
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
 
@@ -50,6 +50,7 @@ public class loginController {
                 .newBuilder()
                 .addQueryParameter("username", userName)
                 .addQueryParameter("role", "Worker")
+                .addQueryParameter("threadSize", String.valueOf(amountOfThreadSpinner.getValue()))
                 .build()
                 .toString();
         HttpClientUtil.runAsync(finalUrl, new Callback() {

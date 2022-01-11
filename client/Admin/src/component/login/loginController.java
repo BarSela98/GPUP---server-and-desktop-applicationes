@@ -50,6 +50,7 @@ public class loginController {
                 .newBuilder()
                 .addQueryParameter("username", userName)
                 .addQueryParameter("role", "Admin")
+                .addQueryParameter("threadSize", String.valueOf(0))
                 .build()
                 .toString();
 

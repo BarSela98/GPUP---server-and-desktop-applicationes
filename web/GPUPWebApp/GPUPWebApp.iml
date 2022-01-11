@@ -25,5 +25,6 @@
     <orderEntry type="library" name="gson-2.1" level="project" />
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="Tomcat 10.0.14" level="application_server_libraries" />
+    <orderEntry type="module" module-name="Worker" />
   </component>
 </module>

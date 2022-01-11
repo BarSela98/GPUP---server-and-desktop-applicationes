@@ -1,6 +1,6 @@
 package ODT;
 
-import main.gpupWorker;
+import object.WorkerObject;
 import utility.Utility;
 
 import java.io.File;
@@ -24,6 +24,11 @@ public class Mission {
                 '}';
     }
 
+    public void workerSign(WorkerObject worker) {
+        workerList.add(worker);
+        workerListSize++;
+    }
+
     public enum StatusOfMission {Done, Waiting, inProgress}
 
     private String nameOfMission;
@@ -42,7 +47,7 @@ public class Mission {
     private Utility.TypeOfRunning typeOfRunning;
     private Simulation simulation;
     private Compilation compilation;
-    private List<gpupWorker> workerList;
+    private List<WorkerObject> workerList;
     private int workerListSize;
     private boolean isRunning;
     private boolean isPause;
@@ -72,13 +77,13 @@ public class Mission {
         this.isStop = m.isStop();
     }
 
-
-    public List<gpupWorker> getWorkerList() {
+    public List<WorkerObject> getWorkerList() {
         return workerList;
     }
 
-    public void setWorkerList(List<gpupWorker> workerList) {
+    public void setWorkerList(List<WorkerObject> workerList) {
         this.workerList = workerList;
+        workerListSize = workerList.size();
     }
 
     public int getWorkerListSize() {
@@ -333,7 +338,7 @@ public class Mission {
             while (!isStop){
                 while(isRunning && !isStop && !isPause){
                     fixTargetsStatues();
-                    for (gpupWorker worker : workerList)
+                    for (WorkerObject worker : workerList)
                     {
                         if (worker.isAvailable() && waitingTargetToExecute.size() != 0){
                             worker.addTargetToList(waitingTargetToExecute.get(0));
@@ -342,7 +347,7 @@ public class Mission {
                     }
                 }
                 while(!isStop && isPause){
-                    for (gpupWorker worker : workerList)
+                    for (WorkerObject worker : workerList)
                     {
                         if (worker.isAvailable() && waitingTargetToExecute.size() != 0){
                             worker.addTargetToList(waitingTargetToExecute.get(0));

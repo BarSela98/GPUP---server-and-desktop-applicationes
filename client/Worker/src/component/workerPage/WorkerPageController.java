@@ -1,19 +1,23 @@
 package component.workerPage;
 
+import ODT.MissionInTable;
 import component.api.WorkerCommands;
 import component.chat.ChatAreaRefresher;
 import component.chat.model.ChatLinesWithVersion;
 import component.mainApp.WorkerAppMainController;
 import component.usersList.UsersListController;
+import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import okhttp3.Call;
@@ -26,6 +30,7 @@ import util.http.HttpClientUtil;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.List;
 import java.util.Timer;
 import java.util.stream.Collectors;
 
@@ -41,6 +46,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     private Timer timer;
     private ChatAreaRefresher chatAreaRefresher;
     private WorkerAppMainController workerAppMainController;
+    private MissionListRefresherForWorker missionRefresher;
 
     public WorkerPageController(){
     chatVersion = new SimpleIntegerProperty();
@@ -54,10 +60,20 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         }
         autoScroll.bind(autoScrollButton.selectedProperty());
         chatVersionLabel.textProperty().bind(Bindings.concat("Chat Version: ", chatVersion.asString()));
+        setTableCol();
     }
+    public void setTableCol(){
+        nameOfMissionCol.setCellValueFactory(new PropertyValueFactory<>("nameOfMission"));
+        checkBoxTableMission.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
+        //TaskCol.setCellValueFactory(new PropertyValueFactory<>("nameOfCreator"));
+        WorkerCol.setCellValueFactory(new PropertyValueFactory<>("workerListSize"));
+        craditsCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
+    }
+
     public void setActive() {
         usersListComponentController.startListRefresher();
         startListRefresher();
+        starMissionRefresher();
     }
     public void setInActive() {
         try {
@@ -108,7 +124,32 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         return autoUpdate;
     }
 
-    @FXML void doMission(ActionEvent event) {}
+    @FXML void doMission(ActionEvent event) {
+        String finalUrl = HttpUrl
+                .parse(Constants.SIGN_FOR_MISSION)
+                .newBuilder()
+                .addQueryParameter("missionname", missionTable.getItems().get(0).getNameOfMission())
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> new errorMain(e));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> new errorMain(new Exception(responseBody)));
+                } else{
+                    Platform.runLater(() -> System.out.println("bar"));
+                }
+            }
+        });
+
+    }
     @FXML void pauseMission(ActionEvent event) {}
     @FXML void quitButton(ActionEvent event) {
         logout();
@@ -153,6 +194,23 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         }
     }
 
+    public void starMissionRefresher() {
+        missionRefresher = new MissionListRefresherForWorker(autoUpdate, this::updateMissionLines);
+        timer = new Timer();
+        timer.schedule(missionRefresher, 5000, 5000);
+         ///add close
+    }
+    private synchronized void updateMissionLines(List<MissionInTable> missions) {
+        Platform.runLater(() -> {
+            ObservableList<MissionInTable> items = missionTable.getItems();
+            for(int i = 0 ; i < items.size() ; ++i) /// update check box
+                missions.get(i).changeInformation(items.get(i));
+
+            items.clear();
+            items.addAll(missions);
+        });
+    }
+
 
     @FXML private UsersListController usersListComponentController;
     @FXML private BorderPane usersListComponent;
@@ -160,15 +218,15 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     @FXML private Text nameOfWorker;
     @FXML private Text amountOfResources;
     @FXML private Text yourCradit;
-    @FXML private TableView<?> missionTable;
-    @FXML private TableColumn<?, ?> checkBoxTableMission;
-    @FXML private TableColumn<?, ?> nameOfMissionCol;
-    @FXML private TableColumn<?, ?> TaskCol;
-    @FXML private TableColumn<?, ?> WorkerCol;
-    @FXML private TableColumn<?, ?> ProgressCol;
-    @FXML private TableColumn<?, ?> yourDoneCol;
-    @FXML private TableColumn<?, ?> craditsCol;
-    @FXML private TableColumn<?, ?> yourStatusCol;
+    @FXML private TableView<MissionInTable> missionTable;
+    @FXML private TableColumn<MissionInTable, CheckBox> checkBoxTableMission;
+    @FXML private TableColumn<MissionInTable, String> nameOfMissionCol;
+    @FXML private TableColumn<MissionInTable, String> TaskCol;
+    @FXML private TableColumn<MissionInTable, Integer> WorkerCol;
+    @FXML private TableColumn<MissionInTable, ?> ProgressCol;
+    @FXML private TableColumn<MissionInTable, ?> yourDoneCol;
+    @FXML private TableColumn<MissionInTable, Integer> craditsCol;
+    @FXML private TableColumn<MissionInTable, ?> yourStatusCol;
     @FXML private TableView<?> executeTargetTable;
     @FXML private TableColumn<?, ?> nameOfMissionCol_target;
     @FXML private TableColumn<?, ?> nameOfTaskCol_target;

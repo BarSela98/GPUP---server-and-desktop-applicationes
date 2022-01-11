@@ -1,6 +1,7 @@
 package gpup.servlets;
 
 import ODT.Mission;
+import object.WorkerObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,5 +30,9 @@ public class MissionManger {
         if(!missionList.containsKey(name))
             throw new Exception("graph name not exsit");
         missionList.get(name).setStatus(status);
+    }
+
+    public synchronized void signForMissionByName(WorkerObject worker, String missionNameFromParameter) {
+        missionList.get(missionNameFromParameter).workerSign(worker);
     }
 }

@@ -71,7 +71,7 @@ public class AdminPageController implements AdminCommands, Closeable {
     private ChatAreaRefresher chatAreaRefresher;
 
     private final BooleanProperty autoUpdateMission;
-    private Timer timerMission;
+
     private MissionListRefresher missionRefresher;
 
 
@@ -236,9 +236,8 @@ public class AdminPageController implements AdminCommands, Closeable {
         leafCol.setCellValueFactory(new PropertyValueFactory<>("amountOfLeaf"));
         independentsCol.setCellValueFactory(new PropertyValueFactory<>("amountOfIndependents"));
         priceOfAllMissionCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
-        //workersCol.setCellValueFactory(new PropertyValueFactory<>("workerListSize"));
-        workersCol.setCellValueFactory(new PropertyValueFactory<>("isRunning"));
-
+        workersCol.setCellValueFactory(new PropertyValueFactory<>("workerListSize"));
+        //workersCol.setCellValueFactory(new PropertyValueFactory<>("isRunning"));
         remarkCol.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
     }
     public void starMissionRefresher() {
@@ -247,7 +246,6 @@ public class AdminPageController implements AdminCommands, Closeable {
         timer.schedule(missionRefresher, 5000, 5000);
     }
     private synchronized void updateMissionLines(List<MissionInTable> missions) {
-        System.out.println("------ " + missions.get(0).getIsRunning());
         Platform.runLater(() -> {
             ObservableList<MissionInTable> items = tableViewMission.getItems();
             for(int i = 0 ; i < items.size() ; ++i) /// update check box
