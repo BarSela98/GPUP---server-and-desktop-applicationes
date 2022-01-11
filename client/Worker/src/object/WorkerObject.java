@@ -70,8 +70,6 @@ public class WorkerObject {
         this.targetsToExecute = targetsToExecute;
     }
 
-
-
     public void connectToTask(String s){
         tasks.add(s);
     }

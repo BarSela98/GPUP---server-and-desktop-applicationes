@@ -117,22 +117,27 @@
                                  <bottom>
                                     <HBox prefHeight="73.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
                                        <children>
-                                          <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#doMission" prefHeight="40.0" prefWidth="90.0" text="Do">
+                                          <Button fx:id="signUpButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#signUpForMission" prefHeight="40.0" prefWidth="90.0" text="SIGNUP">
+                                             <HBox.margin>
+                                                <Insets left="20.0" right="50.0" top="20.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                          <Button fx:id="doButton" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#doMission" prefHeight="40.0" prefWidth="90.0" text="Do">
                                              <HBox.margin>
                                                 <Insets left="20.0" right="20.0" top="20.0" />
                                              </HBox.margin>
                                           </Button>
-                                          <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#stopMission" prefHeight="40.0" prefWidth="90.0" text="Stop">
+                                          <Button fx:id="stopButton" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#stopMission" prefHeight="40.0" prefWidth="90.0" text="Stop">
                                              <HBox.margin>
                                                 <Insets left="20.0" right="20.0" top="20.0" />
                                              </HBox.margin>
                                           </Button>
-                                          <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pauseMission" prefHeight="40.0" prefWidth="90.0" text="Pause">
+                                          <Button fx:id="pauseButton" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pauseMission" prefHeight="40.0" prefWidth="90.0" text="Pause">
                                              <HBox.margin>
                                                 <Insets left="20.0" right="20.0" top="20.0" />
                                              </HBox.margin>
                                           </Button>
-                                          <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#resumeMisson" prefHeight="40.0" prefWidth="90.0" text="Resume">
+                                          <Button fx:id="resumeButton" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#resumeMisson" prefHeight="40.0" prefWidth="90.0" text="Resume">
                                              <HBox.margin>
                                                 <Insets left="20.0" right="20.0" top="20.0" />
                                              </HBox.margin>

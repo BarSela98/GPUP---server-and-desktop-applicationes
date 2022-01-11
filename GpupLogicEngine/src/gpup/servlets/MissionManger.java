@@ -35,4 +35,8 @@ public class MissionManger {
     public synchronized void signForMissionByName(WorkerObject worker, String missionNameFromParameter) {
         missionList.get(missionNameFromParameter).workerSign(worker);
     }
+
+    public void removeWorkerForMissionByName(String workerName, String missionNameFromParameter) {
+        missionList.get(missionNameFromParameter).removeWorkerFromMission(workerName);
+    }
 }

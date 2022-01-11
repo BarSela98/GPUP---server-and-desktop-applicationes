@@ -29,6 +29,15 @@ public class Mission {
         workerListSize++;
     }
 
+    public void removeWorkerFromMission(String workerName) {
+        for(WorkerObject worker:workerList){
+            if(worker.getNameOfWorker().equals(workerName)){
+                workerList.remove(worker);
+                workerListSize--;
+            }
+        }
+    }
+
     public enum StatusOfMission {Done, Waiting, inProgress}
 
     private String nameOfMission;
