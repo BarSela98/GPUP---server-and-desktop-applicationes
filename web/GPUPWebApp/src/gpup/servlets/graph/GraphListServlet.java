@@ -22,6 +22,7 @@ public class GraphListServlet extends HttpServlet {
             Gson gson = new Gson();
             GraphManger graphManger = ServletUtils.getGraphManager(getServletContext());
             Set<String> graphMap = graphManger.getGraph().keySet();
+            System.out.println(graphMap);
             String json = gson.toJson(graphMap);
             out.println(json);
             out.flush();

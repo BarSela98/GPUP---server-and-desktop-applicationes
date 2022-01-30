@@ -38,7 +38,7 @@ public class GraphListRefresher extends TimerTask {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("Chat " + e.getMessage()));
+                Platform.runLater(() -> System.out.println("Graph List Refresher" + e.getMessage()));
             }
 
 
@@ -46,11 +46,11 @@ public class GraphListRefresher extends TimerTask {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("Chat - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    Platform.runLater(() -> System.out.println("GraphListRefresher - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 }
                 else{
-                        String jsonArrayOfUsersNames = response.body().string();
-                        String[] graphsNames = GSON_INSTANCE.fromJson(jsonArrayOfUsersNames, String[].class);
+                        String jsonArrayOfGraphsNames = response.body().string();
+                        String[] graphsNames = GSON_INSTANCE.fromJson(jsonArrayOfGraphsNames, String[].class);
                         graphListConsumer.accept(Arrays.asList(graphsNames));
                 }
             }

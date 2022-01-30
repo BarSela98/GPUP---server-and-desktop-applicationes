@@ -27,12 +27,7 @@ public class TargetToWorkerServlet extends HttpServlet {
                 Collectors.joining("\n"));
         //String json = request.getInputStream().toString();
         TargetToWorker targetToWorkerServlet = new Gson().fromJson(json, TargetToWorker.class);
-        System.out.println("size "+workerManager.getWorkerByName(targetToWorkerServlet.getNameOfWorker()).getTargetsToExecute().size());
-        System.out.println("before "+workerManager.getWorkerByName(targetToWorkerServlet.getNameOfWorker()).getTargetsToExecute().isEmpty());
         workerManager.getWorkerByName(targetToWorkerServlet.getNameOfWorker()).addTargetToList(targetToWorkerServlet.getTarget());
-        System.out.println("size "+workerManager.getWorkerByName(targetToWorkerServlet.getNameOfWorker()).getTargetsToExecute().size());
-        System.out.println("after "+workerManager.getWorkerByName(targetToWorkerServlet.getNameOfWorker()).getTargetsToExecute().isEmpty());
         response.setStatus(HttpServletResponse.SC_OK);
-        System.out.println("target to worker " +targetToWorkerServlet.getTarget());
     }
 }
