@@ -264,7 +264,6 @@ public class Target implements Serializable,Runnable {
                         temp += userData.charAt(i);
                     }
                 }
-
                 long startTime = System.currentTimeMillis();//sim target and keep time of sim
                 Runtime rt = Runtime.getRuntime();
                 String src = source + c + temp + ".java";
@@ -288,6 +287,7 @@ public class Target implements Serializable,Runnable {
             } else {//simulation task
                 long startTime = System.currentTimeMillis();//sim target and keep time of sim
                 Thread.sleep((long) runTime);
+
                 long simTime = System.currentTimeMillis() - startTime;
                 //turn simTime to string
                 long millis = simTime % 1000;
@@ -307,8 +307,12 @@ public class Target implements Serializable,Runnable {
                 } else {
                     this.status = Status.Failure;
                 }
+                System.out.println(path);
+                path=path+"\\" +name;
                 File f = new File(path);
+
                 f.createNewFile();
+
                 FileWriter w = new FileWriter(path);
                 w.write("Target name: " + this.name + "\n\r" +
                         "Target result: " + this.status.name() + "\n\r" +
@@ -317,24 +321,11 @@ public class Target implements Serializable,Runnable {
                         "Target result: " + this.status.name() + "\n\r" +
                         "Target time :  \n\r");
                 w.close();
-            /*
-            if (!this.setRequiredFor.isEmpty()) {
-                for (String s : setRequiredFor) {
-                    if (targetMap.get(s).status == Status.Frozen)
-                        targetMap.get(s).status = Status.Waiting;
-                }
-            }
-             */
-            }/*
 
-        isRunning = false;
-        isInQueue = false;
-        engineImpl.decrementWorkingThreads();
-        Size s= new Size();
-        s.subSize();
-        infor = new infoThread(infoThread.InOrOut.OUT, System.currentTimeMillis() , engineImpl.getWorkingThreads(), s.getSize() );
-        */
-        isRunning=false;
+
+            }
+
+            isRunning=false;
         } catch (Exception e) {
 
         }

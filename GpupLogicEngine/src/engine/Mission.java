@@ -308,7 +308,7 @@ public class Mission {
     private void simulationSetUp(){
         int randomTime;
         Random r = new Random();
-        String path="c\\gpup-working-dir";//temp value
+        String path="C:\\gpup-working-dir";//temp value
         try {
             path= openDir("simulation");
         }
@@ -326,7 +326,7 @@ public class Mission {
         }
     }
     private void compilationSetUp(){
-        String path="c\\gpup-working-dir";//temp value
+        String path="C:\\gpup-working-dir";//temp value
         try {
             path= openDir("simulation");
         }
@@ -339,12 +339,12 @@ public class Mission {
         }
     }
     private String openDir(String taskType) throws IOException {//doesnt have path yet,this func create directory for simulation task
-        Path path= Paths.get("c\\gpup-working-dir");
+        Path path= Paths.get("C:\\gpup-working-dir");
         Files.createDirectories(path);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.mm.yyyy HH.MM.SS");
         LocalDateTime now = LocalDateTime.now();
         String s =taskType+" "+dtf.format(now);
-        s= "c\\gpup-working-dir"+"\\"+s;
+        s= "C:\\gpup-working-dir"+"\\"+s;
         Path innerPath=Paths.get(s);
         Files.createDirectories(innerPath);
         return s;

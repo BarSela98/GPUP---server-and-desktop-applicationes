@@ -121,13 +121,17 @@ public class WorkerObject {
         Thread thread =new Thread(t);
         thread.start();
         try {
+            System.out.println("---2 ");
             Thread.sleep(10);
+            System.out.println("---3 ");
             while (t.isRunning()){
                 Thread.sleep(10);
+
             }
+
         }
         catch (Exception e){}
-        System.out.println("---2 ");
+        System.out.println("---4 ");
         curThreads--;
         total+=t.getPrice();
         updateTargetInMission(t);
