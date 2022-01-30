@@ -26,9 +26,21 @@ public class AddMissionServlet extends HttpServlet {
         String json = new BufferedReader(new InputStreamReader(request.getInputStream())).lines().collect(
                 Collectors.joining("\n"));
         Mission mission = new Gson().fromJson(json, Mission.class);
+        if (mission.getPriceOfAllMission() == 0 ){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("you can't add new mission with zero price");
+            response.getWriter().flush();
+        }
+        else if (missionManger.isMissionNameExists(mission.getNameOfMission())){ //// the name is exists
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("you can't add new mission with this name");
+            response.getWriter().flush();
+        }
+        else{
         missionManger.addMission(mission);
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().write(mission.getNameOfMission()+ " (name of mission) add to mission manager");
         response.getWriter().flush();
+        }
     }
 }

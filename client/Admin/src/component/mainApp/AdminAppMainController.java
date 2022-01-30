@@ -2,7 +2,6 @@ package component.mainApp;
 
 import component.login.loginController;
 import component.page.AdminPageController;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
@@ -25,7 +24,7 @@ public class AdminAppMainController {
     private Stage primaryStage;
     private Parent adminPageComponent;
     private AdminPageController adminPageController;
-
+    private boolean bar=false;
     @FXML public void initialize() {
         // userGreetingLabel.textProperty().bind(Bindings.concat("Hello ", currentUserName));
         // prepare components
@@ -36,14 +35,16 @@ public class AdminAppMainController {
         currentUserName = new SimpleStringProperty(JHON_DOE);
     }
     private void loadLoginPage() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
+           try {
             URL loginPageUrl = getClass().getResource(LOGIN_PAGE_FXML_RESOURCE_LOCATION);
+            FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(loginPageUrl);
             loginComponent = fxmlLoader.load(loginPageUrl.openStream());
             logicController = fxmlLoader.getController();
             logicController.setAppMainController(this);
             setMainPanelTo(loginComponent);
+
+          //  switchToLogin();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,25 +57,47 @@ public class AdminAppMainController {
             adminPageComponent = fxmlLoader.load(adminPageUrl.openStream());
             adminPageController = fxmlLoader.getController();
             adminPageController.setAppMainController(this);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     public void switchToAdminPage() {
-        //setMainPanelTo(adminPageComponent);
+        if (bar)
+            loadAdminPage();
         Scene scene = new Scene(adminPageComponent,1200,800);
         primaryStage.setScene(scene);
         adminPageController.setActive();
+        bar =true;
     }
     public void switchToLogin() {
-        Platform.runLater(() -> {
-            currentUserName.set(JHON_DOE);
-            adminPageController.setInActive();
-            //setMainPanelTo(loginComponent);
-            Scene scene = new Scene(loginComponent,500,300);
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            URL url = getClass().getResource(MAIN_PAGE_ADMIN_FXML_RESOURCE_LOCATION);
+            fxmlLoader.setLocation(url);
+            Parent root = fxmlLoader.load(url.openStream());
+            AdminAppMainController controller = fxmlLoader.getController();
+            controller.setStage(primaryStage);
+            Scene scene = new Scene(root, 500, 300);
             primaryStage.setScene(scene);
-        });
+            loadLoginPage();
+
+        }
+        catch (Exception e){}
+/*
+        loginComponent = new FXMLLoader().load(loginPageUrl.openStream());
+        Scene scene = new Scene(loginComponent,500,300);
+        primaryStage.setScene(scene);
+
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(loginPageUrl);
+        loginComponent = fxmlLoader.load(loginPageUrl.openStream());
+        logicController = fxmlLoader.getController();
+        logicController.setAppMainController(this);
+        setMainPanelTo(loginComponent);
+        primaryStage.setScene(scene);
+
+
+ */
     }
     public void updateUserName(String userName) {
         currentUserName.set(userName);

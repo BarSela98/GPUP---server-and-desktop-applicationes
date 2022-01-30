@@ -241,14 +241,14 @@ public class missionAdminController {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("executeMission - error -"+e.getMessage()));
+                Platform.runLater(() -> System.out.println("Execute Mission - error -"+e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("executeMission " + responseBody));
+                    Platform.runLater(() -> System.out.println("Execute Mission " + responseBody));
                 } else {
                     Platform.runLater(() -> {
                         try {

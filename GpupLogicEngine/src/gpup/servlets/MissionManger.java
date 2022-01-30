@@ -21,6 +21,7 @@ public class MissionManger {
     public synchronized Map<String,Mission> getMissionList() {
         return missionList;
     }
+
     public synchronized Mission getMissionByName(String name)throws Exception{
         if(!missionList.containsKey(name))
             throw new Exception("graph name not exist");
@@ -45,5 +46,11 @@ public class MissionManger {
        // System.out.println("update");
         m.updateTarget(tar);
        // System.out.println("after update");
+    }
+
+    public boolean isMissionNameExists(String name) {
+        if(missionList.containsKey(name))
+            return true;
+        else return false;
     }
 }
