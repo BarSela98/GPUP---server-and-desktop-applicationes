@@ -35,5 +35,8 @@ public class UpdateTargetInformationServlet extends HttpServlet {
 
         response.getWriter().write(target.getName() + " (Target) update in mission and complete target in "+workerName+" (worker)");
         response.getWriter().flush();
+
+
+        System.out.println("finish -" + target.getName());
     }
 }

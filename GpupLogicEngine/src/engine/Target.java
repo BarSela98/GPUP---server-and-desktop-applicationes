@@ -264,45 +264,7 @@ public class Target implements Serializable,Runnable {
                         temp += userData.charAt(i);
                     }
                 }
-            /*
-            if (!this.setDependsOn.isEmpty()) {
-                for (String s : setDependsOn) {
-                    if ((targetMap.get(s).getStatus() == Status.Waiting || targetMap.get(s).getStatus() == Status.Frozen) && !targetMap.get(s).getNotSelected()) {//dont run if depends on is still waiting
-                        isRunning = false;
-                        isInQueue = false;
-                        engineImpl.decrementWorkingThreads();
-                        return;
-                    } else if (targetMap.get(s).getStatus() == Status.Failure || targetMap.get(s).getStatus() == Status.Skipped) {
-                        if (targetMap.get(s).getStatus() == Status.Failure) {
-                            failReason = s;
-                        } else {
-                            failReason = targetMap.get(s).failReason;
-                        }
-                        isInQueue = false;
-                        isRunning = false;
-                        this.status = Status.Skipped;
-                        simTimeString = "00:00:00:00";
-                        engineImpl.decrementWorkingThreads();
-                        File f = new File(path);
-                        f.createNewFile();
-                        FileWriter w = new FileWriter(path);
-                        w.write("Target name: " + this.name + "\n\r" +
-                                "Target result: " + this.status.name() + "\n\r" +
-                                "Target time : 00:00:00:00 \n\r");
-                        w.close();
-                        this.SetStatus(Status.Skipped);
-                        if (!this.setRequiredFor.isEmpty()) {
-                            for (String st : setRequiredFor) {
-                                if (targetMap.get(st).status == Status.Frozen)
-                                    targetMap.get(st).status = Status.Waiting;
-                            }
-                        }
-                        return;
-                    }
-                }
-            }
 
-             */
                 long startTime = System.currentTimeMillis();//sim target and keep time of sim
                 Runtime rt = Runtime.getRuntime();
                 String src = source + c + temp + ".java";
@@ -322,54 +284,8 @@ public class Target implements Serializable,Runnable {
                 } else {//success
                     this.status = Status.Success;
                 }
-            /*
-            if (!this.setRequiredFor.isEmpty()) {
-                for (String s : setRequiredFor) {
-                    if (targetMap.get(s).status == Status.Frozen)
-                        targetMap.get(s).status = Status.Waiting;
-                }
-            }
 
-             */
             } else {//simulation task
-            /*
-            if (!this.setDependsOn.isEmpty()) {
-                for (String s : setDependsOn) {
-                    if ((targetMap.get(s).getStatus() == Status.Waiting || targetMap.get(s).getStatus() == Status.Frozen) && !targetMap.get(s).getNotSelected()) {//dont run if depends on is still waiting
-                        isRunning = false;
-                        isInQueue = false;
-                        engineImpl.decrementWorkingThreads();
-                        return;
-                    } else if (targetMap.get(s).getStatus() == Status.Failure || targetMap.get(s).getStatus() == Status.Skipped) {
-                        if (targetMap.get(s).getStatus() == Status.Failure) {
-                            failReason = s;
-                        } else {
-                            failReason = targetMap.get(s).failReason;
-                        }
-                        isInQueue = false;
-                        isRunning = false;
-                        this.status = Status.Skipped;
-                        simTimeString = "00:00:00:00";
-                        engineImpl.decrementWorkingThreads();
-                        File f = new File(path);
-                        f.createNewFile();
-                        FileWriter w = new FileWriter(path);
-                        w.write("Target name: " + this.name + "\n\r" +
-                                "Target result: " + this.status.name() + "\n\r" +
-                                "Target time : 00:00:00:00 \n\r");
-                        w.close();
-                        this.SetStatus(Status.Skipped);
-                        if (!this.setRequiredFor.isEmpty()) {
-                            for (String st : setRequiredFor) {
-                                if (targetMap.get(st).status == Status.Frozen)
-                                    targetMap.get(st).status = Status.Waiting;
-                            }
-                        }
-                        return;
-                    }
-                }
-            }
-            */
                 long startTime = System.currentTimeMillis();//sim target and keep time of sim
                 Thread.sleep((long) runTime);
                 long simTime = System.currentTimeMillis() - startTime;
@@ -395,6 +311,9 @@ public class Target implements Serializable,Runnable {
                 f.createNewFile();
                 FileWriter w = new FileWriter(path);
                 w.write("Target name: " + this.name + "\n\r" +
+                        "Target result: " + this.status.name() + "\n\r" +
+                        "Target time :  \n\r");
+                System.out.println("Target name: " + this.name + "\n\r" +
                         "Target result: " + this.status.name() + "\n\r" +
                         "Target time :  \n\r");
                 w.close();
