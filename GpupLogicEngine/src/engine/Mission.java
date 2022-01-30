@@ -152,7 +152,7 @@ public class Mission {
       //  System.out.println(targets);
             for (Target t : targets) {
                 if (t.getName().equals(tar.getName())) {
-                    System.out.println("--4");
+                   // System.out.println("--4");
                     t.updateInfo(tar);
                     //targets.remove(t);
                     //targets.add(tar);
