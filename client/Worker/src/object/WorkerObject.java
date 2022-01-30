@@ -70,7 +70,7 @@ public class WorkerObject {
 
     public void addTargetToList(Target t){
         targetsToExecute.add(t);
-       // System.out.println("add target "+t+" targetsToExecute in "+ this);
+        System.out.println("add target "+t+" targetsToExecute in "+ this);
     }
     public void updateTargetInMission(Target t){
         String json = new Gson().toJson(t);
@@ -110,6 +110,7 @@ public class WorkerObject {
     }
     public void pullTargets(){
         if(targetsToExecute.size() != 0){
+            System.out.println("targetsToExecute");
             execute(targetsToExecute.get(0));
             targetsToExecute.remove(0);
         }
