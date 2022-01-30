@@ -24,7 +24,7 @@ public class AdminAppMainController {
     private Stage primaryStage;
     private Parent adminPageComponent;
     private AdminPageController adminPageController;
-    private boolean bar=false;
+    private boolean logout = false;
     @FXML public void initialize() {
         // userGreetingLabel.textProperty().bind(Bindings.concat("Hello ", currentUserName));
         // prepare components
@@ -62,12 +62,12 @@ public class AdminAppMainController {
         }
     }
     public void switchToAdminPage() {
-        if (bar)
+        if (logout)
             loadAdminPage();
         Scene scene = new Scene(adminPageComponent,1200,800);
         primaryStage.setScene(scene);
         adminPageController.setActive();
-        bar =true;
+        logout = true;
     }
     public void switchToLogin() {
         try{
@@ -80,24 +80,8 @@ public class AdminAppMainController {
             Scene scene = new Scene(root, 500, 300);
             primaryStage.setScene(scene);
             loadLoginPage();
-
         }
         catch (Exception e){}
-/*
-        loginComponent = new FXMLLoader().load(loginPageUrl.openStream());
-        Scene scene = new Scene(loginComponent,500,300);
-        primaryStage.setScene(scene);
-
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(loginPageUrl);
-        loginComponent = fxmlLoader.load(loginPageUrl.openStream());
-        logicController = fxmlLoader.getController();
-        logicController.setAppMainController(this);
-        setMainPanelTo(loginComponent);
-        primaryStage.setScene(scene);
-
-
- */
     }
     public void updateUserName(String userName) {
         currentUserName.set(userName);
