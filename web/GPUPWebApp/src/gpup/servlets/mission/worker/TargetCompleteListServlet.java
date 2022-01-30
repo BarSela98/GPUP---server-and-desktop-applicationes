@@ -25,6 +25,9 @@ public class TargetCompleteListServlet extends HttpServlet {
             WorkerManager workerManger = ServletUtils.getWorkerManager(getServletContext());
             String usernameFromSession = SessionUtils.getUsername(request);
             List<Target> targetComplete = workerManger.getWorkerByName(usernameFromSession).getCompleteTarget();
+            System.out.println("------");
+            System.out.println(targetComplete);
+            System.out.println("------");
             String json = gson.toJson(targetComplete);
             out.println(json);
             out.flush();
