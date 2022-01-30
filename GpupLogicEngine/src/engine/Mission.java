@@ -202,6 +202,7 @@ public class Mission {
 
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, json);
+        System.out.println("send target to worker 1 -" + target);
         HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
 
             @Override
@@ -216,6 +217,7 @@ public class Mission {
                     Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
                 }
                 else{
+                    System.out.println("send target to worker 2");
                     //Platform.runLater(() -> System.out.println(response.body()));
                 }
             }
