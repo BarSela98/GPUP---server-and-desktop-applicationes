@@ -264,8 +264,18 @@ public class missionAdminController {
     }
 /// table
     public void updateTable() {
-        compilationPrice.setText(String.valueOf(mainController.getGraph().getPriceForCompilation()));
-        simulationPrice.setText(String.valueOf(mainController.getGraph().getPriceForSimulation()));
+        int priceForCompilation = mainController.getGraph().getPriceForCompilation();
+        int priceForSimulation = mainController.getGraph().getPriceForSimulation();
+
+        compilationPrice.setText(String.valueOf(priceForCompilation));
+        simulationPrice.setText(String.valueOf(priceForSimulation));
+
+        if (priceForCompilation == 0)
+            compilerToggle.setDisable(true);
+        if (priceForSimulation == 0)
+            simulationToggle.setDisable(true);
+
+
         tableView.setItems(mainController.getItems());
         for (int i = 0 ; i< mainController.getItems().size();++i)
             configureCheckBoxTask(mainController.getItems().get(i).getCheckBoxTask());

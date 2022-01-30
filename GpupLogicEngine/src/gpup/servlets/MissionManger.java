@@ -42,8 +42,8 @@ public class MissionManger {
 
     public synchronized void updateTarget(Target tar){
         Mission m = missionList.get(tar.getMission());
-        System.out.println("update");
+       // System.out.println("update");
         m.updateTarget(tar);
-        System.out.println("after update");
+       // System.out.println("after update");
     }
 }

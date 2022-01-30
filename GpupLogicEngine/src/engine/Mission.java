@@ -148,8 +148,8 @@ public class Mission {
         }
     }
     public void updateTarget(Target tar) {
-        System.out.println("--3");
-        System.out.println(targets);
+       // System.out.println("--3");
+      //  System.out.println(targets);
             for (Target t : targets) {
                 if (t.getName().equals(tar.getName())) {
                     System.out.println("--4");
@@ -157,9 +157,9 @@ public class Mission {
                     //targets.remove(t);
                     //targets.add(tar);
                     amountOfCompleteTarget++;
-                    System.out.println("update - " + progress);
+                    //System.out.println("update - " + progress);
                     progress = String.valueOf((float) amountOfTarget / (float) amountOfCompleteTarget);
-                    System.out.println("update2 - " + progress);
+                   // System.out.println("update2 - " + progress);
                 }
             }
 

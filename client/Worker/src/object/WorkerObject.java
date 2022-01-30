@@ -1,8 +1,7 @@
 package object;
 
-import engine.Target;
 import com.google.gson.Gson;
-import javafx.application.Platform;
+import engine.Target;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
@@ -54,7 +53,7 @@ public class WorkerObject {
     }
     public void addToCompleteTarget(Target t) {
         completeTarget.add(t);
-        System.out.println("add complete");
+       // System.out.println("add complete");
     }
 
     public Map<String, StatusOfWorkerInMission> getStatusOfWorkerInMission() {
@@ -71,7 +70,7 @@ public class WorkerObject {
 
     public void addTargetToList(Target t){
         targetsToExecute.add(t);
-        System.out.println("add target "+t+" targetsToExecute in "+ this);
+       // System.out.println("add target "+t+" targetsToExecute in "+ this);
     }
     public void updateTargetInMission(Target t){
         String json = new Gson().toJson(t);
@@ -94,11 +93,12 @@ public class WorkerObject {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    System.out.println("updateTargetInMission - WorkerObject - Response code: "+response.code()+"\nResponse body: "+responseBody);
+                   // System.out.println("updateTargetInMission - WorkerObject - Response code: "+response.code()+"\nResponse body: "+responseBody);
                 }
                 else{
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println(responseBody));
+                   // System.out.println("Response body: ------- "+responseBody);
+                    //Platform.runLater(() -> System.out.println(responseBody));
                 }
             }
         });
@@ -116,7 +116,7 @@ public class WorkerObject {
     }
     public void execute(Target t){
         curThreads++;
-
+        System.out.println("---1 ");
         Thread thread =new Thread(t);
         thread.start();
         try {
@@ -126,6 +126,7 @@ public class WorkerObject {
             }
         }
         catch (Exception e){}
+        System.out.println("---2 ");
         curThreads--;
         total+=t.getPrice();
         updateTargetInMission(t);
