@@ -19,12 +19,20 @@ public class Graph {
     private Map<String, Target> targetMap;
     private EngineImp engine;
     public Graph(Xmlimpl file, String nameOfCreator)throws Exception{
+        priceForSimulation = file.getPriceForSimulation();
+        priceForCompilation = file.getPriceForCompilation();
         Map<String, Target> targetMapTemp;
         targetMapTemp = file.makeAMap();// check if the XML file is proper and crate map (key - target name, val - target) from file
         targetMap = targetMapTemp;
+        for(Map.Entry<String,Target>e:targetMap.entrySet()){
+            if(priceForCompilation!=0){
+                e.getValue().setPrice(priceForCompilation);
+            }
+            else{
+                e.getValue().setPrice(priceForSimulation);
+            }
+        }
         targetsInformation();
-        priceForSimulation = file.getPriceForSimulation();
-        priceForCompilation = file.getPriceForCompilation();
         graphName = file.getGraphName();
         this.nameOfCreator = nameOfCreator;
         engine = new EngineImp(targetMap);

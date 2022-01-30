@@ -66,7 +66,7 @@ public class EngineImp {
      *  @return all the information between the targets:
      *  target names
      *  all the cycle paths
-     * @throws TargetIsExists on if target isn't exists
+     * @tRERhrows TargetIsExists on if target isn't exists
      */
 
     public Information circuitDetection(String name)throws Exception {

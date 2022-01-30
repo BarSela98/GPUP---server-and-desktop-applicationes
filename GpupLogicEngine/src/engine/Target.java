@@ -18,6 +18,14 @@ public class Target implements Serializable,Runnable {
         this.status = tar.status;
     }
 
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
     public enum Type {INDEPENDENTS, LEAF, MIDDLE, ROOT}
     public enum Status {Waiting, Success, Warning, Skipped, Failure, Frozen}
     private String userData;
@@ -41,6 +49,7 @@ public class Target implements Serializable,Runnable {
     private String compileDest;
     private String source;
     private String Mission;
+    private int price;
 
     /**
      * ctor

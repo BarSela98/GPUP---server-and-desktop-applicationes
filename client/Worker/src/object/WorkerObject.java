@@ -24,6 +24,7 @@ public class WorkerObject {
     private List<Target> targetsToExecute;
     private List<Target> completeTarget;
     private Map<String,StatusOfWorkerInMission> statusOfWorkerInMission;
+    private int total=0;
     private boolean b= false;
 
     public WorkerObject(String nameOfWorker, int threadsNum) {
@@ -126,6 +127,7 @@ public class WorkerObject {
         }
         catch (Exception e){}
         curThreads--;
+        total+=t.getPrice();
         updateTargetInMission(t);
         //send back to engine when done
         //if you get to this comment then your done
