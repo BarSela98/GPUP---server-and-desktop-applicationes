@@ -328,7 +328,7 @@ public class Mission {
     private void compilationSetUp(){
         String path="C:\\gpup-working-dir";//temp value
         try {
-            path= openDir("simulation");
+            path= openDir("compilation");
         }
         catch (Exception e){}
         for(Target t:targets){
