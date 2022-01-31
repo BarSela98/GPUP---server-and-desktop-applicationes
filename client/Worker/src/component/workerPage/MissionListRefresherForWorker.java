@@ -1,7 +1,7 @@
 package component.workerPage;
 
+import ODT.MissionTableWorker;
 import engine.Mission;
-import ODT.MissionInTable;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
@@ -21,11 +21,11 @@ import static utility.Constants.MISSION_LIST;
 
 
 public class MissionListRefresherForWorker extends TimerTask {
-    private final Consumer<List<MissionInTable>> MissionsListConsumer;
+    private final Consumer<List<MissionTableWorker>> MissionsListConsumer;
     private final BooleanProperty shouldUpdate;
 
 
-    public MissionListRefresherForWorker(BooleanProperty shouldUpdate, Consumer<List<MissionInTable>> MissionsListConsumer) {
+    public MissionListRefresherForWorker(BooleanProperty shouldUpdate, Consumer<List<MissionTableWorker>> MissionsListConsumer) {
          this.shouldUpdate = shouldUpdate;
         this.MissionsListConsumer = MissionsListConsumer;
     }
@@ -55,9 +55,9 @@ public class MissionListRefresherForWorker extends TimerTask {
                     if (jsonArrayOfMissionsNames.length() != 3) {
                         Mission[] MissionsNames = GSON_INSTANCE.fromJson(jsonArrayOfMissionsNames, Mission[].class);
 
-                        List<MissionInTable> table = new ArrayList<>();
+                        List<MissionTableWorker> table = new ArrayList<>();
                         for(int i= 0 ; i < MissionsNames.length ; ++i)
-                            table.add(new MissionInTable(MissionsNames[i]));
+                            table.add(new MissionTableWorker(MissionsNames[i]));
                         MissionsListConsumer.accept(table);
                     }
                 }

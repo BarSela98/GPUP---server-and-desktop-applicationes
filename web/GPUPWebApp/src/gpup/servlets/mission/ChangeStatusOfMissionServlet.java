@@ -57,6 +57,8 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
 
                 else if (statusOfMission.equals("pause") || statusOfMission.equals("run") || statusOfMission.equals("resume") || statusOfMission.equals("stop")){
                     missionManger.setStatusOfMissionByName(nameOfMission, statusOfMission);
+                    if (statusOfMission.equals("run"))
+                        missionManger.getMissionByName(nameOfMission).doMission();
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.getWriter().write("Mission: "+nameOfMission+" change status to "+ statusOfMission);
                     response.getWriter().flush();

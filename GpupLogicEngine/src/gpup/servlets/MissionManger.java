@@ -31,6 +31,8 @@ public class MissionManger {
         if(!missionList.containsKey(name))
             throw new Exception("graph name not exist");
         missionList.get(name).setStatus(status);
+
+
     }
 
     public synchronized void signForMissionByName(String worker, String missionNameFromParameter) {

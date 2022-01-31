@@ -9,7 +9,6 @@ import java.util.List;
 
 public class MissionInTable extends Mission {
     private CheckBox checkBox;
-    private Boolean sign = false;
 
     public MissionInTable(String nameOfMission, String nameOfCreator,String nameOfGraph, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Compilation compilation) {
         super(nameOfMission, nameOfCreator,nameOfGraph, targets, whichTask, typeOfRunning, compilation);
@@ -23,12 +22,8 @@ public class MissionInTable extends Mission {
         super(missionsName);
         checkBox = new CheckBox();
     }
-
-    public Boolean getSign() {
-        return sign;
-    }
-    public void setSign(Boolean sign) {
-        this.sign = sign;
+    public void changeMissionInformationAdmin(MissionInTable m) {
+        checkBox.setSelected(m.getCheckBox().isSelected());
     }
 
     public CheckBox getCheckBox() {
@@ -44,8 +39,6 @@ public class MissionInTable extends Mission {
         else
             return new Mission(super.getNameOfMission(), super.getNameOfCreator(),super.getNameOfGraph(), super.getTargets(), super.getWhichTask(), super.getTypeOfRunning(), super.getSimulation());
     }
-    public void changeInformation(MissionInTable missionInTable) {
-        checkBox.setSelected(missionInTable.getCheckBox().isSelected());
-        this.sign = missionInTable.getSign();
-    }
+
+
 }

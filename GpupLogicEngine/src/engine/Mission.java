@@ -4,8 +4,6 @@ import ODT.Compilation;
 import ODT.Simulation;
 import ODT.TargetToWorker;
 import com.google.gson.Gson;
-import error.errorMain;
-import javafx.application.Platform;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
@@ -221,18 +219,19 @@ public class Mission {
 
             @Override
             public void onFailure(@org.jetbrains.annotations.NotNull Call call, @org.jetbrains.annotations.NotNull IOException e) {
-                Platform.runLater(() -> new errorMain(e));
+                System.out.println(e.getStackTrace());
+                //Platform.runLater(() -> new errorMain(e));
             }
 
             @Override
             public void onResponse(@org.jetbrains.annotations.NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
+               //     Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
                 }
                 else{
-                    System.out.println("send target to worker 2");
-                    //Platform.runLater(() -> System.out.println(response.body()));
+                 //   System.out.println("send target to worker 2");
+                //    Platform.runLater(() -> System.out.println(response.body()));
                 }
             }
         });

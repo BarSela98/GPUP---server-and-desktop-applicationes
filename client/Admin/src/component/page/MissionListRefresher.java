@@ -27,7 +27,7 @@ public class MissionListRefresher extends TimerTask {
 
 
     public MissionListRefresher(BooleanProperty shouldUpdate, Consumer<List<MissionInTable>> MissionsListConsumer) {
-         this.shouldUpdate = shouldUpdate;
+        this.shouldUpdate = shouldUpdate;
         this.MissionsListConsumer = MissionsListConsumer;
     }
 

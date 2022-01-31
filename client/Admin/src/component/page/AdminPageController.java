@@ -272,7 +272,7 @@ public class AdminPageController implements AdminCommands, Closeable {
         timer.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);
     }
 /// Mission Refresher
-    public void starMissionRefresher() {
+public void starMissionRefresher() {
     missionRefresher = new MissionListRefresher(autoUpdate, this::updateMissionLines);
     timer = new Timer();
     timer.schedule(missionRefresher, REFRESH_RATE, REFRESH_RATE);
@@ -287,7 +287,7 @@ public class AdminPageController implements AdminCommands, Closeable {
             }
 
             for(int i = 0 ; i < items.size() ; ++i) { /// update check box
-                missions.get(i).changeInformation(items.get(i));
+                missions.get(i).changeMissionInformationAdmin(items.get(i));
             }
 
 

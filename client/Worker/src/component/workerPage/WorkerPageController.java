@@ -1,6 +1,7 @@
 package component.workerPage;
 
 import ODT.MissionInTable;
+import ODT.MissionTableWorker;
 import component.api.WorkerCommands;
 import component.chat.ChatAreaRefresher;
 import component.chat.model.ChatLinesWithVersion;
@@ -79,7 +80,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         numCheckBoxesSelected.addListener((obs, oldSelectedCount, newSelectedCount) -> {
             if (newSelectedCount.intValue() >= maxNumSelected){
                 unselectedCheckBoxes.forEach(cb -> cb.setDisable(true));
-                MissionInTable m = getSelectedMission();
+                MissionTableWorker m = getSelectedMission();
                 if(m!=null)
                     signUpButton.setDisable(m.getSign());
             }
@@ -103,7 +104,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         nameOfMissionCol_target.setCellValueFactory(new PropertyValueFactory<>("Mission"));
        // nameOfTaskCol_target.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
         nameOfTargetCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        yourStatusCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        yourStatusCol.setCellValueFactory(new PropertyValueFactory<>("statusOfWorkerInMission"));
        // targetStatusCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
        // targetCraditsCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
     }
@@ -126,8 +127,8 @@ public class WorkerPageController implements WorkerCommands , Closeable{
 
         });
     }
-    private MissionInTable getSelectedMission(){
-        for(MissionInTable m : missionTable.getItems()){
+    private MissionTableWorker getSelectedMission(){
+        for(MissionTableWorker m : missionTable.getItems()){
             if (m.getCheckBox().isSelected()) {
                 return m;
             }
@@ -200,19 +201,18 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         timer.schedule(missionRefresher, REFRESH_RATE, REFRESH_RATE);
         ///add close
     }
-    private synchronized void updateMissionLines(List<MissionInTable> missions) {
+    private synchronized void updateMissionLines(List<MissionTableWorker> missions) {
         Platform.runLater(() -> {
             unselectedCheckBoxes.clear();
             selectedCheckBoxes.clear();
-            ObservableList<MissionInTable> items = missionTable.getItems();
-            for (MissionInTable mission : missions) { /// update check box
+            ObservableList<MissionTableWorker> items = missionTable.getItems();
+            for (MissionTableWorker mission : missions) { /// update check box
                 configureCheckBox(mission.getCheckBox());
             }
 
             for(int i = 0 ; i < items.size() ; ++i) { /// update check box
                 missions.get(i).changeInformation(items.get(i));
             }
-
 
             items.clear();
             items.addAll(missions);
@@ -283,11 +283,11 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     }
 
 
-    public synchronized void changeStatusOfWorkerInMission(String status){
+    public synchronized void changeStatusOfWorkerInMission(String status)   {
         MissionInTable m = getSelectedMission();
         if (m == null)
             return;
-
+        final String[] flag = {m.getNameOfMission()};
 
         String finalUrl = HttpUrl
                 .parse(CHANGE_WORKER_STATUS_IN_MISSION)
@@ -301,6 +301,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> System.out.println("changeStatusOfWorkerInMission - error -"+e.getMessage()));
+                flag[0] = null;
             }
 
             @Override
@@ -308,13 +309,40 @@ public class WorkerPageController implements WorkerCommands , Closeable{
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
                     Platform.runLater(() -> System.out.println("changeStatusOfWorkerInMission - worker - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    flag[0] = null;
                 } else {
                     String responseBody = response.body().string();
                     Platform.runLater(() -> System.out.println(responseBody));
                 }
             }
         });
+        changeWorkerStatusInTable(flag[0], status);
+        System.out.println(status);
     }
+
+    public void changeWorkerStatusInTable(String name, String status){
+        if (name != null)
+            for (MissionTableWorker m :missionTable.getItems()){
+                if(m.getNameOfMission().equals(name)){
+                    switch (status) {
+                        case "sign":
+                            m.setStatusOfWorkerInMission(MissionTableWorker.StatusOfWorkerInMission.SIGNUP);
+                            break;
+                        case "remove":
+                            m.setStatusOfWorkerInMission(MissionTableWorker.StatusOfWorkerInMission.UNSIGNED);
+                            break;
+                        case "DO":
+                            m.setStatusOfWorkerInMission(MissionTableWorker.StatusOfWorkerInMission.DO);
+                            break;
+                        case "PAUSE":
+                            m.setStatusOfWorkerInMission(MissionTableWorker.StatusOfWorkerInMission.PAUSE);
+                            break;
+                    }
+                }
+            }
+
+    }
+
 
     public String getNameOfWorker() {
         return nameOfWorker.getText();
@@ -324,9 +352,10 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     }
 
     public void signForMission(){
-        MissionInTable m = getSelectedMission();
+        MissionTableWorker m = getSelectedMission();
         if (m==null)
             return;
+        final String[] flag = {m.getNameOfMission()};
 
         m.setSign(true);
         signUpButton.setDisable(true);
@@ -355,9 +384,13 @@ public class WorkerPageController implements WorkerCommands , Closeable{
                 }
             }
         });
+        changeWorkerStatusInTable(flag[0], "sign");
     }
     public void removeFormMission(){
-        MissionInTable m = getSelectedMission();
+        MissionTableWorker m = getSelectedMission();
+        if (m==null)
+            return;
+        final String[] flag = {m.getNameOfMission()};
         m.setSign(false);
         signUpButton.setDisable(false);
         String finalUrl = HttpUrl
@@ -385,6 +418,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
                 }
             }
         });
+        changeWorkerStatusInTable(flag[0], "remove");
     }
 
     public BooleanProperty autoUpdatesProperty() {
@@ -410,15 +444,15 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     @FXML private Text amountOfResources;
     @FXML private Text yourCradit;
 //// table 1
-    @FXML private TableView<MissionInTable> missionTable;
-    @FXML private TableColumn<MissionInTable, CheckBox> checkBoxTableMission;
-    @FXML private TableColumn<MissionInTable, String> nameOfMissionCol;
-    @FXML private TableColumn<MissionInTable, String> TaskCol;
-    @FXML private TableColumn<MissionInTable, Integer> WorkerCol;
-    @FXML private TableColumn<MissionInTable, ?> ProgressCol;
-    @FXML private TableColumn<MissionInTable, ?> yourDoneCol;
-    @FXML private TableColumn<MissionInTable, Integer> craditsCol;
-    @FXML private TableColumn<MissionInTable, String> yourStatusCol;
+    @FXML private TableView<MissionTableWorker> missionTable;
+    @FXML private TableColumn<MissionTableWorker, CheckBox> checkBoxTableMission;
+    @FXML private TableColumn<MissionTableWorker, String> nameOfMissionCol;
+    @FXML private TableColumn<MissionTableWorker, String> TaskCol;
+    @FXML private TableColumn<MissionTableWorker, Integer> WorkerCol;
+    @FXML private TableColumn<MissionTableWorker, ?> ProgressCol;
+    @FXML private TableColumn<MissionTableWorker, ?> yourDoneCol;
+    @FXML private TableColumn<MissionTableWorker, Integer> craditsCol;
+    @FXML private TableColumn<MissionTableWorker, String> yourStatusCol;
 //// table 2
     @FXML private TableView<Target> executeTargetTable;
     @FXML private TableColumn<Target, String> nameOfMissionCol_target;
