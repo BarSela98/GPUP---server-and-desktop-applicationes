@@ -2,6 +2,7 @@ package component.graph.general;
 
 import ODT.Graph;
 import component.graph.main.MainGraphController;
+import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -59,14 +60,16 @@ public class GeneralGraphController {
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Platform.runLater(() -> System.out.println("choose graph from comboBox - error -"+e.getMessage()));
+                    //Platform.runLater(() -> System.out.println("choose graph from comboBox - error -"+e.getMessage()));
+                    Platform.runLater(() -> new errorMain("choose graph from comboBox - error -"+e.getMessage()));
                 }
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (response.code() != 200) {
                         String responseBody = response.body().string();
-                        Platform.runLater(() -> System.out.println("choose graph from comboBox - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                        Platform.runLater(() -> new errorMain("choose graph from comboBox - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                       // Platform.runLater(() -> System.out.println("choose graph from comboBox - Response code: "+response.code()+"\nResponse body: "+responseBody));
                     } else{
                         String jsonArrayOfUsersNames = response.body().string();
                         Graph graph = GSON_INSTANCE.fromJson(jsonArrayOfUsersNames, Graph.class);
@@ -94,37 +97,36 @@ public class GeneralGraphController {
     @FXML void loadGraphButton(ActionEvent event) {
 
         File file = new FileChooser().showOpenDialog(new Stage());
+        String finalUrl = HttpUrl
+                .parse(LOAD_XML_FILE)
+                .newBuilder()
+                .build()
+                .toString();
 
-        if (file != null) {
-            String finalUrl = HttpUrl
-                    .parse(LOAD_XML_FILE)
-                    .newBuilder()
-                    .build()
-                    .toString();
-            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                    .addFormDataPart("file", file.getPath())
-                    .build();
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("application/octet-stream"), file))
+                .build();
 
-            HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
+        HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
 
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Platform.runLater(() -> System.out.println("Failed to load file - error -"+e.getMessage()));
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+             //   Platform.runLater(() -> System.out.println("Failed to load file - error -"+e.getMessage()));
+                Platform.runLater(() -> new errorMain("Failed to load file - error -"+e.getMessage()));
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> new errorMain("loadGraphButton - admin - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                 //   Platform.runLater(() -> System.out.println("loadGraphButton - admin - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 }
-
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    if (response.code() != 200) {
-                        String responseBody = response.body().string();
-                        Platform.runLater(() -> System.out.println("loadGraphButton - admin - Response code: "+response.code()+"\nResponse body: "+responseBody));
-                    } else {
-                        String responseBody = response.body().string();
-                        Platform.runLater(() -> System.out.println(responseBody));
-                    }
-                }
-            });
-        }
+            }
+        });
     }
+
     public GeneralGraphController(){
          autoUpdate = new SimpleBooleanProperty(true);
          totalGraph = new SimpleIntegerProperty(0);
@@ -154,5 +156,4 @@ public class GeneralGraphController {
             timer.cancel();
         }
     }
-
 }

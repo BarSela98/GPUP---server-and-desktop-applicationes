@@ -30,13 +30,19 @@ public class LightweightLoginServlet extends HttpServlet {
             String usernameFromParameter = request.getParameter(USERNAME);
             String roleFromParameter = request.getParameter(ROLE);
             String threadFromParameter = request.getParameter(AMOUNT_OF_THREAD);
-
+            /*
+            no username in session and no username in parameter - not standard situation. it's a conflict
+            stands for conflict in server state
+            */
             if (usernameFromParameter == null || usernameFromParameter.isEmpty()) {
-                //no username in session and no username in parameter - not standard situation. it's a conflict
-
-                // stands for conflict in server state
                 response.setStatus(HttpServletResponse.SC_CONFLICT);
-            } else {
+                response.getWriter().write("wrong login - user name incorrect");
+            }
+            else if (roleFromParameter == null || roleFromParameter.isEmpty() || (!roleFromParameter.equals("Admin") && !roleFromParameter.equals("Worker"))) {
+                response.setStatus(HttpServletResponse.SC_CONFLICT);
+                response.getWriter().write("you have to choose correct role");
+            }
+            else {
                 //normalize the username value
                 usernameFromParameter = usernameFromParameter.trim();
 
@@ -62,24 +68,40 @@ public class LightweightLoginServlet extends HttpServlet {
                     }
                     else {
                         //add the new user to the users list
-                        userManager.addUser(usernameFromParameter,roleFromParameter);
                         if (roleFromParameter.equals("Worker")){
-                            WorkerManager workerManager = ServletUtils.getWorkerManager(getServletContext());
-                            workerManager.addWorker(usernameFromParameter,Integer.parseInt(threadFromParameter));
+                            if (threadFromParameter == null || threadFromParameter.isEmpty()) {
+                                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                                response.getWriter().write("you have to choose amount of thread for worker");
+                            }
+                            else if(Integer.parseInt(threadFromParameter) > 5 || Integer.parseInt(threadFromParameter) < 1){
+                                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                                response.getWriter().write("you can't login with this amount of thread for worker");
+                            }
+                            else {
+                                WorkerManager workerManager = ServletUtils.getWorkerManager(getServletContext());
+                                workerManager.addWorker(usernameFromParameter, Integer.parseInt(threadFromParameter));
+                                request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);
+                                response.setStatus(HttpServletResponse.SC_OK);
+                                response.getOutputStream().print(usernameFromParameter+" login");
+                                userManager.addUser(usernameFromParameter,roleFromParameter);
+                            }
+                        }
+                        else{ // admin
+                            userManager.addUser(usernameFromParameter,roleFromParameter);
+                            request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            response.getOutputStream().print(usernameFromParameter+" login");
                         }
                         //set the username in a session so it will be available on each request
                         //the true parameter means that if a session object does not exists yet
                         //create a new one
-                        request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);
-
-                        response.setStatus(HttpServletResponse.SC_OK);
-                        response.getOutputStream().print(usernameFromParameter+" login");
                     }
                 }
             }
         } else {
             //user is already logged in
-            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("you are already login");
         }
     }
 

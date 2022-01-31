@@ -18,7 +18,7 @@ public class Graph {
     private int priceForCompilation;
     private Map<String, Target> targetMap;
     private EngineImp engine;
-    public Graph(Xmlimpl file, String nameOfCreator)throws Exception{
+    public Graph(Xmlimpl file, String nameOfCreator) throws Exception{
         priceForSimulation = file.getPriceForSimulation();
         priceForCompilation = file.getPriceForCompilation();
         Map<String, Target> targetMapTemp;

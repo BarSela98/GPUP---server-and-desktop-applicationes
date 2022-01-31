@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import component.graph.main.MainGraphController;
 import engine.Mission;
 import engine.Target;
+import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
@@ -219,13 +220,13 @@ public class missionAdminController {
             whichTask =  Utility.WhichTask.COMPILATION;
             int price = Integer.parseInt(compilationPrice.getText());
             compilation = new Compilation(price,sourceFolderText.getText(),targetFolderText.getText());
-            mission = new Mission(nameOfMissionText.getText(),mainController.getGraph().getNameOfCreator(),targetsToRun,whichTask,typeOfRunning,compilation);
+            mission = new Mission(nameOfMissionText.getText(),mainController.getGraph().getNameOfCreator(),mainController.getGraph().getGraphName(),targetsToRun,whichTask,typeOfRunning,compilation);
 
         } else{
             whichTask = Utility.WhichTask.SIMULATION;
             int price = Integer.parseInt(simulationPrice.getText());
             simulation = new Simulation(price,ProcessingTimeSpinner.getValue(),randomCheckBox.isSelected(), (float) successSpinner.getValue()/100, (float)successWithWarningSpinner.getValue()/100);
-            mission = new Mission(nameOfMissionText.getText(),mainController.getGraph().getNameOfCreator(),targetsToRun,whichTask,typeOfRunning,simulation);
+            mission = new Mission(nameOfMissionText.getText(),mainController.getGraph().getNameOfCreator(),mainController.getGraph().getGraphName(),targetsToRun,whichTask,typeOfRunning,simulation);
         }
 
         String json = new Gson().toJson(mission);
@@ -234,28 +235,30 @@ public class missionAdminController {
                 .newBuilder()
                 .build()
                 .toString();
-
+        System.out.println(json);
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, json);
         HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("Execute Mission - error -"+e.getMessage()));
+             //   Platform.runLater(() -> System.out.println("Execute Mission - error -"+e.getMessage()));
+                Platform.runLater(() -> new errorMain("Execute Mission - error -"+e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("Execute Mission " + responseBody));
+                //    Platform.runLater(() -> System.out.println("Execute Mission " + responseBody));
+                      Platform.runLater(() -> new errorMain("Execute Mission " + responseBody));
                 } else {
                     Platform.runLater(() -> {
                         try {
                             String responseBody = response.body().string();
                             System.out.println(responseBody);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            Platform.runLater(() -> new errorMain(e));
                         }
                     });
                 }

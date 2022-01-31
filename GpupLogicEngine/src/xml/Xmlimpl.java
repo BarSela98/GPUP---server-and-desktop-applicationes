@@ -5,28 +5,29 @@ import generated2.GPUPConfiguration;
 import generated2.GPUPDescriptor;
 import generated2.GPUPTarget;
 import generated2.GPUPTargetDependencies;
+import target.DependsOnConflict;
+import target.RequiredForConflict;
+import target.TargetIsExists;
+import target.UniqueTarget;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 public class Xmlimpl implements Xml {
     private final GPUPDescriptor gpupDescriptor;
     private final static String JAXB_XML_PACKAGE_NAME = "generated2";
 
-    public Xmlimpl(String path) throws Exception {
-            InputStream inputStream = new FileInputStream(path);
-            gpupDescriptor = deserializeFrom(inputStream);
+    public Xmlimpl(InputStream inputStream) throws Exception {
+        inputStream.reset();
+        gpupDescriptor = deserializeFrom(inputStream);
     }
+
+
     private static GPUPDescriptor deserializeFrom(InputStream in) throws JAXBException {
-        System.out.println("after");
         JAXBContext jc = JAXBContext.newInstance(JAXB_XML_PACKAGE_NAME);
         Unmarshaller u = jc.createUnmarshaller();
         return (GPUPDescriptor) u.unmarshal(in);
@@ -37,7 +38,7 @@ public class Xmlimpl implements Xml {
 
         for (GPUPTarget p : gpupDescriptor.getGPUPTargets().getGPUPTarget()) {
             if (targetsMap.containsKey(p.getName().toUpperCase()) || targetsMap.containsKey(p.getName())) {
-               // throw new UniqueTarget(p.getName());
+                throw new UniqueTarget(p.getName());
             } else {
                 Set<String> newSetDependency = new HashSet<>();
                 Set<String> newSetRequiredFor = new HashSet<>();
@@ -57,8 +58,8 @@ public class Xmlimpl implements Xml {
                 targetsMap.put(newTarget.getName().toUpperCase(), newTarget);
             }
         }
-        organizeTheDependencies(targetsMap);
-        makeTypeForTargets(targetsMap);
+            organizeTheDependencies(targetsMap);
+            makeTypeForTargets(targetsMap);
             return targetsMap;
     }
     public void organizeTheDependencies(Map<String, Target> targetMap) throws Exception {
@@ -71,20 +72,22 @@ public class Xmlimpl implements Xml {
                 if (setOfKey.contains(st2.toUpperCase())) { // check if the target is exists in the xml file
                     if (!targetMap.get(st2.toUpperCase()).getSetDependsOn().contains(targetKey.toUpperCase())) // check if there is a conflict
                         targetMap.get(st2.toUpperCase()).addToSetRequiredFor(targetKey.toUpperCase());
-                  //  else throw new DependsOnConflict(targetKey,st2);
+                    else throw new DependsOnConflict(targetKey,st2);
                 }
-                else{}
-                 //   throw new TargetIsExists(st2);
+                else{
+                    throw new TargetIsExists(st2);
+                }
+
             }
             // organize the DependsOn of all target
             for (String st2 : targetMap.get(targetKey.toUpperCase()).getSetRequiredFor()) {
                 if (setOfKey.contains(st2.toUpperCase())) { // check if the target is exists in the xml file
                     if (!targetMap.get(st2.toUpperCase()).getSetRequiredFor().contains(targetKey.toUpperCase())) // check if there is a conflict
                         targetMap.get(st2.toUpperCase()).addToSetDependsOn(targetKey.toUpperCase());
-                   // else throw new RequiredForConflict(targetKey,st2);
+                    else throw new RequiredForConflict(targetKey,st2);
                 }
                 else{
-                //    throw new TargetIsExists(st2);
+                    throw new TargetIsExists(st2);
                 }
             }
         }
@@ -119,6 +122,14 @@ public class Xmlimpl implements Xml {
     }
     public String getGraphName(){
         return gpupDescriptor.getGPUPConfiguration().getGPUPGraphName();
+    }
+
+
+
+
+
+    private String readFromInputStream(InputStream inputStream) {
+        return new Scanner(inputStream).useDelimiter("\\Z").next();
     }
 
 }

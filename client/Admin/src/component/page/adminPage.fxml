@@ -106,10 +106,11 @@
                                        <center>
                                           <TableView fx:id="tableViewMission" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                              <columns>
-                                                <TableColumn fx:id="remarkCol" prefWidth="47.0" />
-                                                <TableColumn fx:id="nameOfMissionCol" prefWidth="149.0" text="Name Of Mission" />
-                                                <TableColumn fx:id="nameOfCreatorCol" prefWidth="142.0" text="Name Of Graph" />
-                                                <TableColumn prefWidth="142.0" text="Targets Information">
+                                                <TableColumn fx:id="remarkCol" prefWidth="40.0" />
+                                                <TableColumn fx:id="nameOfMissionCol" prefWidth="105.0" text="Name Of Mission" />
+                                                <TableColumn fx:id="nameOfCreatorCol" prefWidth="108.0" text="Name Of Creator" />
+                                                <TableColumn fx:id="nameOfGraphCol" prefWidth="106.0" text="Name Of Graph" />
+                                                <TableColumn prefWidth="265.0" text="Targets Information">
                                                    <columns>
                                                       <TableColumn fx:id="rootCol" prefWidth="66.0" text="Root" />
                                                       <TableColumn fx:id="middleCol" prefWidth="67.0" text="Middle " />
@@ -117,10 +118,11 @@
                                                       <TableColumn fx:id="independentsCol" prefWidth="106.0" text="Independents" />
                                                    </columns>
                                                 </TableColumn>
-                                                <TableColumn fx:id="workersCol" prefWidth="74.0" text="Workers" />
-                                                <TableColumn prefWidth="142.0" text="Target - Progress " />
-                                                <TableColumn fx:id="ProgressCol" prefWidth="142.0" text="Progress " />
-                                                <TableColumn fx:id="priceOfAllMissionCol" prefWidth="142.0" text="Price" />
+                                                <TableColumn fx:id="workersCol" prefWidth="52.0" text="Workers" />
+                                                <TableColumn prefWidth="164.0" text="Target - Progress " />
+                                                <TableColumn fx:id="ProgressCol" prefWidth="122.0" text="Progress " />
+                                                <TableColumn fx:id="priceOfAllMissionCol" prefWidth="50.0" text="Price" />
+                                                <TableColumn fx:id="StatusOfMissionCol" prefWidth="135.0" text="Status" />
                                              </columns>
                                           </TableView>
                                        </center>

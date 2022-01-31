@@ -3,7 +3,10 @@ package gpup.servlets.graph;
 import ODT.Graph;
 import com.google.gson.Gson;
 import gpup.servlets.GraphManger;
+import gpup.servlets.UserManager;
 import gpup.utils.ServletUtils;
+import gpup.utils.SessionUtils;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,13 +20,26 @@ import static gpup.constants.Constants.GRAPHNAME;
 @WebServlet(name = "GraphServlet", urlPatterns = {"/select/graph"})
 public class GraphServlet extends HttpServlet {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
         response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        String usernameFromSession = SessionUtils.getUsername(request);
+        UserManager userManager = ServletUtils.getUserManager(getServletContext());
         String graphNameFromParameter = request.getParameter(GRAPHNAME);
-        if (graphNameFromParameter == null || graphNameFromParameter.isEmpty())
-            response.setStatus(HttpServletResponse.SC_CONFLICT);
+        if (graphNameFromParameter == null || graphNameFromParameter.isEmpty()){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+        }
+        else if(usernameFromSession == null || usernameFromSession.isEmpty()){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.write("please login");
+        }
+        else if(!userManager.getUserRole(usernameFromSession).equals("Admin")){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.write("only admin can select a graph");
+        }
         else {
-            try (PrintWriter out = response.getWriter()) {
+            try {
                 Gson gson = new Gson();
                 GraphManger graphManger = ServletUtils.getGraphManager(getServletContext());
                 Graph graph = graphManger.getGraphByName(graphNameFromParameter);
@@ -33,7 +49,7 @@ public class GraphServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_OK);
             }
             catch (Exception e){
-                response.getOutputStream().print(e.toString());
+                out.write(e.toString());
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         }

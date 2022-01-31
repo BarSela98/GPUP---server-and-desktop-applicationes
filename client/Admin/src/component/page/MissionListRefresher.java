@@ -57,8 +57,9 @@ public class MissionListRefresher extends TimerTask {
                         Mission[] MissionsNames = GSON_INSTANCE.fromJson(jsonArrayOfMissionsNames, Mission[].class);
 
                         List<MissionInTable> table = new ArrayList<>();
-                        for(int i= 0 ; i < MissionsNames.length ; ++i)
+                        for(int i= 0 ; i < MissionsNames.length ; ++i){
                             table.add(new MissionInTable(MissionsNames[i]));
+                        }
                         MissionsListConsumer.accept(table);
                     }
                 }

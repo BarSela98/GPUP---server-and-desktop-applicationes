@@ -24,9 +24,11 @@ import java.util.*;
 import static utility.Constants.SEND_TARGET_TO_MISSION;
 
 public class Mission {
+    public enum statusOfMission {PAUSE , DONE , WAITING, INPROGRESS , STOP}
     final Object lock = new Object();
     private String nameOfMission;
     private String nameOfCreator;
+    private String nameOfGraph;
     private int amountOfCompleteTarget = 0;
     private int amountOfTarget;
     private int amountOfRoot;
@@ -36,22 +38,27 @@ public class Mission {
     private int priceOfMission;
     private int priceOfAllMission;
     private Utility.WhichTask whichTask;
-    private StatusOfFinishMission statusOfFinishMission;
+
+    private statusOfMission statusOfMission;
     private List<Target> targets;
     private List<Target> waitingTargetToExecute;
-    private Utility.TypeOfRunning typeOfRunning;
+    private Utility.TypeOfRunning  typeOfRunning;
     private Simulation simulation;
     private Compilation compilation;
     private Map<String, Boolean> workerList;
     private int workerListSize;
+    /*
     private boolean isRunning;
     private boolean isPause;
     private boolean isStop;
+
+     */
     private String progress ="";
 
     public Mission(Mission m){
         this.nameOfMission = m.getNameOfMission();
         this.nameOfCreator  = m.getNameOfCreator();
+        this.nameOfGraph = m.nameOfGraph;
         this.amountOfTarget = m.getAmountOfTarget();
         this.amountOfRoot = m.getAmountOfRoot();
         this.amountOfMiddle = m.getAmountOfMiddle();
@@ -60,7 +67,7 @@ public class Mission {
         this.priceOfMission = m.getPriceOfMission();
         this.priceOfAllMission = m.getPriceOfAllMission();
         this.whichTask = m.getWhichTask();
-        this.statusOfFinishMission = m.getStatusOfMission();
+        this.statusOfMission = m.getStatusOfMission();
         this.targets = m.getTargets();
         this.waitingTargetToExecute = m.getWaitingTargetToExecute();
         this.typeOfRunning = m.getTypeOfRunning();
@@ -68,14 +75,18 @@ public class Mission {
         this.compilation = m.getCompilation();
         this.workerList = m.getWorkerList();
         this.workerListSize = m.getWorkerListSize();
+        /*
         this.isRunning = m.getIsRunning();
         this.isPause = m.isPause();
         this.isStop = m.isStop();
+
+         */
     }
-    public Mission(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Compilation compilation) {
+    public Mission(String nameOfMission, String nameOfCreator,String nameOfGraph, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Compilation compilation) {
         this.compilation = compilation;
         this.nameOfMission = nameOfMission;
         this.nameOfCreator = nameOfCreator;
+        this.nameOfGraph = nameOfGraph;
         this.targets = targets;
         this.priceOfMission = compilation.getPriceOfCompilation();
         this.whichTask = whichTask;
@@ -83,11 +94,12 @@ public class Mission {
         missionBuilder();
         compilationSetUp();
     }
-    public Mission(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Simulation simulation) {
+    public Mission(String nameOfMission, String nameOfCreator,String nameOfGraph, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Simulation simulation) {
         this.simulation = simulation;
 
         this.nameOfMission = nameOfMission;
         this.nameOfCreator = nameOfCreator;
+        this.nameOfGraph = nameOfGraph;
         this.targets = targets;
         this.priceOfMission = simulation.getPriceOfSimulation();
         this.whichTask = whichTask;
@@ -104,10 +116,13 @@ public class Mission {
         amountOfMiddle = 0;
         amountOfIndependents = 0;
         amountOfLeaf = 0;
+        /*
         this.isRunning = false;
         this.isStop = false;
         this.isPause = false;
-        this.statusOfFinishMission = StatusOfFinishMission.Waiting;
+
+         */
+        this.statusOfMission = statusOfMission.WAITING;
 
         for (Target t : targets) {
             t.setMission(nameOfMission);
@@ -166,9 +181,8 @@ public class Mission {
     }
     public void doMission(){
         Thread doMissionThread = new Thread(()->{
-            while (!isStop && statusOfFinishMission != StatusOfFinishMission.Done) {
-                while (isRunning && !isStop && !isPause) {
-                    statusOfFinishMission = StatusOfFinishMission.inProgress;
+            while (statusOfMission != statusOfMission.STOP && statusOfMission != statusOfMission.DONE) {
+                while (statusOfMission == statusOfMission.INPROGRESS && statusOfMission != statusOfMission.STOP && statusOfMission != statusOfMission.PAUSE && statusOfMission != statusOfMission.DONE) {
                     fixTargetsStatues();
                     for (String worker : workerList.keySet()) {
                         if (workerList.get(worker) && waitingTargetToExecute.size() != 0) {
@@ -179,7 +193,7 @@ public class Mission {
                     checkIfMissionDone();
                 }
                 checkIfMissionDone();
-                while (!isStop && isPause) {
+                while (statusOfMission != statusOfMission.STOP && statusOfMission != statusOfMission.DONE && statusOfMission == statusOfMission.PAUSE) {
                     for (String worker : workerList.keySet()) {
                         if (workerList.get(worker) && waitingTargetToExecute.size() != 0) {
                             sendTargetToWorker(worker, waitingTargetToExecute.get(0));
@@ -302,7 +316,7 @@ public class Mission {
                 return false;
             }
         }
-        statusOfFinishMission = StatusOfFinishMission.Done;
+        statusOfMission = statusOfMission.DONE;
         return true;
     }
     private void simulationSetUp(){
@@ -349,8 +363,6 @@ public class Mission {
         Files.createDirectories(innerPath);
         return s;
     }
-    public enum StatusOfFinishMission {Done, Waiting, inProgress}
-
 
     public String getProgress() {
         return progress;
@@ -402,32 +414,14 @@ public class Mission {
         this.compilation = compilation;
     }
 
-    public void setStatus(String statusOfMission) {
-        switch (statusOfMission) {
-            case "run":
-                this.setIsRunning(true);
-                break;
-            case "pause":
-                this.setPause(true);
-                break;
-            case "resume":
-                this.setIsRunning(true);
-                break;
-            case "stop":
-                this.setStop(true);
-                break;
-        }
+    public String getNameOfGraph() {
+        return nameOfGraph;
     }
-    public String getStatus() {
-        if(isRunning)
-            return "run";
-        else if(isPause)
-            return "pause";
-        else if(isStop)
-            return "stop";
-        return "stop";
+    public void setNameOfGraph(String nameOfGraph) {
+        this.nameOfGraph = nameOfGraph;
     }
 
+/*
     public boolean getIsRunning() {
         return isRunning;
     }
@@ -461,6 +455,8 @@ public class Mission {
         }
     }
 
+
+     */
     public int getPriceOfAllMission() {
         return priceOfAllMission;
     }
@@ -538,12 +534,28 @@ public class Mission {
         this.priceOfMission = priceOfMission;
     }
 
-    public StatusOfFinishMission getStatusOfMission() {
-        return statusOfFinishMission;
-    }
-    public void setStatusOfMission(StatusOfFinishMission statusOfMission) {
-        this.statusOfFinishMission = statusOfMission;
+    public Mission.statusOfMission getStatusOfMission() {
+        return statusOfMission;
     }
 
+    public void setStatusOfMission(Mission.statusOfMission statusOfMission) {
+        this.statusOfMission = statusOfMission;
+    }
+    public void setStatus(String newStatusOfMission) {
+        switch (newStatusOfMission) {
+            case "run":
+                this.statusOfMission = statusOfMission.INPROGRESS;
+                break;
+            case "pause":
+                this.statusOfMission = statusOfMission.PAUSE;
+                break;
+            case "resume":
+                this.statusOfMission = statusOfMission.INPROGRESS;
+                break;
+            case "stop":
+                this.statusOfMission = statusOfMission.STOP;
+                break;
+        }
+    }
 
 }

@@ -103,6 +103,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         nameOfMissionCol_target.setCellValueFactory(new PropertyValueFactory<>("Mission"));
        // nameOfTaskCol_target.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
         nameOfTargetCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        yourStatusCol.setCellValueFactory(new PropertyValueFactory<>("name"));
        // targetStatusCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
        // targetCraditsCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
     }
@@ -417,7 +418,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     @FXML private TableColumn<MissionInTable, ?> ProgressCol;
     @FXML private TableColumn<MissionInTable, ?> yourDoneCol;
     @FXML private TableColumn<MissionInTable, Integer> craditsCol;
-    @FXML private TableColumn<MissionInTable, ?> yourStatusCol;
+    @FXML private TableColumn<MissionInTable, String> yourStatusCol;
 //// table 2
     @FXML private TableView<Target> executeTargetTable;
     @FXML private TableColumn<Target, String> nameOfMissionCol_target;

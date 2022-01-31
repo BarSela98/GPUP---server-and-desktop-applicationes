@@ -11,12 +11,12 @@ public class MissionInTable extends Mission {
     private CheckBox checkBox;
     private Boolean sign = false;
 
-    public MissionInTable(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Compilation compilation) {
-        super(nameOfMission, nameOfCreator, targets, whichTask, typeOfRunning, compilation);
+    public MissionInTable(String nameOfMission, String nameOfCreator,String nameOfGraph, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Compilation compilation) {
+        super(nameOfMission, nameOfCreator,nameOfGraph, targets, whichTask, typeOfRunning, compilation);
         checkBox = new CheckBox();
     }
-    public MissionInTable(String nameOfMission, String nameOfCreator, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Simulation simulation) {
-        super(nameOfMission, nameOfCreator, targets, whichTask, typeOfRunning, simulation);
+    public MissionInTable(String nameOfMission, String nameOfCreator,String nameOfGraph, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Simulation simulation) {
+        super(nameOfMission, nameOfCreator,nameOfGraph, targets, whichTask, typeOfRunning, simulation);
         checkBox = new CheckBox();
     }
     public MissionInTable(Mission missionsName) {
@@ -40,9 +40,9 @@ public class MissionInTable extends Mission {
 
     public Mission getMissionFromTable(){
         if (super.getWhichTask() == Utility.WhichTask.COMPILATION)
-        return new Mission(super.getNameOfMission(), super.getNameOfCreator(), super.getTargets(), super.getWhichTask(), super.getTypeOfRunning(), super.getCompilation());
+        return new Mission(super.getNameOfMission(), super.getNameOfCreator(),super.getNameOfGraph(), super.getTargets(), super.getWhichTask(), super.getTypeOfRunning(), super.getCompilation());
         else
-            return new Mission(super.getNameOfMission(), super.getNameOfCreator(), super.getTargets(), super.getWhichTask(), super.getTypeOfRunning(), super.getSimulation());
+            return new Mission(super.getNameOfMission(), super.getNameOfCreator(),super.getNameOfGraph(), super.getTargets(), super.getWhichTask(), super.getTypeOfRunning(), super.getSimulation());
     }
     public void changeInformation(MissionInTable missionInTable) {
         checkBox.setSelected(missionInTable.getCheckBox().isSelected());

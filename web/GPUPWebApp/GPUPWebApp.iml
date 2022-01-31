@@ -26,5 +26,6 @@
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="Tomcat 10.0.14" level="application_server_libraries" />
     <orderEntry type="module" module-name="Worker" />
+    <orderEntry type="module" module-name="Exception" />
   </component>
 </module>

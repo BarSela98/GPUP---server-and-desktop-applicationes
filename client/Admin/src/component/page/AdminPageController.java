@@ -115,7 +115,7 @@ public class AdminPageController implements AdminCommands, Closeable {
                 }
                 else{
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println(responseBody));
+                    //Platform.runLater(() -> System.out.println(responseBody));
                 }
             }
         });
@@ -176,10 +176,12 @@ public class AdminPageController implements AdminCommands, Closeable {
         independentsCol.setCellValueFactory(new PropertyValueFactory<>("amountOfIndependents"));
         priceOfAllMissionCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
         workersCol.setCellValueFactory(new PropertyValueFactory<>("workerListSize"));
-        //workersCol.setCellValueFactory(new PropertyValueFactory<>("isRunning"));
+       // workersCol.setCellValueFactory(new PropertyValueFactory<>("isRunning"));
         remarkCol.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
         remarkCol.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
         ProgressCol.setCellValueFactory(new PropertyValueFactory<>("progress"));
+        StatusOfMissionCol.setCellValueFactory(new PropertyValueFactory<>("statusOfMission"));
+        nameOfGraphCol.setCellValueFactory(new PropertyValueFactory<>("nameOfGraph"));
     }
 
 /// Chat
@@ -316,7 +318,8 @@ public class AdminPageController implements AdminCommands, Closeable {
     @FXML private TableColumn<MissionInTable, CheckBox> remarkCol;
     @FXML private TableView<MissionInTable> tableViewMission;
     @FXML private TableColumn<MissionInTable, String> ProgressCol;
-
+    @FXML private TableColumn<MissionInTable, String> StatusOfMissionCol;
+    @FXML private TableColumn<MissionInTable, String> nameOfGraphCol;
     @FXML private Button stop;
     @FXML private Button play;
     @FXML private Button resume;

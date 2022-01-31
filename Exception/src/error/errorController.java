@@ -13,4 +13,7 @@ public class errorController {
     public void error(Exception e) throws IOException {
         errorText.setText(e.toString());
     }
+    public void error(String e) throws IOException {
+        errorText.setText(e);
+    }
 }

@@ -30,6 +30,13 @@ public class UserManager {
         return Collections.unmodifiableSet(usersSet);
     }
 
+    public synchronized String getUserRole(String username) {
+        for(User user: usersSet)
+            if (user.getName().equals(username))
+                return user.getRole();
+        return null;
+    }
+
     public boolean isUserExists(String username) {
         for(User user: usersSet)
             if (user.getName().equals(username))

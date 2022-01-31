@@ -22,7 +22,7 @@ public class WorkerObject {
     private List<String> tasks;
     private List<Target> targetsToExecute;
     private List<Target> completeTarget;
-    private Map<String,StatusOfWorkerInMission> statusOfWorkerInMission;
+    private Map<String,StatusOfWorkerInMission> statusOfWorkerInMissionMap;
     private int total=0;
     private boolean b= false;
 
@@ -33,7 +33,7 @@ public class WorkerObject {
         completeTarget = new ArrayList<>();
         tasks = new ArrayList<>();
         targetsToExecute = new ArrayList<>();
-        statusOfWorkerInMission = new HashMap<>();
+        statusOfWorkerInMissionMap = new HashMap<>();
         Thread doTask = new Thread(()->{
             try {
                 while (true) {
@@ -56,12 +56,12 @@ public class WorkerObject {
        // System.out.println("add complete");
     }
 
-    public Map<String, StatusOfWorkerInMission> getStatusOfWorkerInMission() {
-        return statusOfWorkerInMission;
+    public Map<String, StatusOfWorkerInMission> getStatusOfWorkerInMissionMap() {
+        return statusOfWorkerInMissionMap;
     }
     public void changeStatusOfWorkerInMission(String statusOfWorkerInMission , String nameOfMission) {
-        this.statusOfWorkerInMission.remove(nameOfMission);
-        this.statusOfWorkerInMission.put(nameOfMission, StatusOfWorkerInMission.valueOf(statusOfWorkerInMission));
+            this.statusOfWorkerInMissionMap.remove(nameOfMission);
+            this.statusOfWorkerInMissionMap.put(nameOfMission, StatusOfWorkerInMission.valueOf(statusOfWorkerInMission));
     }
 
     public String getNameOfWorker() {
@@ -169,14 +169,14 @@ public class WorkerObject {
     public void setTasks(List<String> tasks) {
         this.tasks = tasks;
     }
-    public void setStatusOfWorkerInMission(Map<String, StatusOfWorkerInMission> statusOfWorkerInMission) {
-        this.statusOfWorkerInMission = statusOfWorkerInMission;
+    public void setStatusOfWorkerInMissionMap(Map<String, StatusOfWorkerInMission> statusOfWorkerInMission) {
+        this.statusOfWorkerInMissionMap = statusOfWorkerInMission;
     }
     public void setCompleteTarget(List<Target> completeTarget) {
         this.completeTarget = completeTarget;
     }
     public boolean isAvailable(String missionName){
-        if(threadsNum>curThreads && statusOfWorkerInMission.get(missionName) == StatusOfWorkerInMission.DO)
+        if(threadsNum>curThreads && statusOfWorkerInMissionMap.get(missionName) == StatusOfWorkerInMission.DO)
             return true;
         else
             return false;
