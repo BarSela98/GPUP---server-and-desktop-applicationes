@@ -96,6 +96,6 @@ public class WorkerAppMainController {
         currentUserName.set(userName);
         workerPageController.setNameOfWorker(userName);
         workerPageController.setAmountOfResources(String.valueOf(amountOfResources));
-        workerPageController.setYourCradit(String.valueOf(0));
+        workerPageController.setYourCredit(String.valueOf(0));
     }
 }

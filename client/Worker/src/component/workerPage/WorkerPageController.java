@@ -97,14 +97,15 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     public void setTableCol(){
         nameOfMissionCol.setCellValueFactory(new PropertyValueFactory<>("nameOfMission"));
         checkBoxTableMission.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
-        //TaskCol.setCellValueFactory(new PropertyValueFactory<>("nameOfCreator"));
+        TaskCol.setCellValueFactory(new PropertyValueFactory<>("task"));
         WorkerCol.setCellValueFactory(new PropertyValueFactory<>("workerListSize"));
         craditsCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
         ////////////////////////////////////////////////////////////////////////////////////////
         nameOfMissionCol_target.setCellValueFactory(new PropertyValueFactory<>("Mission"));
-       // nameOfTaskCol_target.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
+        nameOfTaskCol_target.setCellValueFactory(new PropertyValueFactory<>("nameOfTask"));
         nameOfTargetCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         yourStatusCol.setCellValueFactory(new PropertyValueFactory<>("statusOfWorkerInMission"));
+        yourDoneCol.setCellValueFactory(new PropertyValueFactory<>("targetComplete"));
        // targetStatusCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
        // targetCraditsCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
     }
@@ -158,8 +159,19 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     }
     private synchronized void updateCompleteTargetLines(List<Target> targets) {
         Platform.runLater(() -> {
+            int credit = 0;
             ObservableList<Target> items = executeTargetTable.getItems();
             items.clear();
+            for (Target t: items){
+                if (t.getStatus() == Target.Status.Success || t.getStatus() == Target.Status.Warning || t.getStatus() == Target.Status.Failure){
+                    credit += t.getPrice();
+
+                }
+            }
+            yourCredit.setText(String.valueOf(credit));
+
+
+
             items.addAll(targets);
         });
     }
@@ -203,11 +215,22 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     }
     private synchronized void updateMissionLines(List<MissionTableWorker> missions) {
         Platform.runLater(() -> {
+            int size = 0;
+            ObservableList<Target> targetComplete = executeTargetTable.getItems();
             unselectedCheckBoxes.clear();
             selectedCheckBoxes.clear();
             ObservableList<MissionTableWorker> items = missionTable.getItems();
             for (MissionTableWorker mission : missions) { /// update check box
+                size = 0;
                 configureCheckBox(mission.getCheckBox());
+                for (Target t: targetComplete){
+                    if ((t.getStatus() == Target.Status.Success || t.getStatus() == Target.Status.Warning || t.getStatus() == Target.Status.Failure) && t.getMission().equals(mission.getNameOfMission())){
+                        ++size;
+                    }
+                    System.out.println(mission.getTask());
+                    t.setNameOfTask(mission.getTask());
+                }
+                mission.setTargetComplete(size);
             }
 
             for(int i = 0 ; i < items.size() ; ++i) { /// update check box
@@ -429,8 +452,8 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         this.amountOfResources.setText(amountOfResources);
     }
 
-    public void setYourCradit(String yourCradit) {
-        this.yourCradit.setText(yourCradit);
+    public void setYourCredit(String yourCradit) {
+        this.yourCredit.setText(yourCradit);
     }
 
 
@@ -442,7 +465,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     @FXML private TableView<?> tableViewUser;
     @FXML private Text nameOfWorker;
     @FXML private Text amountOfResources;
-    @FXML private Text yourCradit;
+    @FXML private Text yourCredit;
 //// table 1
     @FXML private TableView<MissionTableWorker> missionTable;
     @FXML private TableColumn<MissionTableWorker, CheckBox> checkBoxTableMission;
@@ -450,7 +473,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     @FXML private TableColumn<MissionTableWorker, String> TaskCol;
     @FXML private TableColumn<MissionTableWorker, Integer> WorkerCol;
     @FXML private TableColumn<MissionTableWorker, ?> ProgressCol;
-    @FXML private TableColumn<MissionTableWorker, ?> yourDoneCol;
+    @FXML private TableColumn<MissionTableWorker, Integer> yourDoneCol;
     @FXML private TableColumn<MissionTableWorker, Integer> craditsCol;
     @FXML private TableColumn<MissionTableWorker, String> yourStatusCol;
 //// table 2
