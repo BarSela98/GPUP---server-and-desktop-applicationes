@@ -66,5 +66,4 @@ public class MissionTableWorker extends MissionInTable {
     public void setTask(String task) {
         this.task = task;
     }
-
 }

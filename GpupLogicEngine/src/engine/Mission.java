@@ -3,6 +3,7 @@ package engine;
 import ODT.Compilation;
 import ODT.Simulation;
 import ODT.TargetToWorker;
+import ODT.WorkerStatus;
 import com.google.gson.Gson;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,6 @@ import java.util.*;
 import static utility.Constants.SEND_TARGET_TO_MISSION;
 
 public class Mission {
-
 
     public enum statusOfMission {PAUSE , DONE , WAITING, INPROGRESS , STOP}
     final Object lock = new Object();
@@ -45,15 +45,13 @@ public class Mission {
     private Utility.TypeOfRunning  typeOfRunning;
     private Simulation simulation;
     private Compilation compilation;
-    private Map<String, Boolean> workerList;
-    private int workerListSize;
-    /*
-    private boolean isRunning;
-    private boolean isPause;
-    private boolean isStop;
+    private Map<String, WorkerStatus> workerList;
+    private int availableWorker;
+    private int signWorkerSize;
+    private String progress;
+    private int targetWaiting = 0;
+    private int targetInProgress = 0;
 
-     */
-    private String progress ="";
 
     public Mission(Mission m){
         this.nameOfMission = m.getNameOfMission();
@@ -74,8 +72,13 @@ public class Mission {
         this.simulation = m.getSimulation();
         this.compilation = m.getCompilation();
         this.workerList = m.getWorkerList();
-        this.workerListSize = m.getWorkerListSize();
+        this.availableWorker = m.getAvailableWorker();
         this.count=m.getCount();
+        this.signWorkerSize=m.getSignWorkerSize();
+
+        this.progress =m.getProgress();
+        this.targetWaiting = m.getTargetWaiting();
+        this.targetInProgress = m.getTargetInProgress();
     }
     public Mission(Mission m,boolean fromScratch,int c){
         this.nameOfMission = m.getNameOfMission();
@@ -96,9 +99,12 @@ public class Mission {
         this.simulation = m.getSimulation();
         this.compilation = m.getCompilation();
         this.workerList = m.getWorkerList();
-        this.workerListSize = m.getWorkerListSize();
+        this.availableWorker = m.getAvailableWorker();
         this.nameOfMission=m.nameOfMission+ c;
-
+        this.signWorkerSize=m.getSignWorkerSize();
+        this.progress =m.getProgress();
+        this.targetWaiting = m.getTargetWaiting();
+        this.targetInProgress = m.getTargetInProgress();
 
         if(fromScratch){
             for(Target t:targets){
@@ -123,6 +129,7 @@ public class Mission {
         this.typeOfRunning = typeOfRunning;
         missionBuilder();
         compilationSetUp();
+
     }
     public Mission(String nameOfMission, String nameOfCreator,String nameOfGraph, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Simulation simulation) {
         this.simulation = simulation;
@@ -140,13 +147,17 @@ public class Mission {
     public void missionBuilder() {
         this.workerList = new HashMap<>();
         this.waitingTargetToExecute = new ArrayList<>();
-        workerListSize = 0;
+        availableWorker = 0;
         amountOfTarget = 0;
         amountOfRoot = 0;
         amountOfMiddle = 0;
         amountOfIndependents = 0;
         amountOfLeaf = 0;
+        this.signWorkerSize=0;
         this.statusOfMission = statusOfMission.WAITING;
+        this.progress = "-";
+        this.targetWaiting = 0;
+        this.targetInProgress = 0;
 
         for (Target t : targets) {
             t.setMission(nameOfMission);
@@ -169,66 +180,63 @@ public class Mission {
         else{
             missionSetUp(false);
         }
-        priceOfAllMission =priceOfMission *amountOfTarget;
+        priceOfAllMission = priceOfMission * amountOfTarget;
 
     }
 
 
     public synchronized void workerSign(String worker) {
-        workerList.put(worker,false);
-        workerListSize++;
+        workerList.put(worker,new WorkerStatus());
+        availableWorker++;
+        signWorkerSize++;
     }
     public synchronized void removeWorkerFromMission(String workerName) {
-        for(String worker:workerList.keySet()){
-            if(worker.equals(workerName)){
-                workerList.remove(worker);
-                workerListSize--;
-            }
+        if (workerList.containsKey(workerName)){
+            workerList.remove(workerName);
+            availableWorker--;
+            signWorkerSize--;
         }
     }
     public void updateTarget(Target tar) {
-       // System.out.println("--3");
-      //  System.out.println(targets);
             for (Target t : targets) {
                 if (t.getName().equals(tar.getName())) {
-                   // System.out.println("--4");
                     t.updateInfo(tar);
-                    //targets.remove(t);
-                    //targets.add(tar);
                     amountOfCompleteTarget++;
-                    //System.out.println("update - " + progress);
                     progress = String.valueOf((float) amountOfTarget / (float) amountOfCompleteTarget);
-                   // System.out.println("update2 - " + progress);
                 }
             }
-
     }
     public void doMission(){
         Thread doMissionThread = new Thread(()->{
             while (statusOfMission != statusOfMission.STOP && statusOfMission != statusOfMission.DONE) {
                 while (statusOfMission == statusOfMission.INPROGRESS && statusOfMission != statusOfMission.STOP && statusOfMission != statusOfMission.PAUSE && statusOfMission != statusOfMission.DONE) {
                     fixTargetsStatues();
-                    for (String worker : workerList.keySet()) {
-                        if (workerList.get(worker) && waitingTargetToExecute.size() != 0) {
-                            sendTargetToWorker(worker, waitingTargetToExecute.get(0));
-                            waitingTargetToExecute.remove(0);
-                        }
-                    }
-                    checkIfMissionDone();
+                    sendTargetToAvailableWorker();
+
                 }
                 checkIfMissionDone();
                 while (statusOfMission != statusOfMission.STOP && statusOfMission != statusOfMission.DONE && statusOfMission == statusOfMission.PAUSE) {
-                    for (String worker : workerList.keySet()) {
-                        if (workerList.get(worker) && waitingTargetToExecute.size() != 0) {
-                            sendTargetToWorker(worker, waitingTargetToExecute.get(0));
-                            waitingTargetToExecute.remove(0);
-                        }
-                    }
+                    sendTargetToAvailableWorker();
                 }
             }
         });
         doMissionThread.start();
     }
+
+    private void sendTargetToAvailableWorker() {
+        for (String worker : workerList.keySet()) {
+            if (availableWorker != 0 && workerList.get(worker).getStatus() && waitingTargetToExecute.size() != 0) {
+                targetInProgress++;
+                Target t = waitingTargetToExecute.get(0);
+                waitingTargetToExecute.remove(0);
+                sendTargetToWorker(worker, t);
+                workerList.get(worker).setStatus(false);
+                availableWorker--;
+            }
+        }
+        checkIfMissionDone();
+    }
+
     private void sendTargetToWorker(String worker, Target target) {
         TargetToWorker targetToWorker = new TargetToWorker(target,worker);
         String json = new Gson().toJson(targetToWorker);        // to gson
@@ -240,7 +248,6 @@ public class Mission {
 
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, json);
-        System.out.println("send target to worker 1 -" + target);
         HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
 
             @Override
@@ -256,8 +263,15 @@ public class Mission {
                //     Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
                 }
                 else{
-                 //   System.out.println("send target to worker 2");
-                //    Platform.runLater(() -> System.out.println(response.body()));
+
+                    Boolean bool = Boolean.valueOf(response.body().string());
+                    workerList.get(worker).setStatus(bool);
+                    if (bool)
+                        availableWorker++;
+                    else{
+                        if (availableWorker != 0)
+                            availableWorker--;
+                    }
                 }
             }
         });
@@ -281,6 +295,7 @@ public class Mission {
                 waitingTargetToExecute.add(t);
             }
         }
+        targetWaiting = waitingTargetToExecute.size();
     }
     private synchronized void fixTargetsStatues(){
         boolean done;
@@ -300,6 +315,7 @@ public class Mission {
                         }
                     }
                 }
+                targetWaiting = waitingTargetToExecute.size();
             }
         }while (!done);
     }
@@ -336,13 +352,22 @@ public class Mission {
         return false;
     }
     public boolean checkIfMissionDone(){
+        boolean statusOfMissionBool = true;
+        int IncompleteTargets = 0;
+
         for(Target t : targets){
             if(t.getStatus()==Target.Status.Waiting||t.getStatus()==Target.Status.Frozen){
-                return false;
+                statusOfMissionBool = false;
+                IncompleteTargets++;
             }
         }
-        statusOfMission = statusOfMission.DONE;
-        return true;
+        if (statusOfMissionBool)
+            statusOfMission = statusOfMission.DONE;
+
+        double d= ((double)(targets.size() - IncompleteTargets) / (double)targets.size()) * 100 ;
+        progress = d + " %";
+
+        return statusOfMissionBool;
     }
     private void simulationSetUp(){
         int randomTime;
@@ -399,19 +424,20 @@ public class Mission {
         this.progress = progress;
     }
 
-    public Map<String, Boolean> getWorkerList() {
+    public Map<String, WorkerStatus> getWorkerList() {
         return workerList;
     }
-    public void setWorkerList(Map<String, Boolean> workerList) {
+
+    public void setWorkerList(Map<String, WorkerStatus> workerList) {
         this.workerList = workerList;
-        workerListSize = workerList.size();
+        availableWorker = workerList.size();
     }
 
-    public int getWorkerListSize() {
-        return workerListSize;
+    public int getAvailableWorker() {
+        return availableWorker;
     }
-    public void setWorkerListSize(int workerListSize) {
-        this.workerListSize = workerListSize;
+    public void setAvailableWorker(int availableWorker) {
+        this.availableWorker = availableWorker;
     }
 
     public Utility.WhichTask getWhichTask() {
@@ -585,11 +611,32 @@ public class Mission {
                 break;
         }
     }
+
     public int getCount() {
         return count;
     }
-
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public int getSignWorkerSize() {
+        return signWorkerSize;
+    }
+    public void setSignWorkerSize(int signWorkerSize) {
+        this.signWorkerSize = signWorkerSize;
+    }
+
+    public int getTargetWaiting() {
+        return targetWaiting;
+    }
+    public void setTargetWaiting(int targetWaiting) {
+        this.targetWaiting = targetWaiting;
+    }
+
+    public int getTargetInProgress() {
+        return targetInProgress;
+    }
+    public void setTargetInProgress(int targetInProgress) {
+        this.targetInProgress = targetInProgress;
     }
 }

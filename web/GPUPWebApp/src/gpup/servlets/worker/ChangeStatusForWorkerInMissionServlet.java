@@ -52,9 +52,9 @@ public class ChangeStatusForWorkerInMissionServlet extends HttpServlet {
                 try {
                     if (statusFromParameter.equals("PAUSE"))
                         status = false;
-                    if (statusFromParameter.equals("DO"))
+                    else if (statusFromParameter.equals("DO"))
                         status = true;
-                    missionManger.getMissionByName(missionNameFromParameter).getWorkerList().replace(usernameFromSession, status);
+                    missionManger.getMissionByName(missionNameFromParameter).getWorkerList().get(usernameFromSession).setStatus(status);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

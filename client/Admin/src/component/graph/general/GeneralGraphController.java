@@ -97,6 +97,8 @@ public class GeneralGraphController {
     @FXML void loadGraphButton(ActionEvent event) {
 
         File file = new FileChooser().showOpenDialog(new Stage());
+        if (file == null)
+            return;
         String finalUrl = HttpUrl
                 .parse(LOAD_XML_FILE)
                 .newBuilder()

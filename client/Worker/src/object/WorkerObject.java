@@ -52,8 +52,9 @@ public class WorkerObject {
         return completeTarget;
     }
     public void addToCompleteTarget(Target t) {
+        System.out.println("-------------------------------------add complete "+completeTarget);
         completeTarget.add(t);
-       // System.out.println("add complete");
+        System.out.println("-------------------------------------add complete "+completeTarget);
     }
 
     public Map<String, StatusOfWorkerInMission> getStatusOfWorkerInMissionMap() {
@@ -70,7 +71,6 @@ public class WorkerObject {
 
     public void addTargetToList(Target t){
         targetsToExecute.add(t);
-        System.out.println("add target "+t+" targetsToExecute in "+ this);
     }
     public void updateTargetInMission(Target t){
         String json = new Gson().toJson(t);
@@ -86,7 +86,7 @@ public class WorkerObject {
         HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-               System.out.println(e.getMessage());
+                System.out.println(e.getMessage());
             }
 
             @Override
@@ -97,8 +97,6 @@ public class WorkerObject {
                 }
                 else{
                     String responseBody = response.body().string();
-                   // System.out.println("Response body: ------- "+responseBody);
-                    //Platform.runLater(() -> System.out.println(responseBody));
                 }
             }
         });
@@ -110,37 +108,26 @@ public class WorkerObject {
     }
     public void pullTargets(){
         if(targetsToExecute.size() != 0){
-            System.out.println("targetsToExecute");
             execute(targetsToExecute.get(0));
             targetsToExecute.remove(0);
         }
     }
     public void execute(Target t){
         curThreads++;
-        System.out.println("---1 ");
         Thread thread =new Thread(t);
         thread.start();
         try {
-            System.out.println("---2 ");
             Thread.sleep(10);
-            System.out.println("---3 ");
             while (t.isRunning()){
                 Thread.sleep(10);
 
             }
-
         }
         catch (Exception e){}
-        System.out.println("---4 ");
         curThreads--;
         total+=t.getPrice();
         updateTargetInMission(t);
-        //send back to engine when done
-        //if you get to this comment then your done
     }
-
-
-
 
     public void setTargetsToExecute(List<Target> targetsToExecute) {
         this.targetsToExecute = targetsToExecute;
@@ -176,7 +163,7 @@ public class WorkerObject {
         this.completeTarget = completeTarget;
     }
     public boolean isAvailable(String missionName){
-        if(threadsNum>curThreads && statusOfWorkerInMissionMap.get(missionName) == StatusOfWorkerInMission.DO)
+        if(threadsNum-curThreads-targetsToExecute.size() > 0 && statusOfWorkerInMissionMap.get(missionName) == StatusOfWorkerInMission.DO)
             return true;
         else
             return false;

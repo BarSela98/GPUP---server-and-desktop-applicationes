@@ -38,9 +38,6 @@ import java.util.Timer;
 import java.util.stream.Collectors;
 
 import static utility.Constants.*;
-
-
-
 public class AdminPageController implements AdminCommands, Closeable {
     private ObservableList<MissionInTable> missionItem = FXCollections.observableArrayList();
     private AdminAppMainController adminAppMainController;
@@ -203,13 +200,15 @@ public class AdminPageController implements AdminCommands, Closeable {
         leafCol.setCellValueFactory(new PropertyValueFactory<>("amountOfLeaf"));
         independentsCol.setCellValueFactory(new PropertyValueFactory<>("amountOfIndependents"));
         priceOfAllMissionCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
-        workersCol.setCellValueFactory(new PropertyValueFactory<>("workerListSize"));
-       // workersCol.setCellValueFactory(new PropertyValueFactory<>("isRunning"));
-        remarkCol.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
+        workersCol.setCellValueFactory(new PropertyValueFactory<>("signWorkerSize"));
         remarkCol.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
         ProgressCol.setCellValueFactory(new PropertyValueFactory<>("progress"));
+        targetProgressCol.setCellValueFactory(new PropertyValueFactory<>("targetInProgress"));
+        targetWaitingCol.setCellValueFactory(new PropertyValueFactory<>("targetWaiting"));
         StatusOfMissionCol.setCellValueFactory(new PropertyValueFactory<>("statusOfMission"));
         nameOfGraphCol.setCellValueFactory(new PropertyValueFactory<>("nameOfGraph"));
+
+
     }
 
 /// Chat
@@ -322,7 +321,9 @@ public class AdminPageController implements AdminCommands, Closeable {
             }
 
             for(int i = 0 ; i < items.size() ; ++i) { /// update check box
-                missions.get(i).changeMissionInformationAdmin(items.get(i));
+                for (int j = 0 ; j < missions.size() ; ++j)
+                    if(missions.get(j).getNameOfMission().equals(items.get(i).getNameOfMission()))
+                        missions.get(j).changeMissionInformationAdmin(items.get(i));
             }
 
 
@@ -348,10 +349,12 @@ public class AdminPageController implements AdminCommands, Closeable {
     @FXML private TableColumn<MissionInTable, String> middleCol;
     @FXML private TableColumn<MissionInTable, String> leafCol;
     @FXML private TableColumn<MissionInTable, String> independentsCol;
-    @FXML private TableColumn<MissionInTable, Boolean> workersCol;   ////////////////////////////
+    @FXML private TableColumn<MissionInTable, Integer> workersCol;
     @FXML private TableColumn<MissionInTable, String> priceOfAllMissionCol;
     @FXML private TableColumn<MissionInTable, CheckBox> remarkCol;
     @FXML private TableView<MissionInTable> tableViewMission;
+    @FXML private TableColumn<MissionInTable, Integer> targetProgressCol;
+    @FXML private TableColumn<MissionInTable, Integer> targetWaitingCol;
     @FXML private TableColumn<MissionInTable, String> ProgressCol;
     @FXML private TableColumn<MissionInTable, String> StatusOfMissionCol;
     @FXML private TableColumn<MissionInTable, String> nameOfGraphCol;

@@ -2,12 +2,14 @@ package gpup.servlets.worker;
 
 import ODT.TargetToWorker;
 import com.google.gson.Gson;
+import engine.Target;
 import gpup.servlets.WorkerManager;
 import gpup.utils.ServletUtils;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import object.WorkerObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -26,8 +28,10 @@ public class TargetToWorkerServlet extends HttpServlet {
                 Collectors.joining("\n"));
         System.out.println(json);
         TargetToWorker targetToWorkerServlet = new Gson().fromJson(json, TargetToWorker.class);
-        workerManager.getWorkerByName(targetToWorkerServlet.getNameOfWorker()).addTargetToList(targetToWorkerServlet.getTarget());
-        response.getWriter().write("send target to worker successfully");
+        Target target = targetToWorkerServlet.getTarget();
+        WorkerObject worker = workerManager.getWorkerByName(targetToWorkerServlet.getNameOfWorker());
+        worker.addTargetToList(target);
+        response.getWriter().write(String.valueOf(worker.isAvailable(target.getMission())));
         response.setStatus(HttpServletResponse.SC_OK);
         }
 }

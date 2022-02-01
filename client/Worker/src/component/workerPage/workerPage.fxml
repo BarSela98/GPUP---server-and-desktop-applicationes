@@ -182,10 +182,22 @@
                                                 <TableColumn fx:id="nameOfTaskCol_target" prefWidth="152.0" text="Name Of Task" />
                                                 <TableColumn fx:id="nameOfTargetCol" prefWidth="125.0" text="Name Of Target" />
                                                 <TableColumn fx:id="targetStatusCol" prefWidth="121.0" text="Status" />
-                                                <TableColumn fx:id="targetCraditsCol" prefWidth="174.0" text="Cradits" />
+                                                <TableColumn fx:id="targetCreditsCol" prefWidth="174.0" text="Cradits" />
                                              </columns>
                                           </TableView>
                                        </center>
+                                       <bottom>
+                                          <HBox alignment="CENTER" prefHeight="65.0" prefWidth="1198.0" stylesheets="@../../../../Admin/src/component/css/label.css" BorderPane.alignment="CENTER">
+                                             <children>
+                                                <Label text="Available Thread :">
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <Text fx:id="availableThreadText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text" text="Text" />
+                                             </children>
+                                          </HBox>
+                                       </bottom>
                                     </BorderPane>
                                  </children>
                               </AnchorPane>

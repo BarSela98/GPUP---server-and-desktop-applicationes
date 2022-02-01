@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "TargetCompleteListServlet", urlPatterns = {"/worker/target/complete"})
@@ -32,8 +33,15 @@ public class TargetCompleteListServlet extends HttpServlet {
             try (PrintWriter out = response.getWriter()) {
                 Gson gson = new Gson();
                 WorkerManager workerManger = ServletUtils.getWorkerManager(getServletContext());
+                List<Target> list = new ArrayList<>();
+
                 List<Target> targetComplete = workerManger.getWorkerByName(usernameFromSession).getCompleteTarget();
-                String json = gson.toJson(targetComplete);
+                List<Target> targetToExecute = workerManger.getWorkerByName(usernameFromSession).getTargetsToExecute();
+
+                list.addAll(targetComplete);
+                list.addAll(targetToExecute);
+
+                String json = gson.toJson(list);
                 out.println(json);
                 out.flush();
             }

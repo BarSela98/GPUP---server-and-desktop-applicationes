@@ -99,28 +99,24 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         nameOfMissionCol.setCellValueFactory(new PropertyValueFactory<>("nameOfMission"));
         checkBoxTableMission.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
         TaskCol.setCellValueFactory(new PropertyValueFactory<>("task"));
-        WorkerCol.setCellValueFactory(new PropertyValueFactory<>("workerListSize"));
+        WorkerCol.setCellValueFactory(new PropertyValueFactory<>("signWorkerSize"));
         creditsCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
+        ProgressCol.setCellValueFactory(new PropertyValueFactory<>("progress"));
         ////////////////////////////////////////////////////////////////////////////////////////
         nameOfMissionCol_target.setCellValueFactory(new PropertyValueFactory<>("Mission"));
         nameOfTaskCol_target.setCellValueFactory(new PropertyValueFactory<>("nameOfTask"));
         nameOfTargetCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         yourStatusCol.setCellValueFactory(new PropertyValueFactory<>("statusOfWorkerInMission"));
         yourDoneCol.setCellValueFactory(new PropertyValueFactory<>("targetComplete"));
-
         creditsPerTarget.setCellValueFactory(new PropertyValueFactory<>("priceOfMission"));
         StatusCol.setCellValueFactory(new PropertyValueFactory<>("statusOfMission"));
         nameOfCreatorCol.setCellValueFactory(new PropertyValueFactory<>("nameOfCreator"));
-
         rootCol.setCellValueFactory(new PropertyValueFactory<>("amountOfRoot"));
         middleCol.setCellValueFactory(new PropertyValueFactory<>("amountOfMiddle"));
         leafCol.setCellValueFactory(new PropertyValueFactory<>("amountOfLeaf"));
         independentsCol.setCellValueFactory(new PropertyValueFactory<>("amountOfIndependents"));
-
-
-
-       // targetStatusCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
-       // targetCraditsCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
+        targetStatusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        targetCreditsCol.setCellValueFactory(new PropertyValueFactory<>("price"));
     }
     private void configureCheckBox(CheckBox checkBox) {
 
@@ -176,11 +172,12 @@ public class WorkerPageController implements WorkerCommands , Closeable{
             int credit = 0;
             ObservableList<Target> items = executeTargetTable.getItems();
             items.clear();
-            for (Target t: items){
+            for (Target t: targets){
                 if (t.getStatus() == Target.Status.Success || t.getStatus() == Target.Status.Warning || t.getStatus() == Target.Status.Failure){
                     credit += t.getPrice();
-
                 }
+                else
+                    t.setPrice(0);
             }
             yourCredit.setText(String.valueOf(credit));
             items.addAll(targets);
@@ -238,14 +235,15 @@ public class WorkerPageController implements WorkerCommands , Closeable{
                     if ((t.getStatus() == Target.Status.Success || t.getStatus() == Target.Status.Warning || t.getStatus() == Target.Status.Failure) && t.getMission().equals(mission.getNameOfMission())){
                         ++size;
                     }
-                    System.out.println(mission.getTask());
-                    t.setNameOfTask(mission.getTask());
+                 //   t.setNameOfTask(mission.getTask());
                 }
                 mission.setTargetComplete(size);
             }
 
             for(int i = 0 ; i < items.size() ; ++i) { /// update check box
-                missions.get(i).changeInformation(items.get(i));
+                for (int j = 0 ; j < missions.size() ; ++j)
+                    if(missions.get(j).getNameOfMission().equals(items.get(i).getNameOfMission()))
+                        missions.get(j).changeInformation(items.get(i));
             }
 
             items.clear();
@@ -502,8 +500,8 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         this.amountOfResources.setText(amountOfResources);
     }
 
-    public void setYourCredit(String yourCradit) {
-        this.yourCredit.setText(yourCradit);
+    public void setYourCredit(String yourCredit) {
+        this.yourCredit.setText(yourCredit);
     }
 
 
@@ -522,7 +520,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     @FXML private TableColumn<MissionTableWorker, String> nameOfMissionCol;
     @FXML private TableColumn<MissionTableWorker, String> TaskCol;
     @FXML private TableColumn<MissionTableWorker, Integer> WorkerCol;
-    @FXML private TableColumn<MissionTableWorker, ?> ProgressCol;
+    @FXML private TableColumn<MissionTableWorker, String> ProgressCol;
     @FXML private TableColumn<MissionTableWorker, Integer> yourDoneCol;
     @FXML private TableColumn<MissionTableWorker, Integer> creditsCol;
     @FXML private TableColumn<MissionTableWorker, String> yourStatusCol;
@@ -535,18 +533,13 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     @FXML private TableColumn<MissionTableWorker, String> leafCol;
     @FXML private TableColumn<MissionTableWorker, String> independentsCol;
 
-
-
-
-
-
 //// table 2
     @FXML private TableView<Target> executeTargetTable;
     @FXML private TableColumn<Target, String> nameOfMissionCol_target;
     @FXML private TableColumn<Target, String> nameOfTaskCol_target;
     @FXML private TableColumn<Target, String> nameOfTargetCol;
     @FXML private TableColumn<Target, String> targetStatusCol;
-    @FXML private TableColumn<Target, String> targetCraditsCol;
+    @FXML private TableColumn<Target, String> targetCreditsCol;
     // chat
     @FXML private ToggleButton autoScrollButton;
     @FXML private TextArea chatLineTextArea;
@@ -557,5 +550,6 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     @FXML private Button pauseButton;
     @FXML private Button resumeButton;
     @FXML private Button signUpButton;
+    @FXML private Text availableThreadText;
 
 }
