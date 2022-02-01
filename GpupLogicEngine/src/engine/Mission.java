@@ -73,12 +73,39 @@ public class Mission {
         this.compilation = m.getCompilation();
         this.workerList = m.getWorkerList();
         this.workerListSize = m.getWorkerListSize();
-        /*
-        this.isRunning = m.getIsRunning();
-        this.isPause = m.isPause();
-        this.isStop = m.isStop();
 
-         */
+    }
+    public Mission(Mission m,boolean fromScratch){
+        this.nameOfMission = m.getNameOfMission();
+        this.nameOfCreator  = m.getNameOfCreator();
+        this.nameOfGraph = m.nameOfGraph;
+        this.amountOfTarget = m.getAmountOfTarget();
+        this.amountOfRoot = m.getAmountOfRoot();
+        this.amountOfMiddle = m.getAmountOfMiddle();
+        this.amountOfIndependents = m.getAmountOfIndependents();
+        this.amountOfLeaf = m.getAmountOfLeaf();
+        this.priceOfMission = m.getPriceOfMission();
+        this.priceOfAllMission = m.getPriceOfAllMission();
+        this.whichTask = m.getWhichTask();
+        this.statusOfMission = statusOfMission.WAITING;
+        this.targets = m.getTargets();
+        this.waitingTargetToExecute = m.getWaitingTargetToExecute();
+        this.typeOfRunning = m.getTypeOfRunning();
+        this.simulation = m.getSimulation();
+        this.compilation = m.getCompilation();
+        this.workerList = m.getWorkerList();
+        this.workerListSize = m.getWorkerListSize();
+        if(fromScratch){
+            for(Target t:targets){
+                t.setStatus(Target.Status.Frozen);
+            }
+        }
+        else{
+            for(Target t:targets){
+                if(t.getStatus()==Target.Status.Failure||t.getStatus()==Target.Status.Skipped)
+                    t.setStatus(Target.Status.Frozen);
+            }
+        }
     }
     public Mission(String nameOfMission, String nameOfCreator,String nameOfGraph, List<Target> targets, Utility.WhichTask whichTask, Utility.TypeOfRunning typeOfRunning, Compilation compilation) {
         this.compilation = compilation;
@@ -114,12 +141,6 @@ public class Mission {
         amountOfMiddle = 0;
         amountOfIndependents = 0;
         amountOfLeaf = 0;
-        /*
-        this.isRunning = false;
-        this.isStop = false;
-        this.isPause = false;
-
-         */
         this.statusOfMission = statusOfMission.WAITING;
 
         for (Target t : targets) {
@@ -336,6 +357,7 @@ public class Mission {
             t.setSuccessChance(simulation.getSuccess());
             t.setWarningChance(simulation.getWarning());
             t.setPath(path);
+            t.setMission("simulation");
         }
     }
     private void compilationSetUp(){
@@ -349,6 +371,8 @@ public class Mission {
             t.setSource(compilation.getSourceFolder());
             t.setCompileDest(compilation.getTargetFolder());
             t.setPath(path);
+            t.setMission("compilation");
+
         }
     }
     private String openDir(String taskType) throws IOException {//doesnt have path yet,this func create directory for simulation task
