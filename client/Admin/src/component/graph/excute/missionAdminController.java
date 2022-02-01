@@ -229,6 +229,10 @@ public class missionAdminController {
             mission = new Mission(nameOfMissionText.getText(),mainController.getGraph().getNameOfCreator(),mainController.getGraph().getGraphName(),targetsToRun,whichTask,typeOfRunning,simulation);
         }
 
+        addMission(mission);
+    }
+
+    public void addMission(Mission mission){
         String json = new Gson().toJson(mission);
         String finalUrl = HttpUrl
                 .parse(ADD_MISSION)
@@ -242,7 +246,7 @@ public class missionAdminController {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-             //   Platform.runLater(() -> System.out.println("Execute Mission - error -"+e.getMessage()));
+                //   Platform.runLater(() -> System.out.println("Execute Mission - error -"+e.getMessage()));
                 Platform.runLater(() -> new errorMain("Execute Mission - error -"+e.getMessage()));
             }
 
@@ -250,8 +254,8 @@ public class missionAdminController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                //    Platform.runLater(() -> System.out.println("Execute Mission " + responseBody));
-                      Platform.runLater(() -> new errorMain("Execute Mission " + responseBody));
+                    //    Platform.runLater(() -> System.out.println("Execute Mission " + responseBody));
+                    Platform.runLater(() -> new errorMain("Execute Mission " + responseBody));
                 } else {
                     Platform.runLater(() -> {
                         try {

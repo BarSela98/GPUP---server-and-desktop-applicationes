@@ -41,6 +41,7 @@ public class UpdateTargetInformationServlet extends HttpServlet {
                 mission.getWorkerList().get(workerName).setStatus(bool);
                 mission.setAvailableWorker( mission.getAvailableWorker()+1);
             }
+
             if (mission.getTargetInProgress() > 0)
                 mission.setTargetInProgress(mission.getTargetInProgress()-1);
             response.setStatus(HttpServletResponse.SC_OK);

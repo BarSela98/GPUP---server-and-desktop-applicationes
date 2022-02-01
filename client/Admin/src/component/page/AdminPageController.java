@@ -1,12 +1,14 @@
 package component.page;
 
 import ODT.MissionInTable;
+import com.google.gson.Gson;
 import component.api.AdminCommands;
 import component.chat.ChatAreaRefresher;
 import component.chat.model.ChatLinesWithVersion;
 import component.graph.main.MainGraphController;
 import component.mainApp.AdminAppMainController;
 import component.usersList.UsersListController;
+import engine.Mission;
 import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -24,10 +26,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
 
@@ -123,6 +122,12 @@ public class AdminPageController implements AdminCommands, Closeable {
     }
     @FXML void playButton(ActionEvent event) {
         changeStatusOfMission("run");
+    }
+    @FXML void playIncrementalButton(ActionEvent event) {
+        changeStatusOfMission("Incremental");
+    }
+    @FXML void PlayFromScratchButton(ActionEvent event) {
+        changeStatusOfMission("Scratch");
     }
     @FXML void stopButton(ActionEvent event) {
         changeStatusOfMission("stop");
@@ -332,6 +337,46 @@ public class AdminPageController implements AdminCommands, Closeable {
         });
     }
 
+
+
+    ///
+    public void addMission(Mission mission){
+        String json = new Gson().toJson(mission);
+        String finalUrl = HttpUrl
+                .parse(ADD_MISSION)
+                .newBuilder()
+                .build()
+                .toString();
+        System.out.println(json);
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, json);
+        HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                //   Platform.runLater(() -> System.out.println("Execute Mission - error -"+e.getMessage()));
+                Platform.runLater(() -> new errorMain("Execute Mission - error -"+e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    //    Platform.runLater(() -> System.out.println("Execute Mission " + responseBody));
+                    Platform.runLater(() -> new errorMain("Execute Mission " + responseBody));
+                } else {
+                    Platform.runLater(() -> {
+                        try {
+                            String responseBody = response.body().string();
+                            System.out.println(responseBody);
+                        } catch (IOException e) {
+                            Platform.runLater(() -> new errorMain(e));
+                        }
+                    });
+                }
+            }
+        });
+    }
 /// fxml member
 @FXML private UsersListController usersListComponentController;
     @FXML private BorderPane usersListComponent;

@@ -31,8 +31,6 @@ public class MissionManger {
         if(!missionList.containsKey(name))
             throw new Exception("graph name not exist");
         missionList.get(name).setStatus(status);
-
-
     }
 
     public synchronized void signForMissionByName(String worker, String missionNameFromParameter) {
@@ -46,6 +44,23 @@ public class MissionManger {
     public synchronized void updateTarget(Target tar){
         Mission m = missionList.get(tar.getMission());
         m.updateTarget(tar);
+    }
+
+    public synchronized String incrementalSize(String name){
+        int s =0 ;
+        if(!missionList.containsKey(name))
+            return "0";
+
+        for (String na : missionList.keySet()){
+            if (na.equals(name) && s == 0 )
+                    return "1";
+            else if (na.length()-1 == name.length() ){
+                if (na.startsWith(name) && Character.isDigit(na.charAt(na.length()-1)))
+                    if (s <  Integer.parseInt(na.substring(na.length()-1)))
+                        s =  Integer.parseInt(na.substring(na.length()-1));
+            }
+        }
+        return String.valueOf(s+1);
     }
 
     public boolean isMissionNameExists(String name) {

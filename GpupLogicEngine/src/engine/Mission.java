@@ -23,7 +23,6 @@ import java.util.*;
 import static utility.Constants.SEND_TARGET_TO_MISSION;
 
 public class Mission {
-
     public enum statusOfMission {PAUSE , DONE , WAITING, INPROGRESS , STOP}
     final Object lock = new Object();
     private String nameOfMission;
@@ -38,7 +37,7 @@ public class Mission {
     private int priceOfMission;
     private int priceOfAllMission;
     private Utility.WhichTask whichTask;
-    private int count=0;
+   // private int count=0;
     private statusOfMission statusOfMission;
     private List<Target> targets;
     private List<Target> waitingTargetToExecute;
@@ -51,7 +50,9 @@ public class Mission {
     private String progress;
     private int targetWaiting = 0;
     private int targetInProgress = 0;
+//
 
+//
 
     public Mission(Mission m){
         this.nameOfMission = m.getNameOfMission();
@@ -66,17 +67,22 @@ public class Mission {
         this.priceOfAllMission = m.getPriceOfAllMission();
         this.whichTask = m.getWhichTask();
         this.statusOfMission = m.getStatusOfMission();
-        this.targets = m.getTargets();
+
+        this.targets = new ArrayList<>();
+        this.targets.addAll(m.getTargets());
+        this.waitingTargetToExecute = new ArrayList<>();
         this.waitingTargetToExecute = m.getWaitingTargetToExecute();
+        this.waitingTargetToExecute.addAll(m.getWaitingTargetToExecute());
+
         this.typeOfRunning = m.getTypeOfRunning();
         this.simulation = m.getSimulation();
         this.compilation = m.getCompilation();
         this.workerList = m.getWorkerList();
         this.availableWorker = m.getAvailableWorker();
-        this.count=m.getCount();
+       // this.count=m.getCount();
         this.signWorkerSize=m.getSignWorkerSize();
 
-        this.progress =m.getProgress();
+        this.progress =""+m.getProgress();
         this.targetWaiting = m.getTargetWaiting();
         this.targetInProgress = m.getTargetInProgress();
     }
@@ -93,8 +99,11 @@ public class Mission {
         this.priceOfAllMission = m.getPriceOfAllMission();
         this.whichTask = m.getWhichTask();
         this.statusOfMission = statusOfMission.WAITING;
-        this.targets = m.getTargets();
+        this.targets = new ArrayList<>();
+        this.targets.addAll(m.getTargets());
+        this.waitingTargetToExecute = new ArrayList<>();
         this.waitingTargetToExecute = m.getWaitingTargetToExecute();
+        this.waitingTargetToExecute.addAll(m.getWaitingTargetToExecute());
         this.typeOfRunning = m.getTypeOfRunning();
         this.simulation = m.getSimulation();
         this.compilation = m.getCompilation();
@@ -102,7 +111,7 @@ public class Mission {
         this.availableWorker = m.getAvailableWorker();
         this.nameOfMission=m.nameOfMission+ c;
         this.signWorkerSize=m.getSignWorkerSize();
-        this.progress =m.getProgress();
+        this.progress =""+m.getProgress();
         this.targetWaiting = m.getTargetWaiting();
         this.targetInProgress = m.getTargetInProgress();
 
@@ -197,6 +206,7 @@ public class Mission {
             signWorkerSize--;
         }
     }
+
     public void updateTarget(Target tar) {
             for (Target t : targets) {
                 if (t.getName().equals(tar.getName())) {
@@ -226,10 +236,10 @@ public class Mission {
     private void sendTargetToAvailableWorker() {
         for (String worker : workerList.keySet()) {
             if (availableWorker != 0 && workerList.get(worker).getStatus() && waitingTargetToExecute.size() != 0) {
-                targetInProgress++;
                 Target t = waitingTargetToExecute.get(0);
                 waitingTargetToExecute.remove(0);
                 sendTargetToWorker(worker, t);
+                targetInProgress ++;
                 workerList.get(worker).setStatus(false);
                 availableWorker--;
             }
@@ -611,13 +621,15 @@ public class Mission {
                 break;
         }
     }
-
+/*
     public int getCount() {
         return count;
     }
     public void setCount(int count) {
         this.count = count;
     }
+
+ */
 
     public int getSignWorkerSize() {
         return signWorkerSize;
@@ -638,5 +650,13 @@ public class Mission {
     }
     public void setTargetInProgress(int targetInProgress) {
         this.targetInProgress = targetInProgress;
+    }
+
+    public int getAmountOfCompleteTarget() {
+        return amountOfCompleteTarget;
+    }
+
+    public void setAmountOfCompleteTarget(int amountOfCompleteTarget) {
+        this.amountOfCompleteTarget = amountOfCompleteTarget;
     }
 }
