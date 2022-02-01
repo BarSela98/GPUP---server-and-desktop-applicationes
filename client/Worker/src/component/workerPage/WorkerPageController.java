@@ -100,13 +100,25 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         checkBoxTableMission.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
         TaskCol.setCellValueFactory(new PropertyValueFactory<>("task"));
         WorkerCol.setCellValueFactory(new PropertyValueFactory<>("workerListSize"));
-        craditsCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
+        creditsCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
         ////////////////////////////////////////////////////////////////////////////////////////
         nameOfMissionCol_target.setCellValueFactory(new PropertyValueFactory<>("Mission"));
         nameOfTaskCol_target.setCellValueFactory(new PropertyValueFactory<>("nameOfTask"));
         nameOfTargetCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         yourStatusCol.setCellValueFactory(new PropertyValueFactory<>("statusOfWorkerInMission"));
         yourDoneCol.setCellValueFactory(new PropertyValueFactory<>("targetComplete"));
+
+        creditsPerTarget.setCellValueFactory(new PropertyValueFactory<>("priceOfMission"));
+        StatusCol.setCellValueFactory(new PropertyValueFactory<>("statusOfMission"));
+        nameOfCreatorCol.setCellValueFactory(new PropertyValueFactory<>("nameOfCreator"));
+
+        rootCol.setCellValueFactory(new PropertyValueFactory<>("amountOfRoot"));
+        middleCol.setCellValueFactory(new PropertyValueFactory<>("amountOfMiddle"));
+        leafCol.setCellValueFactory(new PropertyValueFactory<>("amountOfLeaf"));
+        independentsCol.setCellValueFactory(new PropertyValueFactory<>("amountOfIndependents"));
+
+
+
        // targetStatusCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
        // targetCraditsCol.setCellValueFactory(new PropertyValueFactory<>("priceOfAllMission"));
     }
@@ -140,6 +152,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
 
 /// Refresher
     public void setActive() {
+        autoUpdate.setValue(true);
         usersListComponentController.startListRefresher();
         startChatAreaRefresher();
         starMissionRefresher();
@@ -147,6 +160,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     }
     public void setInActive() {
         try {
+            autoUpdate.setValue(false);
             usersListComponentController.close();
             close();
         } catch (Exception ignored) {}
@@ -156,7 +170,6 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         completeTargetListRefresher = new CompleteTargetListRefresher(autoUpdate, this::updateCompleteTargetLines);
         timerCompleteTarget = new Timer();
         timerCompleteTarget.schedule(completeTargetListRefresher, REFRESH_RATE, REFRESH_RATE);
-        ///add close
     }
     private synchronized void updateCompleteTargetLines(List<Target> targets) {
         Platform.runLater(() -> {
@@ -511,8 +524,22 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     @FXML private TableColumn<MissionTableWorker, Integer> WorkerCol;
     @FXML private TableColumn<MissionTableWorker, ?> ProgressCol;
     @FXML private TableColumn<MissionTableWorker, Integer> yourDoneCol;
-    @FXML private TableColumn<MissionTableWorker, Integer> craditsCol;
+    @FXML private TableColumn<MissionTableWorker, Integer> creditsCol;
     @FXML private TableColumn<MissionTableWorker, String> yourStatusCol;
+
+    @FXML private TableColumn<MissionTableWorker, Integer>  creditsPerTarget;
+    @FXML private TableColumn<MissionTableWorker, String>  StatusCol;
+    @FXML private TableColumn<MissionTableWorker, String> nameOfCreatorCol;
+    @FXML private TableColumn<MissionTableWorker, String> rootCol;
+    @FXML private TableColumn<MissionTableWorker, String> middleCol;
+    @FXML private TableColumn<MissionTableWorker, String> leafCol;
+    @FXML private TableColumn<MissionTableWorker, String> independentsCol;
+
+
+
+
+
+
 //// table 2
     @FXML private TableView<Target> executeTargetTable;
     @FXML private TableColumn<Target, String> nameOfMissionCol_target;
