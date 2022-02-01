@@ -4,6 +4,7 @@ import chat.ChatManager;
 import chat.SingleChatEntry;
 import chat.constants.Constants;
 import com.google.gson.Gson;
+import gpup.servlets.UserManager;
 import gpup.utils.ServletUtils;
 import gpup.utils.SessionUtils;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,7 +22,9 @@ public class ChatServlet extends HttpServlet {
         
         response.setContentType("application/json");
         ChatManager chatManager = ServletUtils.getChatManager(getServletContext());
+
         String username = SessionUtils.getUsername(request);
+        UserManager userManager = ServletUtils.getUserManager(getServletContext());
         if (username == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }

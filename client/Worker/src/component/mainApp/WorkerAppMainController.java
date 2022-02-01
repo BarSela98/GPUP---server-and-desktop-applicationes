@@ -25,6 +25,7 @@ public class WorkerAppMainController {
     private Stage primaryStage;
     private Parent workerPageComponent;
     private WorkerPageController workerPageController;
+    private boolean logout = false;
 
     public WorkerAppMainController() {
         currentUserName = new SimpleStringProperty(JHON_DOE);
@@ -60,20 +61,31 @@ public class WorkerAppMainController {
         }
     }
     public void switchToWorkerPage() {
-        //setMainPanelTo(workerPageComponent);
-        workerPageController.setActive();
-        Scene scene = new Scene(workerPageComponent,1100,800);
+        if (logout)
+            loadWorkerPage();
+        Scene scene = new Scene(workerPageComponent,1200,800);
         primaryStage.setScene(scene);
+        workerPageController.setActive();
+        logout = true;
     }
     public void switchToLogin() {
         Platform.runLater(() -> {
-            currentUserName.set(JHON_DOE);
-            workerPageController.setInActive();
-            Scene scene = new Scene(loginComponent,500,300);
-            primaryStage.setScene(scene);
-           // setMainPanelTo(loginComponent);
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                URL url = getClass().getResource(MAIN_PAGE_FXML_RESOURCE_LOCATION);
+                fxmlLoader.setLocation(url);
+                Parent root = fxmlLoader.load(url.openStream());
+                WorkerAppMainController controller = fxmlLoader.getController();
+                controller.setStage(primaryStage);
+                Scene scene = new Scene(root, 500, 300);
+                primaryStage.setScene(scene);
+                loadLoginPage();
+            } catch (IOException e) {
+            e.printStackTrace();
+        }
         });
     }
+
     private void setMainPanelTo(Parent pane) {
         mainPanel.getChildren().clear();
         mainPanel.getChildren().add(pane);

@@ -149,11 +149,11 @@ public class GeneralGraphController {
         timer.schedule(listRefresher, REFRESH_RATE, REFRESH_RATE);
     }
     public void close() {
-        choiceBoxGraph.getItems().clear();
-        totalGraph.set(0);
         if (listRefresher != null && timer != null) {
             listRefresher.cancel();
             timer.cancel();
         }
+        choiceBoxGraph.getItems().clear();
+        totalGraph.set(0);
     }
 }

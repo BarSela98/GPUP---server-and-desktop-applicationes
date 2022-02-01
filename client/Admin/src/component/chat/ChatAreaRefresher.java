@@ -53,8 +53,6 @@ public class ChatAreaRefresher extends TimerTask {
                 .build()
                 .toString();
 
-
-
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {

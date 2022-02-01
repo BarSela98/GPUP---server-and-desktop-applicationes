@@ -25,6 +25,8 @@ public class Constants {
     private final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
     // login
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginShortResponse";
+    // logout
+    public final static String LOGOUT_PAGE = FULL_SERVER_PATH + "/logout";
     // list of user
     public final static String USERS_LIST = FULL_SERVER_PATH + "/userslist";
     // graph

@@ -68,11 +68,11 @@ public class UsersListController implements Closeable {
 
     @Override
     public void close() {
-        tableViewUsers.getItems().clear();
-        totalUsers.set(0);
         if (listRefresher != null && timer != null) {
             listRefresher.cancel();
             timer.cancel();
         }
+        tableViewUsers.getItems().clear();
+        totalUsers.set(0);
     }
 }

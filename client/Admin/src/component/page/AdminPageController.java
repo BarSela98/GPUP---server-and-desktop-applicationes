@@ -47,7 +47,8 @@ public class AdminPageController implements AdminCommands, Closeable {
     private final IntegerProperty chatVersion;
     private final BooleanProperty autoScroll;
     private final BooleanProperty autoUpdate;
-    private Timer timer;
+    private Timer timerMissionRefresher;
+    private Timer timerChatRefresher;
     private ChatAreaRefresher chatAreaRefresher;
     private final BooleanProperty autoUpdateMission;
     private MissionListRefresher missionRefresher;
@@ -136,7 +137,34 @@ public class AdminPageController implements AdminCommands, Closeable {
         changeStatusOfMission("resume");
     }
     @Override public void logout() {
-        adminAppMainController.switchToLogin();
+        String finalUrl = HttpUrl
+                .parse(LOGOUT_PAGE)
+                .newBuilder()
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> System.out.println("error - admin logout"+e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> System.out.println("admin logout  - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                } else {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> {
+                        System.out.println(responseBody);
+                        adminAppMainController.switchToLogin();
+                        setInActive();
+                        HttpClientUtil.removeCookiesOf(BASE_DOMAIN);
+                    });
+                }
+            }
+        });
     }
     public void setNameOfAdmin(String userName) {
         nameOfAdmin.setText(userName);
@@ -211,7 +239,6 @@ public class AdminPageController implements AdminCommands, Closeable {
                 }
             }
         });
-
         chatLineTextArea.clear();
     }
 
@@ -222,23 +249,29 @@ public class AdminPageController implements AdminCommands, Closeable {
         starChatRefresher();
         starMissionRefresher();
     }
+    /**
+     * close Refresher
+     * @throws IOException
+     */
     public void setInActive() {
         try {
             close();
             usersListComponentController.close();
             graphAdminComponentController.close();
-            close();
         } catch (Exception ignored) {}
     }
-    /**
-     * close Mission Refresher
-     * @throws IOException
-     */
-    @Override public void close() throws IOException {
-        if ( timer != null) {
-            missionRefresher.cancel();
-            timer.cancel();
+    public void close() throws IOException {
+        if (timerChatRefresher != null) {
+            chatAreaRefresher.cancel();
+            timerChatRefresher.cancel();
         }
+        if (timerMissionRefresher != null) {
+            missionRefresher.cancel();
+            timerMissionRefresher.cancel();
+        }
+        chatVersion.set(0);
+        chatLineTextArea.clear();
+        tableViewMission.getItems().clear();
     }
 /// Chat Refresher
     private void updateChatLines(ChatLinesWithVersion chatLinesWithVersion) {
@@ -268,14 +301,14 @@ public class AdminPageController implements AdminCommands, Closeable {
 }
     public void starChatRefresher() {
         chatAreaRefresher = new ChatAreaRefresher(chatVersion, autoUpdate, this::updateChatLines);
-        timer = new Timer();
-        timer.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);
+        timerChatRefresher = new Timer();
+        timerChatRefresher.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);
     }
 /// Mission Refresher
-public void starMissionRefresher() {
+    public void starMissionRefresher() {
     missionRefresher = new MissionListRefresher(autoUpdate, this::updateMissionLines);
-    timer = new Timer();
-    timer.schedule(missionRefresher, REFRESH_RATE, REFRESH_RATE);
+    timerMissionRefresher = new Timer();
+    timerMissionRefresher.schedule(missionRefresher, REFRESH_RATE, REFRESH_RATE);
 }
     private synchronized void updateMissionLines(List<MissionInTable> missions) {
         Platform.runLater(() -> {

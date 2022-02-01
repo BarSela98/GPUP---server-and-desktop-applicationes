@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 
 import static util.Constants.CHAT_LINE_FORMATTING;
 import static util.Constants.REFRESH_RATE;
-import static utility.Constants.CHANGE_WORKER_STATUS_IN_MISSION;
+import static utility.Constants.*;
 
 
 public class WorkerPageController implements WorkerCommands , Closeable{
@@ -48,8 +48,9 @@ public class WorkerPageController implements WorkerCommands , Closeable{
     private final IntegerProperty chatVersion;
     private final BooleanProperty autoScroll;
     private final BooleanProperty autoUpdate;
-    private Timer timer;
+    private Timer timerChatAreaRefresher;
     private Timer timerCompleteTarget;
+    private Timer timerMissionRefresher;
     private ChatAreaRefresher chatAreaRefresher;
     private CompleteTargetListRefresher completeTargetListRefresher;
     private WorkerAppMainController workerAppMainController;
@@ -140,7 +141,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
 /// Refresher
     public void setActive() {
         usersListComponentController.startListRefresher();
-        startListRefresher();
+        startChatAreaRefresher();
         starMissionRefresher();
         starCompleteTargetRefresher();
     }
@@ -169,9 +170,6 @@ public class WorkerPageController implements WorkerCommands , Closeable{
                 }
             }
             yourCredit.setText(String.valueOf(credit));
-
-
-
             items.addAll(targets);
         });
     }
@@ -201,16 +199,16 @@ public class WorkerPageController implements WorkerCommands , Closeable{
             });
         }
     }
-    public void startListRefresher() {
+    public void startChatAreaRefresher() {
         chatAreaRefresher = new ChatAreaRefresher(chatVersion, autoUpdate, this::updateChatLines);
-        timer = new Timer();
-        timer.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);
+        timerChatAreaRefresher = new Timer();
+        timerChatAreaRefresher.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);
     }
 
     public void starMissionRefresher() {
         missionRefresher = new MissionListRefresherForWorker(autoUpdate, this::updateMissionLines);
-        timer = new Timer();
-        timer.schedule(missionRefresher, REFRESH_RATE, REFRESH_RATE);
+        timerMissionRefresher = new Timer();
+        timerMissionRefresher.schedule(missionRefresher, REFRESH_RATE, REFRESH_RATE);
         ///add close
     }
     private synchronized void updateMissionLines(List<MissionTableWorker> missions) {
@@ -294,15 +292,54 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         chatLineTextArea.clear();
     }
     @Override public void logout() {
-        workerAppMainController.switchToLogin();
+        String finalUrl = HttpUrl
+                .parse(LOGOUT_PAGE)
+                .newBuilder()
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> System.out.println("error - admin logout"+e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> System.out.println("admin logout  - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                } else {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> {
+                        System.out.println(responseBody);
+                        workerAppMainController.switchToLogin();
+                        setInActive();
+                        HttpClientUtil.removeCookiesOf(BASE_DOMAIN);
+                    });
+                }
+            }
+        });
     }
+
+
     @Override public void close() throws IOException {
+        if (chatAreaRefresher != null && timerChatAreaRefresher != null) {
+            chatAreaRefresher.cancel();
+            timerChatAreaRefresher.cancel();
+        }
+        if (missionRefresher != null && timerMissionRefresher != null) {
+            missionRefresher.cancel();
+            timerMissionRefresher.cancel();
+        }
+        if (completeTargetListRefresher != null && timerCompleteTarget != null) {
+            completeTargetListRefresher.cancel();
+            timerCompleteTarget.cancel();
+        }
+        executeTargetTable.getItems().clear();
+        missionTable.getItems().clear();
         chatVersion.set(0);
         chatLineTextArea.clear();
-        if (chatAreaRefresher != null && timer != null) {
-            chatAreaRefresher.cancel();
-            timer.cancel();
-        }
     }
 
 
