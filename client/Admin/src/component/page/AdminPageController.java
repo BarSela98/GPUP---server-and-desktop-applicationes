@@ -244,6 +244,7 @@ public class AdminPageController implements AdminCommands, Closeable {
 
 ///Refresher
     public void setActive() {
+        autoUpdate.setValue(true);
         usersListComponentController.startListRefresher();
         graphAdminComponentController.startGraphListRefresher();
         starChatRefresher();
@@ -255,6 +256,7 @@ public class AdminPageController implements AdminCommands, Closeable {
      */
     public void setInActive() {
         try {
+            autoUpdate.setValue(false);
             close();
             usersListComponentController.close();
             graphAdminComponentController.close();
