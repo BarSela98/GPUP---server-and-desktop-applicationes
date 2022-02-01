@@ -82,7 +82,7 @@
                                                    </VBox.margin>
                                                    <children>
                                                       <Label text="Cradit" />
-                                                      <Text fx:id="yourCradit" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                                                      <Text fx:id="yourCredit" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
                                                          <HBox.margin>
                                                             <Insets left="20.0" />
                                                          </HBox.margin>

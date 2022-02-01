@@ -336,6 +336,7 @@ public class Mission {
             t.setSuccessChance(simulation.getSuccess());
             t.setWarningChance(simulation.getWarning());
             t.setPath(path);
+            t.setMission("simulation");
         }
     }
     private void compilationSetUp(){
@@ -349,6 +350,8 @@ public class Mission {
             t.setSource(compilation.getSourceFolder());
             t.setCompileDest(compilation.getTargetFolder());
             t.setPath(path);
+            t.setMission("compilation");
+
         }
     }
     private String openDir(String taskType) throws IOException {//doesnt have path yet,this func create directory for simulation task

@@ -10,22 +10,6 @@ import java.util.Set;
 
 //
 public class Target implements Serializable,Runnable {
-    public Target() {
-
-    }
-
-    public void updateInfo(Target tar) {
-        this.status = tar.status;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
     public enum Type {INDEPENDENTS, LEAF, MIDDLE, ROOT}
     public enum Status {Waiting, Success, Warning, Skipped, Failure, Frozen}
     private String userData;
@@ -50,6 +34,17 @@ public class Target implements Serializable,Runnable {
     private String source;
     private String Mission;
     private int price;
+    private String nameOfTask;
+    public String getNameOfTask() {
+        return nameOfTask;
+    }
+
+    public void setNameOfTask(String nameOfTask) {
+        this.nameOfTask = nameOfTask;
+    }
+
+
+
 
     /**
      * ctor
@@ -65,7 +60,20 @@ public class Target implements Serializable,Runnable {
         this.setDependsOn = setDependsOn;
         this.setRequiredFor = setRequiredFor;
     }
+    public Target() {
 
+    }
+
+    public void updateInfo(Target tar) {
+        this.status = tar.status;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+    public void setPrice(int price) {
+        this.price = price;
+    }
 
     public String getMission() {
         return Mission;
