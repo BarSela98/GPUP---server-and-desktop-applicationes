@@ -23,6 +23,7 @@ public class WorkerObject {
     private List<Target> targetsToExecute;
     private List<Target> completeTarget;
     private Map<String,StatusOfWorkerInMission> statusOfWorkerInMissionMap;
+    private List<Target> targetsInProgress;
     private int total=0;
     private boolean b= false;
 
@@ -33,6 +34,7 @@ public class WorkerObject {
         completeTarget = new ArrayList<>();
         tasks = new ArrayList<>();
         targetsToExecute = new ArrayList<>();
+        targetsInProgress = new ArrayList<>();
         statusOfWorkerInMissionMap = new HashMap<>();
         Thread doTask = new Thread(()->{
             try {
@@ -48,9 +50,13 @@ public class WorkerObject {
     }
 
 
+    public List<Target> getTargetInProgress() {
+        return targetsInProgress;
+    }
     public List<Target> getCompleteTarget() {
         return completeTarget;
     }
+
     public void addToCompleteTarget(Target t) {
         System.out.println("-------------------------------------add complete "+completeTarget);
         completeTarget.add(t);
@@ -108,25 +114,29 @@ public class WorkerObject {
     }
     public void pullTargets(){
         if(targetsToExecute.size() != 0){
-            execute(targetsToExecute.get(0));
+            targetsInProgress.add(targetsToExecute.get(0));
             targetsToExecute.remove(0);
+            execute(targetsInProgress.get(0));
         }
     }
     public void execute(Target t){
-        curThreads++;
-        Thread thread =new Thread(t);
-        thread.start();
-        try {
-            Thread.sleep(10);
+        Thread thread = new Thread(()->{
+            curThreads++;
+            t.run();
             while (t.isRunning()){
-                Thread.sleep(10);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-            }
         }
-        catch (Exception e){}
-        curThreads--;
-        total+=t.getPrice();
-        updateTargetInMission(t);
+            total+=t.getPrice();
+            updateTargetInMission(t);
+            targetsInProgress.remove(0);
+            curThreads--;
+        });
+        thread.start();
     }
 
     public void setTargetsToExecute(List<Target> targetsToExecute) {

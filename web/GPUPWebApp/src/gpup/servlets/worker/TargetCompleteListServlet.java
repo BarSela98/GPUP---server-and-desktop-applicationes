@@ -1,15 +1,16 @@
 package gpup.servlets.worker;
 
-import engine.Target;
+import ODT.TargetInWorkerAndAmountOfThread;
 import com.google.gson.Gson;
+import engine.Target;
 import gpup.servlets.UserManager;
-import gpup.servlets.WorkerManager;
 import gpup.utils.ServletUtils;
 import gpup.utils.SessionUtils;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import object.WorkerObject;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -32,16 +33,14 @@ public class TargetCompleteListServlet extends HttpServlet {
             response.setContentType("application/json");
             try (PrintWriter out = response.getWriter()) {
                 Gson gson = new Gson();
-                WorkerManager workerManger = ServletUtils.getWorkerManager(getServletContext());
+                WorkerObject worker = ServletUtils.getWorkerManager(getServletContext()).getWorkerByName(usernameFromSession);
                 List<Target> list = new ArrayList<>();
-
-                List<Target> targetComplete = workerManger.getWorkerByName(usernameFromSession).getCompleteTarget();
-                List<Target> targetToExecute = workerManger.getWorkerByName(usernameFromSession).getTargetsToExecute();
-
+                List<Target> targetComplete = worker.getCompleteTarget();
+                List<Target> targetInProgress = worker.getTargetInProgress();
                 list.addAll(targetComplete);
-                list.addAll(targetToExecute);
+                list.addAll(targetInProgress);
 
-                String json = gson.toJson(list);
+                String json = gson.toJson(new TargetInWorkerAndAmountOfThread(list, worker.getThreadsNum() - worker.getCurThreads()));
                 out.println(json);
                 out.flush();
             }

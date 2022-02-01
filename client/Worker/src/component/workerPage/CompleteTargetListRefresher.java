@@ -1,6 +1,6 @@
 package component.workerPage;
 
-import engine.Target;
+import ODT.TargetInWorkerAndAmountOfThread;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
@@ -10,8 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
@@ -20,11 +18,11 @@ import static utility.Constants.TARGET_COMPLETE_LIST;
 
 
 public class CompleteTargetListRefresher extends TimerTask {
-    private final Consumer<List<Target>> completeTargetsListConsumer;
+    private final Consumer<TargetInWorkerAndAmountOfThread> completeTargetsListConsumer;
     private final BooleanProperty shouldUpdate;
 
 
-    public CompleteTargetListRefresher(BooleanProperty shouldUpdate, Consumer<List<Target>> completeTargetsListConsumer) {
+    public CompleteTargetListRefresher(BooleanProperty shouldUpdate, Consumer<TargetInWorkerAndAmountOfThread> completeTargetsListConsumer) {
          this.shouldUpdate = shouldUpdate;
         this.completeTargetsListConsumer = completeTargetsListConsumer;
     }
@@ -51,10 +49,13 @@ public class CompleteTargetListRefresher extends TimerTask {
                 } else {
                     String jsonArrayOfMissionsNames = response.body().string();
                     if (jsonArrayOfMissionsNames.length() != 3) {
-                        Target[] completeTargets = GSON_INSTANCE.fromJson(jsonArrayOfMissionsNames, Target[].class);
+                        TargetInWorkerAndAmountOfThread targetInWorkerAndAmountOfThread = GSON_INSTANCE.fromJson(jsonArrayOfMissionsNames, TargetInWorkerAndAmountOfThread.class);
 
-                        List<Target> l = Arrays.asList(completeTargets);
-                        completeTargetsListConsumer.accept(l);
+
+                      //  Target[] completeTargets = GSON_INSTANCE.fromJson(jsonArrayOfMissionsNames, Target[].class);
+
+                       // List<Target> l = Arrays.asList(completeTargets);
+                        completeTargetsListConsumer.accept(targetInWorkerAndAmountOfThread);
                     }
                 }
             }

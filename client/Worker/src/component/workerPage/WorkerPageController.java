@@ -2,6 +2,7 @@ package component.workerPage;
 
 import ODT.MissionInTable;
 import ODT.MissionTableWorker;
+import ODT.TargetInWorkerAndAmountOfThread;
 import component.api.WorkerCommands;
 import component.chat.ChatAreaRefresher;
 import component.chat.model.ChatLinesWithVersion;
@@ -167,8 +168,9 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         timerCompleteTarget = new Timer();
         timerCompleteTarget.schedule(completeTargetListRefresher, REFRESH_RATE, REFRESH_RATE);
     }
-    private synchronized void updateCompleteTargetLines(List<Target> targets) {
+    private synchronized void updateCompleteTargetLines(TargetInWorkerAndAmountOfThread targetInWorkerAndAmountOfThread) {
         Platform.runLater(() -> {
+            List<Target> targets = targetInWorkerAndAmountOfThread.getTargetInWorker();
             int credit = 0;
             ObservableList<Target> items = executeTargetTable.getItems();
             items.clear();
@@ -181,6 +183,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
             }
             yourCredit.setText(String.valueOf(credit));
             items.addAll(targets);
+            availableThreadText.setText(String.valueOf(targetInWorkerAndAmountOfThread.getAvailableThread()));
         });
     }
 
