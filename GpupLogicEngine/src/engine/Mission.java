@@ -22,6 +22,8 @@ import java.util.*;
 import static utility.Constants.SEND_TARGET_TO_MISSION;
 
 public class Mission {
+
+
     public enum statusOfMission {PAUSE , DONE , WAITING, INPROGRESS , STOP}
     final Object lock = new Object();
     private String nameOfMission;
@@ -36,7 +38,7 @@ public class Mission {
     private int priceOfMission;
     private int priceOfAllMission;
     private Utility.WhichTask whichTask;
-
+    private int count=0;
     private statusOfMission statusOfMission;
     private List<Target> targets;
     private List<Target> waitingTargetToExecute;
@@ -73,9 +75,9 @@ public class Mission {
         this.compilation = m.getCompilation();
         this.workerList = m.getWorkerList();
         this.workerListSize = m.getWorkerListSize();
-
+        this.count=m.getCount();
     }
-    public Mission(Mission m,boolean fromScratch){
+    public Mission(Mission m,boolean fromScratch,int c){
         this.nameOfMission = m.getNameOfMission();
         this.nameOfCreator  = m.getNameOfCreator();
         this.nameOfGraph = m.nameOfGraph;
@@ -95,6 +97,9 @@ public class Mission {
         this.compilation = m.getCompilation();
         this.workerList = m.getWorkerList();
         this.workerListSize = m.getWorkerListSize();
+        this.nameOfMission=m.nameOfMission+ c;
+
+
         if(fromScratch){
             for(Target t:targets){
                 t.setStatus(Target.Status.Frozen);
@@ -580,5 +585,11 @@ public class Mission {
                 break;
         }
     }
+    public int getCount() {
+        return count;
+    }
 
+    public void setCount(int count) {
+        this.count = count;
+    }
 }
