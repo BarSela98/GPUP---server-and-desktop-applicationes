@@ -82,7 +82,7 @@ public class Mission {
        // this.count=m.getCount();
         this.signWorkerSize=m.getSignWorkerSize();
 
-        this.progress = "- " +m.progress;
+        this.progress = m.progress;
         this.targetWaiting = m.getTargetWaiting();
         this.targetInProgress = m.getTargetInProgress();
     }

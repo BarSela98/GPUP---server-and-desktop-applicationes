@@ -30,7 +30,6 @@ public class AddMissionServlet extends HttpServlet {
         MissionManger missionManger = ServletUtils.getMissionManager(getServletContext());
         String json = new BufferedReader(new InputStreamReader(request.getInputStream())).lines().collect(
                 Collectors.joining("\n"));
-        System.out.println(json);
         Mission mission = new Gson().fromJson(json, Mission.class);
 
         if(usernameFromSession == null || usernameFromSession.isEmpty()){
