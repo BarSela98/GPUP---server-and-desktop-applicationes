@@ -78,6 +78,7 @@ public class WorkerObject {
 
     public void addTargetToList(Target t){
         targetsToExecute.add(t);
+        System.out.println("add target to list "+t.getName());
     }
     public void updateTargetInMission(Target t){
         String json = new Gson().toJson(t);
