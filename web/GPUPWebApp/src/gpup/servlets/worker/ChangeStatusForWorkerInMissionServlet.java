@@ -1,5 +1,6 @@
 package gpup.servlets.worker;
 
+import engine.Mission;
 import gpup.servlets.MissionManger;
 import gpup.servlets.UserManager;
 import gpup.servlets.WorkerManager;
@@ -47,9 +48,11 @@ public class ChangeStatusForWorkerInMissionServlet extends HttpServlet {
             MissionManger missionManger = ServletUtils.getMissionManager(getServletContext());
             WorkerManager workerManager = ServletUtils.getWorkerManager(getServletContext());  ///check if it is worker
             WorkerObject worker = workerManager.getWorkerByName(usernameFromSession);
+            Mission m;
             if(worker.getStatusOfWorkerInMissionMap().containsKey(missionNameFromParameter)) {
                 worker.changeStatusOfWorkerInMission(statusFromParameter, missionNameFromParameter);
                 try {
+                    m = missionManger.getMissionByName(missionNameFromParameter);
                     if (statusFromParameter.equals("PAUSE"))
                         status = false;
                     else if (statusFromParameter.equals("DO"))
@@ -62,7 +65,7 @@ public class ChangeStatusForWorkerInMissionServlet extends HttpServlet {
                     e.printStackTrace();
                 }
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.getOutputStream().print("Successful change new status (" + status + ") for mission " + missionNameFromParameter + " is a "+ worker.isAvailable(missionNameFromParameter) );
+                response.getOutputStream().print("Successful change new status (" + status + ") for mission " + missionNameFromParameter + " is a "+ m.getAvailableWorker() );
             }
             else{
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
