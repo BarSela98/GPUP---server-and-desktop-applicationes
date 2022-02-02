@@ -55,6 +55,9 @@ public class ChangeStatusForWorkerInMissionServlet extends HttpServlet {
                     else if (statusFromParameter.equals("DO"))
                         status = true;
                     missionManger.getMissionByName(missionNameFromParameter).getWorkerList().get(usernameFromSession).setStatus(status);
+                    System.out.println(missionManger.getMissionByName(missionNameFromParameter).getAvailableWorker());
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -45,6 +45,7 @@ public class WorkerObject {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println(" doTask finish");
         });
         doTask.start();
     }
