@@ -239,7 +239,6 @@ public class Mission {
     private void sendTargetToAvailableWorker() {
         for (String worker : workerList.keySet()) {
             if (availableWorker != 0 && workerList.get(worker).getStatus() && waitingTargetToExecute.size() != 0) {
-
                 Target t = waitingTargetToExecute.get(0);
                 System.out.println("send target : "+ t );
                 waitingTargetToExecute.remove(0);
@@ -371,13 +370,14 @@ public class Mission {
         int IncompleteTargets = 0;
 
         for(Target t : targets){
+            System.out.println(t.getStatus());
             if(t.getStatus()==Target.Status.Waiting||t.getStatus()==Target.Status.Frozen){
                 statusOfMissionBool = false;
                 IncompleteTargets++;
             }
         }
 
-        double d= ((double)(targets.size() - IncompleteTargets) / (double)targets.size()) * 100 ;
+        double d = ((double)(targets.size() - IncompleteTargets) / (double)targets.size()) * 100 ;
         progress = d + " %";
 
         if (d == 100)
