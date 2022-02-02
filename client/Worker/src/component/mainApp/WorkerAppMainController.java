@@ -59,6 +59,7 @@ public class WorkerAppMainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        workerPageController.setInActive();
     }
     public void switchToWorkerPage() {
         if (logout)
@@ -85,7 +86,6 @@ public class WorkerAppMainController {
         }
         });
     }
-
     private void setMainPanelTo(Parent pane) {
         mainPanel.getChildren().clear();
         mainPanel.getChildren().add(pane);
@@ -103,11 +103,12 @@ public class WorkerAppMainController {
     public void setStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
-
     public void updateUser(String userName , int amountOfResources) {
         currentUserName.set(userName);
         workerPageController.setNameOfWorker(userName);
         workerPageController.setAmountOfResources(String.valueOf(amountOfResources));
         workerPageController.setYourCredit(String.valueOf(0));
     }
+    public void setInActive() {workerPageController.setInActive();}
+
 }

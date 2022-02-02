@@ -60,7 +60,7 @@ public class SignForMissionServlet extends HttpServlet {
                 missionManger.removeWorkerForMissionByName(usernameFromSession,missionNameFromParameter);
                 worker.getStatusOfWorkerInMissionMap().remove(missionNameFromParameter);
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.getOutputStream().print("Successful sign for mission");
+                response.getOutputStream().print("Successful remove for mission");
             }
             else{
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -315,14 +315,14 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("error - admin logout"+e.getMessage()));
+                Platform.runLater(() -> System.out.println("error - worker logout"+e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("admin logout  - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    Platform.runLater(() -> System.out.println("worker logout  - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 } else {
                     String responseBody = response.body().string();
                     Platform.runLater(() -> {

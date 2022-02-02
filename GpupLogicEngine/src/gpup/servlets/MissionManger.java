@@ -18,6 +18,7 @@ public class MissionManger {
         missionList.put(newMission.getNameOfMission(),newMission);
     }
 
+
     public synchronized Map<String,Mission> getMissionList() {
         return missionList;
     }
@@ -39,6 +40,13 @@ public class MissionManger {
 
     public synchronized void removeWorkerForMissionByName(String workerName, String missionNameFromParameter) {
         missionList.get(missionNameFromParameter).removeWorkerFromMission(workerName);
+    }
+
+    public synchronized void removeWorkerForAllMission(String workerName) {
+        for (String st : missionList.keySet()){
+            Mission m = missionList.get(st);
+            m.removeWorkerFromMission(workerName);
+        }
     }
 
     public synchronized void updateTarget(Target tar){

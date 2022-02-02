@@ -222,7 +222,6 @@ public class Mission {
                 while (statusOfMission == statusOfMission.INPROGRESS && statusOfMission != statusOfMission.STOP && statusOfMission != statusOfMission.PAUSE && statusOfMission != statusOfMission.DONE) {
                     fixTargetsStatues();
                     sendTargetToAvailableWorker();
-
                 }
                 checkIfMissionDone();
                 while (statusOfMission != statusOfMission.STOP && statusOfMission != statusOfMission.DONE && statusOfMission == statusOfMission.PAUSE) {
@@ -485,42 +484,6 @@ public class Mission {
         this.nameOfGraph = nameOfGraph;
     }
 
-/*
-    public boolean getIsRunning() {
-        return isRunning;
-    }
-    public void setIsRunning(boolean running) {
-        isRunning = running;
-        if (isRunning){
-            isPause = false;
-            isStop = false;
-        }
-    }
-
-    public boolean isPause() {
-        return isPause;
-    }
-    public void setPause(boolean pause) {
-        isPause = pause;
-        if (isPause){
-            isRunning = false;
-            isStop = false;
-        }
-    }
-
-    public boolean isStop() {
-        return isStop;
-    }
-    public void setStop(boolean stop) {
-        isStop = stop;
-        if (isStop){
-            isPause = false;
-            isRunning = false;
-        }
-    }
-
-
-     */
     public int getPriceOfAllMission() {
         return priceOfAllMission;
     }

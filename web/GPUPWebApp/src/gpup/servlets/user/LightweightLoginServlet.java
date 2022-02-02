@@ -59,7 +59,6 @@ public class LightweightLoginServlet extends HttpServlet {
                 do here other not related actions (such as response setup. this is shown here in that manner just to stress this issue
                  */
                 synchronized (this) {
-
                     if (userManager.isUserExists(usernameFromParameter)) {
                         String errorMessage = "Username " + usernameFromParameter + " already exists. Please enter a different username.";
                         // stands for unauthorized as there is already such user with this name
