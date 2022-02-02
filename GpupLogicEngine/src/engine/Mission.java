@@ -222,10 +222,12 @@ public class Mission {
                 while (statusOfMission == statusOfMission.INPROGRESS && statusOfMission != statusOfMission.STOP && statusOfMission != statusOfMission.PAUSE && statusOfMission != statusOfMission.DONE) {
                     fixTargetsStatues();
                     sendTargetToAvailableWorker();
+                    System.out.println("thread do mission   1");
                 }
                 checkIfMissionDone();
                 while (statusOfMission != statusOfMission.STOP && statusOfMission != statusOfMission.DONE && statusOfMission == statusOfMission.PAUSE) {
                     sendTargetToAvailableWorker();
+                    System.out.println("thread do mission   2");
                 }
                 System.out.println("thread do mission");
             }
