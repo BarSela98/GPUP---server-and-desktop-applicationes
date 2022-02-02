@@ -48,7 +48,6 @@ public class missionAdminController {
         runTask = new SimpleBooleanProperty(false);
     }
     @FXML public void initialize() {
-        setComboBox();
         executeButton.setDisable(true);
         simulationToggle.setOpacity(0.3);
         simulationBox.disableProperty().bind(isCompiler);
@@ -83,11 +82,6 @@ public class missionAdminController {
     }
 
     /// set for initialize
-    public void setComboBox(){
-        scratchOrIncremental.getItems().add("Scratch");
-        scratchOrIncremental.getItems().add("Incremental");
-        scratchOrIncremental.setValue("Scratch");
-    }
     public void setToggles(){
         compilerToggle.setSelected(true);
         compilerToggle.setStyle("-fx-background-color: linear-gradient(#2A5058, #61a2b1)");
@@ -204,10 +198,7 @@ public class missionAdminController {
         if (nameOfMissionText.getText().equals(""))
             return;
 
-        if (scratchOrIncremental.getValue().equals("Scratch"))
-            typeOfRunning = Utility.TypeOfRunning.SCRATCH;
-        else
-            typeOfRunning = Utility.TypeOfRunning.INCREMENTAL;
+        typeOfRunning = Utility.TypeOfRunning.SCRATCH;
 
         // list of targets that choose
         for(TargetTable t:tableView.getItems()){
@@ -322,8 +313,6 @@ public class missionAdminController {
     @FXML private HBox hbox2;
     @FXML private ToggleButton compilerToggle;
     @FXML private ToggleButton simulationToggle;
-    @FXML private VBox hbox3;
-    @FXML private ComboBox<String> scratchOrIncremental;
     @FXML private Button executeButton;
     @FXML private HBox simulationBox;
     @FXML private VBox vbox1;
