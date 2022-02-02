@@ -47,7 +47,7 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
             //    public enum statusOfMission {PAUSE ,  , WAITING, INPROGRESS , run pause resume}
                 MissionManger missionManger = ServletUtils.getMissionManager(getServletContext());
                 Mission mission = missionManger.getMissionByName(nameOfMission);
-                if (statusOfMission.equals("Scratch") && (missionManger.getMissionByName(nameOfMission).getStatusOfMission() == Mission.statusOfMission.STOP || missionManger.getMissionByName(nameOfMission).getStatusOfMission() == Mission.statusOfMission.DONE)){
+                if (statusOfMission.equals("Scratch") && (mission.getStatusOfMission() == Mission.statusOfMission.STOP || mission.getStatusOfMission() == Mission.statusOfMission.DONE)){
                     for(Target target :mission.getTargets()){
                         target.setStatus(Target.Status.Frozen);
                     }
@@ -57,12 +57,15 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
                     mission.getWaitingTargetToExecute().clear();
                     mission.getAmountOfCompleteTarget();
                     missionManger.setStatusOfMissionByName(nameOfMission, "run");
-                    missionManger.getMissionByName(nameOfMission).doMission();
+                    mission.doMission();
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.getWriter().write("run from scratch");
                     response.getWriter().flush();
                 }
-                else if (statusOfMission.equals("Incremental") && missionManger.getMissionByName(nameOfMission).getStatusOfMission() == Mission.statusOfMission.STOP & missionManger.getMissionByName(nameOfMission).getStatusOfMission() != Mission.statusOfMission.DONE){
+                else if (statusOfMission.equals("Incremental") &&
+                        mission.getStatusOfMission() == Mission.statusOfMission.STOP
+                        && mission.getStatusOfMission() == Mission.statusOfMission.DONE
+                        && !mission.checkIfAllTargetsSuccess()){
                     Mission newMission = new Mission(mission);
                     for (Target target : newMission.getTargets()){
                         if (target.getStatus() == Target.Status.Failure || target.getStatus() == Target.Status.Skipped)
@@ -82,12 +85,12 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
                 }
 
 
-                else if (missionManger.getMissionByName(nameOfMission).getStatusOfMission() == Mission.statusOfMission.DONE){
+                else if (mission.getStatusOfMission() == Mission.statusOfMission.DONE){
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     response.getWriter().write("Mission: "+nameOfMission+" already done");
                     response.getWriter().flush();
                 }
-                else if (missionManger.getMissionByName(nameOfMission).getStatusOfMission() == Mission.statusOfMission.STOP ){
+                else if (mission.getStatusOfMission() == Mission.statusOfMission.STOP ){
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("Mission: "+nameOfMission+" already stop");
                 response.getWriter().flush();
@@ -98,7 +101,7 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
                 if (statusOfMission.equals("pause") || statusOfMission.equals("run") || statusOfMission.equals("resume") || statusOfMission.equals("stop")){
                     missionManger.setStatusOfMissionByName(nameOfMission, statusOfMission);
                     if (statusOfMission.equals("run"))
-                        missionManger.getMissionByName(nameOfMission).doMission();
+                        mission.doMission();
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.getWriter().write("Mission: "+nameOfMission+" change status to "+ statusOfMission);
                     response.getWriter().flush();
