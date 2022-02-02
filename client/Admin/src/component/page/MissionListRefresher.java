@@ -59,6 +59,8 @@ public class MissionListRefresher extends TimerTask {
                         List<MissionInTable> table = new ArrayList<>();
                         for(int i= 0 ; i < MissionsNames.length ; ++i){
                             table.add(new MissionInTable(MissionsNames[i]));
+
+
                         }
                         MissionsListConsumer.accept(table);
                     }

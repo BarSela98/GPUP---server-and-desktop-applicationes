@@ -470,7 +470,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         String finalUrl = HttpUrl
                 .parse(Constants.SIGN_FOR_MISSION)
                 .newBuilder()
-                .addQueryParameter("missionname", missionTable.getItems().get(0).getNameOfMission())
+                .addQueryParameter("missionname", m.getNameOfMission())
                 .addQueryParameter("sign", "remove")
                 .build()
                 .toString();
