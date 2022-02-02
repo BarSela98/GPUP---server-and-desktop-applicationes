@@ -62,7 +62,7 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
                     response.getWriter().write("run from scratch");
                     response.getWriter().flush();
                 }
-                else if (statusOfMission.equals("Incremental") && (missionManger.getMissionByName(nameOfMission).getStatusOfMission() == Mission.statusOfMission.STOP || missionManger.getMissionByName(nameOfMission).getStatusOfMission() == Mission.statusOfMission.DONE)){
+                else if (statusOfMission.equals("Incremental") && missionManger.getMissionByName(nameOfMission).getStatusOfMission() == Mission.statusOfMission.STOP & missionManger.getMissionByName(nameOfMission).getStatusOfMission() != Mission.statusOfMission.DONE){
                     Mission newMission = new Mission(mission);
                     newMission.setNameOfMission(mission.getNameOfMission()+missionManger.incrementalSize(nameOfMission));
 
