@@ -139,12 +139,12 @@
                                                       <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                                                    </HBox.margin>
                                                 </Button>
-                                                <Button mnemonicParsing="false" onAction="#PlayFromScratchButton" prefHeight="31.0" prefWidth="189.0" text="Play From Scratch">
+                                                <Button fx:id="ScratchButton" mnemonicParsing="false" onAction="#PlayFromScratchButton" prefHeight="31.0" prefWidth="189.0" text="Play From Scratch">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                                                    </HBox.margin>
                                                 </Button>
-                                                <Button mnemonicParsing="false" onAction="#playIncrementalButton" prefHeight="31.0" prefWidth="181.0" text="Play - Incremental">
+                                                <Button fx:id="IncrementalButton" mnemonicParsing="false" onAction="#playIncrementalButton" prefHeight="31.0" prefWidth="181.0" text="Play - Incremental">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                                                    </HBox.margin>

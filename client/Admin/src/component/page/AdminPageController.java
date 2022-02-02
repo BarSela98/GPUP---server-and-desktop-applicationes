@@ -85,6 +85,8 @@ public class AdminPageController implements AdminCommands, Closeable {
         play.disableProperty().bind(showButton);
         resume.disableProperty().bind(showButton);
         pause.disableProperty().bind(showButton);
+        IncrementalButton.disableProperty().bind(showButton);
+        ScratchButton.disableProperty().bind(showButton);
     }
     public void setAppMainController(AdminAppMainController adminAppMainController) {
         this.adminAppMainController = adminAppMainController;
@@ -407,4 +409,6 @@ public class AdminPageController implements AdminCommands, Closeable {
     @FXML private Button play;
     @FXML private Button resume;
     @FXML private Button pause;
+    @FXML private Button IncrementalButton;
+    @FXML private Button ScratchButton;
 }
