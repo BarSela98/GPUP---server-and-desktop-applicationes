@@ -46,20 +46,20 @@ public class LogoutServlet extends HttpServlet {
             try {
                 Mission mission =missionManager.getMissionByName(t.getMission());
                 t.setStatus(Target.Status.Waiting);
-                missionManager.getMissionByName(t.getMission()).getWaitingTargetToExecute().add(t);
+               // missionManager.getMissionByName(t.getMission()).getWaitingTargetToExecute().add(t);
                 mission.setTargetInProgress(mission.getTargetInProgress()-1);
-                mission.setTargetWaiting(mission.getTargetWaiting()+1);
+              //  mission.setTargetWaiting(mission.getTargetWaiting()+1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         for (Target t : worker.getTargetInProgress()){
             try {
-                Mission mission =missionManager.getMissionByName(t.getMission());
+                Mission mission = missionManager.getMissionByName(t.getMission());
                 t.setStatus(Target.Status.Waiting);
-                mission.getWaitingTargetToExecute().add(t);
+               // mission.getWaitingTargetToExecute().add(t);
                 mission.setTargetInProgress(mission.getTargetInProgress()-1);
-                mission.setTargetWaiting(mission.getTargetWaiting()+1);
+              //  mission.setTargetWaiting(mission.getTargetWaiting()+1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
