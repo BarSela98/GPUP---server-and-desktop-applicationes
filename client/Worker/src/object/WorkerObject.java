@@ -122,6 +122,7 @@ public class WorkerObject {
     }
     public void execute(Target t){
         Thread thread = new Thread(()->{
+            System.out.println("thread execute " + t.getName());
             curThreads++;
             t.run();
             while (t.isRunning()){
