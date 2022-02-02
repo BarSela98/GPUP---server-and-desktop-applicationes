@@ -82,7 +82,7 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
                     }
                     mission.setTargets(newList);
                     newMission.setNameOfMission(mission.getNameOfMission()+missionManger.incrementalSize(nameOfMission));
-
+                    newMission.setProgress("-");
                     newMission.setWorkerList(new HashMap<>());
                     newMission.setAvailableWorker(0);
                     newMission.setSignWorkerSize(0);
