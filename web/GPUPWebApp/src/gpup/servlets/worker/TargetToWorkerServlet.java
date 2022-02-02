@@ -29,6 +29,7 @@ public class TargetToWorkerServlet extends HttpServlet {
         System.out.println(json);
         TargetToWorker targetToWorkerServlet = new Gson().fromJson(json, TargetToWorker.class);
         Target target = targetToWorkerServlet.getTarget();
+        System.out.println(target);
         WorkerObject worker = workerManager.getWorkerByName(targetToWorkerServlet.getNameOfWorker());
         worker.addTargetToList(target);
         response.getWriter().write(String.valueOf(worker.isAvailable(target.getMission())));
