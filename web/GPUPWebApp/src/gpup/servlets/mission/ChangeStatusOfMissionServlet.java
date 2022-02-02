@@ -88,6 +88,8 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
                             target.setStatus(Target.Status.Frozen);
                         newList.add(t);
                     }
+
+                    newMission.setTargets(newList);
                     missionManger.setStatusOfMissionByName(newMission.getNameOfMission(), "run");
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.getWriter().write("run - Incremental");
