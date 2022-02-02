@@ -59,7 +59,7 @@ public class ChangeStatusForWorkerInMissionServlet extends HttpServlet {
                     e.printStackTrace();
                 }
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.getOutputStream().print("Successful change new status (" + status + ") for mission " + missionNameFromParameter);
+                response.getOutputStream().print("Successful change new status (" + status + ") for mission " + missionNameFromParameter + " is a "+ worker.isAvailable(missionNameFromParameter) );
             }
             else{
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
