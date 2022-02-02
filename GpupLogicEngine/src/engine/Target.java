@@ -10,6 +10,13 @@ import java.util.Set;
 
 //
 public class Target implements Serializable,Runnable {
+    @Override
+    public String toString() {
+        return "Target{" +
+                "Mission='" + Mission + '\'' +
+                '}';
+    }
+
     public enum Type {INDEPENDENTS, LEAF, MIDDLE, ROOT}
     public enum Status {Waiting, Success, Warning, Skipped, Failure, Frozen}
     private String userData;
