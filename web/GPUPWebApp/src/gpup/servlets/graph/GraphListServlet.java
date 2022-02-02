@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Set;
 
+/**
+ * send graphs list (json object)
+ */
 @WebServlet(name = "GraphListServlet", urlPatterns = {"/graphlist"})
 public class GraphListServlet extends HttpServlet {
 

@@ -37,77 +37,66 @@ public class Graph {
         this.nameOfCreator = nameOfCreator;
         engine = new EngineImp(targetMap);
     }
-
     public String getGraphName() {
         return graphName;
     }
     public void setGraphName(String graphName) {
         this.graphName = graphName;
     }
-
     public String getNameOfCreator() {
         return nameOfCreator;
     }
     public void setNameOfCreator(String nameOfCreator) {
         this.nameOfCreator = nameOfCreator;
     }
-
     public int getAmountOfTargets() {
         return amountOfTargets;
     }
     public void setAmountOfTargets(int amountOfTargets) {
         this.amountOfTargets = amountOfTargets;
     }
-
     public int getAmountOfRoots() {
         return amountOfRoots;
     }
     public void setAmountOfRoots(int amountOfRoots) {
         this.amountOfRoots = amountOfRoots;
     }
-
     public int getAmountOfMiddles() {
         return amountOfMiddles;
     }
     public void setAmountOfMiddles(int amountOfMiddles) {
         this.amountOfMiddles = amountOfMiddles;
     }
-
     public int getAmountOfIndependents() {
         return amountOfIndependents;
     }
     public void setAmountOfIndependents(int amountOfIndependents) {
         this.amountOfIndependents = amountOfIndependents;
     }
-
     public int getAmountOfLevies() {
         return amountOfLevies;
     }
     public void setAmountOfLevies(int amountOfLevies) {
         this.amountOfLevies = amountOfLevies;
     }
-
     public int getPriceForSimulation() {
         return priceForSimulation;
     }
     public void setPriceForSimulation(int priceForSimulation) {
         this.priceForSimulation = priceForSimulation;
     }
-
     public int getPriceForCompilation() {
         return priceForCompilation;
     }
     public void setPriceForCompilation(int priceForCompilation) {
         this.priceForCompilation = priceForCompilation;
     }
-
     public Map<String, Target> getTargetMap() {
         return targetMap;
     }
     public void setTargetMap(Map<String, Target> targetMap) {
         this.targetMap = targetMap;
     }
-
     /** Targets information
      *  @return all the information about the graph:
      *  amount of roots
@@ -139,7 +128,6 @@ public class Graph {
                 .filter(e -> e.getValue().getType().equals(Target.Type.INDEPENDENTS))
                 .count();
     }
-
     public EngineImp getEngine() {
         return engine;
     }

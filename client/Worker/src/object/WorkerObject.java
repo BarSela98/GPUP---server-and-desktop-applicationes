@@ -2,6 +2,8 @@ package object;
 
 import com.google.gson.Gson;
 import engine.Target;
+import error.errorMain;
+import javafx.application.Platform;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
@@ -45,7 +47,6 @@ public class WorkerObject {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println(" doTask finish");
         });
         doTask.start();
     }
@@ -59,9 +60,7 @@ public class WorkerObject {
     }
 
     public void addToCompleteTarget(Target t) {
-        System.out.println("-------------------------------------add complete "+completeTarget);
         completeTarget.add(t);
-        System.out.println("-------------------------------------add complete "+completeTarget);
     }
 
     public Map<String, StatusOfWorkerInMission> getStatusOfWorkerInMissionMap() {
@@ -78,7 +77,6 @@ public class WorkerObject {
 
     public void addTargetToList(Target t){
         targetsToExecute.add(t);
-        System.out.println("add target to list "+t.getName());
     }
     public void updateTargetInMission(Target t){
         String json = new Gson().toJson(t);
@@ -94,14 +92,14 @@ public class WorkerObject {
         HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println(e.getMessage());
+                Platform.runLater(() -> new errorMain(e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                   // System.out.println("updateTargetInMission - WorkerObject - Response code: "+response.code()+"\nResponse body: "+responseBody);
+                    Platform.runLater(() -> new errorMain("updateTargetInMission - WorkerObject - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 }
                 else{
                     String responseBody = response.body().string();
@@ -123,7 +121,6 @@ public class WorkerObject {
     }
     public void execute(Target t){
         Thread thread = new Thread(()->{
-            System.out.println("thread execute " + t.getName());
             curThreads++;
             t.run();
             while (t.isRunning()){

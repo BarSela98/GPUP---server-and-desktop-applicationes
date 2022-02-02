@@ -46,55 +46,17 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
         else if (nameOfMission == null || nameOfMission.isEmpty() && statusOfMission == null || statusOfMission.isEmpty())
             response.setStatus(HttpServletResponse.SC_CONFLICT);
         else {
-
-            //    public enum statusOfMission {PAUSE ,  , WAITING, INPROGRESS , run pause resume}
                 MissionManger missionManger = ServletUtils.getMissionManager(getServletContext());
                 Mission mission = missionManger.getMissionByName(nameOfMission);
 
-            System.out.println(mission.getStatusOfMission());
-            System.out.println((mission.getStatusOfMission() == Mission.statusOfMission.DONE && !mission.checkIfAllTargetsSuccess()));
                 if (statusOfMission.equals("Scratch") && (mission.getStatusOfMission() == Mission.statusOfMission.STOP || mission.getStatusOfMission() == Mission.statusOfMission.DONE)){
-                    for(Target target :mission.getTargets()){
-                        target.setStatus(Target.Status.Frozen);
-                    }
-                    mission.setAmountOfCompleteTarget(0);
-                    mission.setTargetInProgress(0);
-                    mission.setTargetWaiting(0);
-                    mission.getWaitingTargetToExecute().clear();
-                    mission.getAmountOfCompleteTarget();
-                    missionManger.setStatusOfMissionByName(nameOfMission, "run");
-                    mission.doMission();
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    response.getWriter().write("run from scratch");
-                    response.getWriter().flush();
+                    scratch(missionManger, mission ,nameOfMission, response);
                 }
                 else if (statusOfMission.equals("Incremental") &&
                         (mission.getStatusOfMission() == Mission.statusOfMission.STOP
                         || (mission.getStatusOfMission() == Mission.statusOfMission.DONE && !mission.checkIfAllTargetsSuccess()))){
-                    String newName = mission.getNameOfMission()+missionManger.incrementalSize(nameOfMission);
-                    List<Target> newList = new ArrayList<>();
-                    Mission newMission = new Mission(mission);
-                    newMission.setNameOfMission(newName);
-                    newMission.setProgress("-");
-                    newMission.setWorkerList(new HashMap<>());
-                    newMission.setAvailableWorker(0);
-                    newMission.setSignWorkerSize(0);
-                    for (Target target : newMission.getTargets()){
-                        Target newTarget = new Target(target, newName);
-                        if (newTarget.getStatus() == Target.Status.Failure || target.getStatus() == Target.Status.Skipped)
-                            newTarget.setStatus(Target.Status.Frozen);
-                        newList.add(newTarget);
-                    }
-                    newMission.setTargets(newList);
-                    newMission.setStatusOfMission(Mission.statusOfMission.INPROGRESS);
-
-                    missionManger.addMission(newMission);
-                    newMission.doMission();
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    response.getWriter().write("run - Incremental");
-                    response.getWriter().flush();
+                    incremental(missionManger, mission ,nameOfMission, response);
                 }
-
 
                 else if (mission.getStatusOfMission() == Mission.statusOfMission.DONE){
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -106,10 +68,7 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
                 response.getWriter().write("Mission: "+nameOfMission+" already stop");
                 response.getWriter().flush();
                 }
-                else
-
-
-                if (statusOfMission.equals("pause") || statusOfMission.equals("run") || statusOfMission.equals("resume") || statusOfMission.equals("stop")){
+                else if (statusOfMission.equals("pause") || statusOfMission.equals("run") || statusOfMission.equals("resume") || statusOfMission.equals("stop")){
                     missionManger.setStatusOfMissionByName(nameOfMission, statusOfMission);
                     if (statusOfMission.equals("run"))
                         mission.doMission();
@@ -130,4 +89,44 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
             response.getWriter().flush();
         }
     }
+    public void scratch(MissionManger missionManger,Mission mission, String nameOfMission,@NotNull HttpServletResponse response) throws Exception {
+        for(Target target :mission.getTargets()){
+            target.setStatus(Target.Status.Frozen);
+        }
+        mission.setAmountOfCompleteTarget(0);
+        mission.setTargetInProgress(0);
+        mission.setTargetWaiting(0);
+        mission.getWaitingTargetToExecute().clear();
+        mission.getAmountOfCompleteTarget();
+        missionManger.setStatusOfMissionByName(nameOfMission, "run");
+        mission.doMission();
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write("run from scratch");
+        response.getWriter().flush();
+    }
+    public void incremental(MissionManger missionManger,Mission mission, String nameOfMission,@NotNull HttpServletResponse response) throws IOException {
+        String newName = mission.getNameOfMission()+missionManger.incrementalSize(nameOfMission);
+        List<Target> newList = new ArrayList<>();
+        Mission newMission = new Mission(mission);
+        newMission.setNameOfMission(newName);
+        newMission.setProgress("-");
+        newMission.setWorkerList(new HashMap<>());
+        newMission.setAvailableWorker(0);
+        newMission.setSignWorkerSize(0);
+        for (Target target : newMission.getTargets()){
+            Target newTarget = new Target(target, newName);
+            if (newTarget.getStatus() == Target.Status.Failure || target.getStatus() == Target.Status.Skipped)
+                newTarget.setStatus(Target.Status.Frozen);
+            newList.add(newTarget);
+        }
+        newMission.setTargets(newList);
+        newMission.setStatusOfMission(Mission.statusOfMission.INPROGRESS);
+
+        missionManger.addMission(newMission);
+        newMission.doMission();
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write("run - Incremental");
+        response.getWriter().flush();
+    }
+
 }

@@ -1,6 +1,7 @@
 package component.workerPage;
 
 import ODT.TargetInWorkerAndAmountOfThread;
+import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
@@ -38,14 +39,14 @@ public class CompleteTargetListRefresher extends TimerTask {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("Something went wrong: " + e.getMessage()));
+                Platform.runLater(() -> new errorMain("Something went wrong: " + e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    System.out.println("Mission list - Response code: "+response.code()+"\nResponse body: "+responseBody);
+                    Platform.runLater(() -> new errorMain("Mission list - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 } else {
                     String jsonArrayOfMissionsNames = response.body().string();
                     if (jsonArrayOfMissionsNames.length() != 3) {

@@ -9,6 +9,7 @@ import component.chat.model.ChatLinesWithVersion;
 import component.mainApp.WorkerAppMainController;
 import component.usersList.UsersListController;
 import engine.Target;
+import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
@@ -288,14 +289,14 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("error in sendButtonClicked in worker "+e.getMessage()));
+                Platform.runLater(() -> new errorMain("error in sendButtonClicked in worker "+e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("sendButtonClicked - worker - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    Platform.runLater(() -> new errorMain("sendButtonClicked - worker - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 } else {
                     String responseBody = response.body().string();
                     Platform.runLater(() -> System.out.println(responseBody));
@@ -315,14 +316,14 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("error - worker logout"+e.getMessage()));
+                Platform.runLater(() -> new errorMain("error - worker logout"+e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("worker logout  - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    Platform.runLater(() -> new errorMain("worker logout  - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 } else {
                     String responseBody = response.body().string();
                     Platform.runLater(() -> {
@@ -374,7 +375,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("changeStatusOfWorkerInMission - error -"+e.getMessage()));
+                Platform.runLater(() -> new errorMain("changeStatusOfWorkerInMission - error -"+e.getMessage()));
                 flag[0] = null;
             }
 
@@ -382,7 +383,7 @@ public class WorkerPageController implements WorkerCommands , Closeable{
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("changeStatusOfWorkerInMission - worker - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    Platform.runLater(() -> new errorMain("changeStatusOfWorkerInMission - worker - Response code: "+response.code()+"\nResponse body: "+responseBody));
                     flag[0] = null;
                 } else {
                     String responseBody = response.body().string();
@@ -391,7 +392,6 @@ public class WorkerPageController implements WorkerCommands , Closeable{
             }
         });
         changeWorkerStatusInTable(flag[0], status);
-        System.out.println(status);
     }
 
     public void changeWorkerStatusInTable(String name, String status){
@@ -444,14 +444,14 @@ public class WorkerPageController implements WorkerCommands , Closeable{
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("signForMission - error -"+e.getMessage()));
+                Platform.runLater(() -> new errorMain("signForMission - error -"+e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("signForMission - worker - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    Platform.runLater(() -> new errorMain("signForMission - worker - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 } else {
                     String responseBody = response.body().string();
                     Platform.runLater(() -> System.out.println(responseBody));
@@ -478,14 +478,14 @@ public class WorkerPageController implements WorkerCommands , Closeable{
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("removeFormMission - error -"+e.getMessage()));
+                Platform.runLater(() -> new errorMain("removeFormMission - error -"+e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("removeFormMission - worker - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    Platform.runLater(() -> new errorMain("removeFormMission - worker - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 } else {
                     String responseBody = response.body().string();
                     Platform.runLater(() -> System.out.println(responseBody));

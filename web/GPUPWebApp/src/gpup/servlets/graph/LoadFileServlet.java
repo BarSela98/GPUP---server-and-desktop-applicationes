@@ -28,17 +28,17 @@ public class LoadFileServlet extends HttpServlet {
         response.setContentType("text/plain");
         String usernameFromSession = SessionUtils.getUsername(request);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
+
+        /// request before login
         if (usernameFromSession == null || usernameFromSession.isEmpty() || userManager.getUserRole(usernameFromSession) == null){
             response.setStatus(HttpServletResponse.SC_CONFLICT);
             response.getWriter().write("please login before upload file");
         }
-
+        /// worker request load graph but only admin can load graph)
         else if(!userManager.getUserRole(usernameFromSession).equals("Admin")){
             response.setStatus(HttpServletResponse.SC_CONFLICT);
             response.getWriter().write("only admin can load a file");
         }
-
-
         else {
             GraphManger graphManager = ServletUtils.getGraphManager(getServletContext());
             PrintWriter out = response.getWriter();
@@ -67,6 +67,7 @@ public class LoadFileServlet extends HttpServlet {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     }
                 } else {
+                    /// not xml file
                     out.write("please choose xml file");
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 }

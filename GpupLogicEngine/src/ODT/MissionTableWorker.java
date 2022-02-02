@@ -8,7 +8,6 @@ public class MissionTableWorker extends MissionInTable {
     private StatusOfWorkerInMission statusOfWorkerInMission;
     private int targetComplete;
     private String task;
-
     public MissionTableWorker(MissionInTable missionInTable) {
         super(missionInTable);
         sign = false;
@@ -29,7 +28,6 @@ public class MissionTableWorker extends MissionInTable {
         else  if (m.getSimulation() != null)
             task = "Simulation";
     }
-
     public void changeInformation(MissionTableWorker m) {
         this.getCheckBox().setSelected(m.getCheckBox().isSelected());
         this.statusOfWorkerInMission = m.getStatusOfWorkerInMission();
@@ -42,27 +40,21 @@ public class MissionTableWorker extends MissionInTable {
     public void setSign(Boolean sign) {
         this.sign = sign;
     }
-
     public StatusOfWorkerInMission getStatusOfWorkerInMission() {
         return statusOfWorkerInMission;
     }
-
     public void setStatusOfWorkerInMission(StatusOfWorkerInMission statusOfWorkerInMission) {
         this.statusOfWorkerInMission = statusOfWorkerInMission;
     }
-
     public int getTargetComplete() {
         return targetComplete;
     }
-
     public void setTargetComplete(int targetComplete) {
         this.targetComplete = targetComplete;
     }
-
     public String getTask() {
         return task;
     }
-
     public void setTask(String task) {
         this.task = task;
     }

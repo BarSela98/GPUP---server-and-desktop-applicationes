@@ -29,7 +29,7 @@ import static utility.Constants.*;
 
 public class GeneralGraphController {
     private MainGraphController mainController;
-
+// listRefresher
     private Timer timer;
     private TimerTask listRefresher;
     private final BooleanProperty autoUpdate;
@@ -39,8 +39,17 @@ public class GeneralGraphController {
     @FXML private Text nameOfGraphText;
     @FXML private Text creatorText;
 
-
+    public GeneralGraphController(){
+        autoUpdate = new SimpleBooleanProperty(true);
+        totalGraph = new SimpleIntegerProperty(0);
+    }
     @FXML public void initialize(){
+        chooseGraphFromChoiceBox();
+    }
+    /**
+     * choose graph from choice box, request from the server all the information to this graph
+     */
+    public void chooseGraphFromChoiceBox(){
         choiceBoxGraph.valueProperty().addListener((a,b,c)->{
             if(c == null)
                 return;
@@ -60,7 +69,6 @@ public class GeneralGraphController {
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    //Platform.runLater(() -> System.out.println("choose graph from comboBox - error -"+e.getMessage()));
                     Platform.runLater(() -> new errorMain("choose graph from comboBox - error -"+e.getMessage()));
                 }
 
@@ -69,7 +77,6 @@ public class GeneralGraphController {
                     if (response.code() != 200) {
                         String responseBody = response.body().string();
                         Platform.runLater(() -> new errorMain("choose graph from comboBox - Response code: "+response.code()+"\nResponse body: "+responseBody));
-                       // Platform.runLater(() -> System.out.println("choose graph from comboBox - Response code: "+response.code()+"\nResponse body: "+responseBody));
                     } else{
                         String jsonArrayOfUsersNames = response.body().string();
                         Graph graph = GSON_INSTANCE.fromJson(jsonArrayOfUsersNames, Graph.class);
@@ -86,14 +93,17 @@ public class GeneralGraphController {
             });
         });
     }
-    public void setMainController(MainGraphController mainController) {
-        this.mainController = mainController;
-    }
-
     public void updateGraphOnScene(Graph graph) {
         nameOfGraphText.setText(graph.getGraphName());
         creatorText.setText(graph.getNameOfCreator());
     }
+    public void setMainController(MainGraphController mainController) {
+        this.mainController = mainController;
+    }
+    /**
+     * load xml file and send it to the server
+     * @param event
+     */
     @FXML void loadGraphButton(ActionEvent event) {
 
         File file = new FileChooser().showOpenDialog(new Stage());
@@ -113,7 +123,6 @@ public class GeneralGraphController {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-             //   Platform.runLater(() -> System.out.println("Failed to load file - error -"+e.getMessage()));
                 Platform.runLater(() -> new errorMain("Failed to load file - error -"+e.getMessage()));
 
             }
@@ -123,16 +132,11 @@ public class GeneralGraphController {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
                     Platform.runLater(() -> new errorMain("loadGraphButton - admin - Response code: "+response.code()+"\nResponse body: "+responseBody));
-                 //   Platform.runLater(() -> System.out.println("loadGraphButton - admin - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 }
             }
         });
     }
-
-    public GeneralGraphController(){
-         autoUpdate = new SimpleBooleanProperty(true);
-         totalGraph = new SimpleIntegerProperty(0);
-     }
+/// Graph List Refresher
     private void updateGraphList(List<String> graphNames) {
         Platform.runLater(() -> {
             if (choiceBoxGraph.getItems().size() < graphNames.size())

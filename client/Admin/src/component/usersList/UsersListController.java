@@ -23,7 +23,6 @@ import static utility.Constants.*;
 
 public class UsersListController implements Closeable {
    AdminPageController adminPageController;
-
     @FXML private TableView<User> tableViewUsers;
     @FXML private TableColumn<User, String> nameCol;
     @FXML private TableColumn<User, String> roleCol;
@@ -33,15 +32,11 @@ public class UsersListController implements Closeable {
     private final IntegerProperty totalUsers;
     private final ObservableList <User> newItems = FXCollections.observableArrayList();
 
-
-    @FXML
-    public void initialize() {
+    @FXML public void initialize() {
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         roleCol.setCellValueFactory(new PropertyValueFactory<>("role"));
         tableViewUsers.setItems(newItems);
     }
-
-
     public void setMainController(AdminPageController adminPageController) {
         this.adminPageController = adminPageController;
     }
@@ -49,11 +44,9 @@ public class UsersListController implements Closeable {
         autoUpdate = new SimpleBooleanProperty(true);
         totalUsers = new SimpleIntegerProperty(0);
     }
-
     public BooleanProperty autoUpdatesProperty() {
         return autoUpdate;
     }
-
     private void updateUsersList(List<User> usersNames) {
         Platform.runLater(() -> {
             ObservableList<User> items = tableViewUsers.getItems();
@@ -62,16 +55,13 @@ public class UsersListController implements Closeable {
             totalUsers.set(usersNames.size());
         });
     }
-
     public void startListRefresher() {
         listRefresher = new UserListRefresher(
                 autoUpdate, this::updateUsersList);
         timer = new Timer();
         timer.schedule(listRefresher, REFRESH_RATE, REFRESH_RATE);
     }
-
-    @Override
-    public void close() {
+    @Override public void close() {
         if (listRefresher != null && timer != null) {
             listRefresher.cancel();
             timer.cancel();

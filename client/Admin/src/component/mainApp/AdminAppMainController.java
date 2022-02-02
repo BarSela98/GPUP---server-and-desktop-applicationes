@@ -34,6 +34,7 @@ public class AdminAppMainController {
     public AdminAppMainController() {
         currentUserName = new SimpleStringProperty(JHON_DOE);
     }
+// login page
     private void loadLoginPage() {
            try {
             URL loginPageUrl = getClass().getResource(LOGIN_PAGE_FXML_RESOURCE_LOCATION);
@@ -49,6 +50,21 @@ public class AdminAppMainController {
             e.printStackTrace();
         }
     }
+    public void switchToLogin() {
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            URL url = getClass().getResource(MAIN_PAGE_ADMIN_FXML_RESOURCE_LOCATION);
+            fxmlLoader.setLocation(url);
+            Parent root = fxmlLoader.load(url.openStream());
+            AdminAppMainController controller = fxmlLoader.getController();
+            controller.setStage(primaryStage);
+            Scene scene = new Scene(root, 500, 300);
+            primaryStage.setScene(scene);
+            loadLoginPage();
+        }
+        catch (Exception e){}
+    }
+// admin page
     private void loadAdminPage() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -69,20 +85,7 @@ public class AdminAppMainController {
         adminPageController.setActive();
         logout = true;
     }
-    public void switchToLogin() {
-        try{
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            URL url = getClass().getResource(MAIN_PAGE_ADMIN_FXML_RESOURCE_LOCATION);
-            fxmlLoader.setLocation(url);
-            Parent root = fxmlLoader.load(url.openStream());
-            AdminAppMainController controller = fxmlLoader.getController();
-            controller.setStage(primaryStage);
-            Scene scene = new Scene(root, 500, 300);
-            primaryStage.setScene(scene);
-            loadLoginPage();
-        }
-        catch (Exception e){}
-    }
+
     public void updateUserName(String userName) {
         currentUserName.set(userName);
         adminPageController.setNameOfAdmin(userName);

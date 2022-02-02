@@ -24,7 +24,6 @@ public class UpdateTargetInformationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, @NotNull HttpServletResponse response) throws IOException {
-        System.out.println("UpdateTargetInformationServlet 1");
         response.setContentType("text/plain;charset=UTF-8");
         String workerName = request.getParameter(USERNAME);
         String json = new BufferedReader(new InputStreamReader(request.getInputStream())).lines().collect(
@@ -41,14 +40,11 @@ public class UpdateTargetInformationServlet extends HttpServlet {
                 mission.getWorkerList().get(workerName).setStatus(bool);
                 mission.setAvailableWorker( mission.getAvailableWorker()+1);
             }
-
             if (mission.getTargetInProgress() > 0)
                 mission.setTargetInProgress(mission.getTargetInProgress()-1);
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(target.getName() + " (Target) update in mission and complete target in "+workerName+" (worker)");
             response.getWriter().flush();
-            System.out.println("UpdateTargetInformationServlet 2");
-
         }
         catch (Exception e){
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

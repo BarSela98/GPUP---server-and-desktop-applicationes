@@ -52,7 +52,6 @@ public class Target implements Serializable,Runnable {
     public Target() {
 
     }
-
     public Target(Target target , String newNameOfMission) {
         this.userData = target.userData;
         this.name = target.name;
@@ -79,36 +78,104 @@ public class Target implements Serializable,Runnable {
         this.nameOfTask = target.nameOfTask;
     }
 
+    /**
+     * execute target
+     */
+    public void run () {
+        //comment blocks in this part needs to be moved to engine
+        isRunning=true;
+        try {
+            if (compile) {//compile task
+                String temp = "";
+                char c = '\\';
+                for (int i = 0; i < userData.length(); i++) {
+                    if (userData.charAt(i) == '.') {
+                        temp += c;
+                    } else {
+                        temp += userData.charAt(i);
+                    }
+                }
+
+                long startTime = System.currentTimeMillis();//sim target and keep time of sim
+                Runtime rt = Runtime.getRuntime();
+                String src = source + c + temp + ".java";
+                String[] strings = {"javac", "-d", compileDest, "-cp", compileDest, src};
+                Process p = rt.exec(strings);
+                p.waitFor();//wait for process to finish
+                int res = p.exitValue();
+                long simTime = System.currentTimeMillis() - startTime;
+                //turn simTime to string
+                long millis = simTime % 1000;
+                long second = (simTime / 1000) % 60;
+                long minute = (simTime / (1000 * 60)) % 60;
+                long hour = (simTime / (1000 * 60 * 60)) % 24;
+                simTimeString = String.format("%02d:%02d:%02d.%d", hour, minute, second, millis);
+                if (res != 0) {//compilation failed
+                    this.status = Status.Failure;
+                } else {//success
+                    this.status = Status.Success;
+                }
+
+            } else {//simulation task
+                long startTime = System.currentTimeMillis();//sim target and keep time of sim
+                Thread.sleep((long) runTime);
+                long simTime = System.currentTimeMillis() - startTime;
+                //turn simTime to string
+                long millis = simTime % 1000;
+                long second = (simTime / 1000) % 60;
+                long minute = (simTime / (1000 * 60)) % 60;
+                long hour = (simTime / (1000 * 60 * 60)) % 24;
+                simTimeString = String.format("%02d:%02d:%02d.%d", hour, minute, second, millis);
+                Random r = new Random();
+                float successRand = r.nextFloat();
+                float warningRand = r.nextFloat();
+                if (successChance >= successRand) {
+                    if (warningChance >= warningRand) {
+                        this.status = Status.Warning;
+                    } else {
+                        this.status = Status.Success;
+                    }
+                } else {
+                    this.status = Status.Failure;
+                }
+                path=path+"\\" +name;
+                File f = new File(path);
+                f.createNewFile();
+                FileWriter w = new FileWriter(path);
+                w.write("Target name: " + this.name + "\n\r" +
+                        "Target result: " + this.status.name() + "\n\r" +
+                        "Target time :  \n\r");
+                w.close();
+            /*
+            if (!this.setRequiredFor.isEmpty()) {
+                for (String s : setRequiredFor) {
+                    if (targetMap.get(s).status == Status.Frozen)
+                        targetMap.get(s).status = Status.Waiting;
+                }
+            }
+             */
+            }/*
+
+        isRunning = false;
+        isInQueue = false;
+        engineImpl.decrementWorkingThreads();
+        Size s= new Size();
+        s.subSize();
+        infor = new infoThread(infoThread.InOrOut.OUT, System.currentTimeMillis() , engineImpl.getWorkingThreads(), s.getSize() );
+        */
+            isRunning=false;
+        } catch (Exception e) {
+
+        }
+
+    }
+
+    /**
+     * update target status
+     * @param tar
+     */
     public void updateInfo(Target tar) {
         this.status = tar.status;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public String getMission() {
-        return Mission;
-    }
-    public void setMission(String mission) {
-        Mission = mission;
-    }
-
-    /** Get name
-     * @return name of target
-     */
-    public String getName () {
-        return name;
-    }
-
-    /** Get user data
-     * @return data of target
-     */
-    public String getUserData () {
-        return userData;
     }
 
     /** Get all depends-on
@@ -117,35 +184,18 @@ public class Target implements Serializable,Runnable {
     public Set<String> getSetDependsOn () {
         return setDependsOn;
     }
-
     /** Get required-for
      * @return set of required-for string
      */
     public Set<String> getSetRequiredFor () {
         return setRequiredFor;
     }
-
-    /** Get type
-     * @return type of target
-     */
-    public Type getType () {
-        return type;
-    }
-
-    /** Get status
-     * @return status of target
-     */
-    public Status getStatus () {
-        return status;
-    }
-
     /** Add to set depends-on
      * @param st - target name to add
      */
     public void addToSetDependsOn (String st){
         setDependsOn.add(st);
     }
-
     /** Add to set required-for
      * @param st - target name to add
      */
@@ -153,35 +203,47 @@ public class Target implements Serializable,Runnable {
         setRequiredFor.add(st);
     }
 
-    /** Set type
-     * @param t- new target type
-     */
-    public void SetType (Type t){
-        this.type = t;
+    public Status getStatus () {
+        return status;
     }
-    public void SetUserData (String s){
-        this.userData = s;
-    }
-    protected void SetStatus (Status status){
+    public void setStatus (Status status){
         this.status = status;
+    }
+    public int getPrice() {
+        return price;
+    }
+    public void setPrice(int price) {
+        this.price = price;
+    }
+    public String getMission() {
+        return Mission;
+    }
+    public void setMission(String mission) {
+        Mission = mission;
+    }
+    public String getName () {
+        return name;
+    }
+    public void setName (String name){
+        this.name = name;
+    }
+    public String getUserData () {
+        return userData;
+    }
+    public void setUserData (String userData){
+        this.userData = userData;
+    }
+    public Type getType () {
+        return type;
+    }
+    public void setType (Type type){
+        this.type = type;
     }
     public boolean isRunning () {
         return isRunning;
     }
     public void setRunning ( boolean running){
         isRunning = running;
-    }
-    public void setUserData (String userData){
-        this.userData = userData;
-    }
-    public void setName (String name){
-        this.name = name;
-    }
-    public void setType (Type type){
-        this.type = type;
-    }
-    public void setStatus (Status status){
-        this.status = status;
     }
     public void setArrayDependsOn (Set setDependsOn){
         this.setDependsOn = setDependsOn;
@@ -273,105 +335,10 @@ public class Target implements Serializable,Runnable {
     public void setSource (String source){
         this.source = source;
     }
-    public void run () {
-        //comment blocks in this part needs to be moved to engine
-        isRunning=true;
-        try {
-            if (compile) {//compile task
-                String temp = "";
-                char c = '\\';
-                for (int i = 0; i < userData.length(); i++) {
-                    if (userData.charAt(i) == '.') {
-                        temp += c;
-                    } else {
-                        temp += userData.charAt(i);
-                    }
-                }
-
-                long startTime = System.currentTimeMillis();//sim target and keep time of sim
-                Runtime rt = Runtime.getRuntime();
-                String src = source + c + temp + ".java";
-                String[] strings = {"javac", "-d", compileDest, "-cp", compileDest, src};
-                Process p = rt.exec(strings);
-                p.waitFor();//wait for process to finish
-                int res = p.exitValue();
-                long simTime = System.currentTimeMillis() - startTime;
-                //turn simTime to string
-                long millis = simTime % 1000;
-                long second = (simTime / 1000) % 60;
-                long minute = (simTime / (1000 * 60)) % 60;
-                long hour = (simTime / (1000 * 60 * 60)) % 24;
-                simTimeString = String.format("%02d:%02d:%02d.%d", hour, minute, second, millis);
-                if (res != 0) {//compilation failed
-                    this.status = Status.Failure;
-                } else {//success
-                    this.status = Status.Success;
-                }
-
-            } else {//simulation task
-                long startTime = System.currentTimeMillis();//sim target and keep time of sim
-                Thread.sleep((long) runTime);
-                long simTime = System.currentTimeMillis() - startTime;
-                //turn simTime to string
-                long millis = simTime % 1000;
-                long second = (simTime / 1000) % 60;
-                long minute = (simTime / (1000 * 60)) % 60;
-                long hour = (simTime / (1000 * 60 * 60)) % 24;
-                simTimeString = String.format("%02d:%02d:%02d.%d", hour, minute, second, millis);
-                Random r = new Random();
-                float successRand = r.nextFloat();
-                float warningRand = r.nextFloat();
-                if (successChance >= successRand) {
-                    if (warningChance >= warningRand) {
-                        this.status = Status.Warning;
-                    } else {
-                        this.status = Status.Success;
-                    }
-                } else {
-                    this.status = Status.Failure;
-                }
-                path=path+"\\" +name;
-                File f = new File(path);
-                f.createNewFile();
-                FileWriter w = new FileWriter(path);
-                w.write("Target name: " + this.name + "\n\r" +
-                        "Target result: " + this.status.name() + "\n\r" +
-                        "Target time :  \n\r");
-                System.out.println("Target name: " + this.name + "\n\r" +
-                        "Target result: " + this.status.name() + "\n\r" +
-                        "Target time :  \n\r");
-                w.close();
-            /*
-            if (!this.setRequiredFor.isEmpty()) {
-                for (String s : setRequiredFor) {
-                    if (targetMap.get(s).status == Status.Frozen)
-                        targetMap.get(s).status = Status.Waiting;
-                }
-            }
-             */
-            }/*
-
-        isRunning = false;
-        isInQueue = false;
-        engineImpl.decrementWorkingThreads();
-        Size s= new Size();
-        s.subSize();
-        infor = new infoThread(infoThread.InOrOut.OUT, System.currentTimeMillis() , engineImpl.getWorkingThreads(), s.getSize() );
-        */
-        isRunning=false;
-        } catch (Exception e) {
-
-        }
-
-    }
-
     public String getNameOfTask() {
         return nameOfTask;
     }
     public void setNameOfTask(String nameOfTask) {
         this.nameOfTask = nameOfTask;
     }
-
-
-
 }

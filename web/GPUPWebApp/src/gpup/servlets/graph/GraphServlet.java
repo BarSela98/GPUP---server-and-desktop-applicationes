@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import static gpup.constants.Constants.GRAPHNAME;
-
+/**
+ * send graph by name from parameter (json object)
+ */
 @WebServlet(name = "GraphServlet", urlPatterns = {"/select/graph"})
 public class GraphServlet extends HttpServlet {
 
@@ -26,14 +28,18 @@ public class GraphServlet extends HttpServlet {
         String usernameFromSession = SessionUtils.getUsername(request);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         String graphNameFromParameter = request.getParameter(GRAPHNAME);
+
+        /// wrong parameter
         if (graphNameFromParameter == null || graphNameFromParameter.isEmpty()){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
+            out.write("graph name from parameter wrong");
         }
+        /// request before login
         else if(usernameFromSession == null || usernameFromSession.isEmpty()){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             out.write("please login");
         }
+        /// worker request graph (only admin can request graph)
         else if(!userManager.getUserRole(usernameFromSession).equals("Admin")){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             out.write("only admin can select a graph");

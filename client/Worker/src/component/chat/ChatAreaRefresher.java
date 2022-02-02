@@ -1,5 +1,7 @@
 package component.chat;
+
 import component.chat.model.ChatLinesWithVersion;
+import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -55,7 +57,7 @@ public class ChatAreaRefresher extends TimerTask {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("Chat " + e.getMessage()));
+                Platform.runLater(() -> new errorMain("Chat " + e.getMessage()));
             }
 
 
@@ -63,7 +65,7 @@ public class ChatAreaRefresher extends TimerTask {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("Chat - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    Platform.runLater(() -> new errorMain("Chat - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 }
                 else{
                     String rawBody = response.body().string();

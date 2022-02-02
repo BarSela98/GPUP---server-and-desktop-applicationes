@@ -1,5 +1,6 @@
 package component.graph.general;
 
+import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
@@ -38,7 +39,7 @@ public class GraphListRefresher extends TimerTask {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("Graph List Refresher" + e.getMessage()));
+                Platform.runLater(() -> new errorMain("Graph List Refresher" + e.getMessage()));
             }
 
 
@@ -46,7 +47,7 @@ public class GraphListRefresher extends TimerTask {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("GraphListRefresher - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    Platform.runLater(() -> new errorMain("GraphListRefresher - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 }
                 else{
                         String jsonArrayOfGraphsNames = response.body().string();

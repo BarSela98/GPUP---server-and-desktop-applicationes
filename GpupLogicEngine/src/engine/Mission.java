@@ -5,6 +5,8 @@ import ODT.Simulation;
 import ODT.TargetToWorker;
 import ODT.WorkerStatus;
 import com.google.gson.Gson;
+import error.errorMain;
+import javafx.application.Platform;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
@@ -37,7 +39,6 @@ public class Mission {
     private int priceOfMission;
     private int priceOfAllMission;
     private Utility.WhichTask whichTask;
-   // private int count=0;
     private statusOfMission statusOfMission;
     private List<Target> targets;
     private List<Target> waitingTargetToExecute;
@@ -50,10 +51,8 @@ public class Mission {
     private String progress;
     private int targetWaiting = 0;
     private int targetInProgress = 0;
-//
 
-//
-
+/// ctor
     public Mission(Mission m){
         this.nameOfMission = m.getNameOfMission();
         this.nameOfCreator  = m.getNameOfCreator();
@@ -192,30 +191,6 @@ public class Mission {
         priceOfAllMission = priceOfMission * amountOfTarget;
 
     }
-
-
-    public synchronized void workerSign(String worker) {
-        workerList.put(worker,new WorkerStatus());
-        availableWorker++;
-        signWorkerSize++;
-    }
-    public synchronized void removeWorkerFromMission(String workerName) {
-        if (workerList.containsKey(workerName)){
-            workerList.remove(workerName);
-            availableWorker--;
-            signWorkerSize--;
-        }
-    }
-
-    public void updateTarget(Target tar) {
-            for (Target t : targets) {
-                if (t.getName().equals(tar.getName())) {
-                    t.updateInfo(tar);
-                    amountOfCompleteTarget++;
-                    progress = String.valueOf((float) amountOfTarget / (float) amountOfCompleteTarget);
-                }
-            }
-    }
     public void doMission(){
         Thread doMissionThread = new Thread(()->{
             while (statusOfMission != statusOfMission.STOP && statusOfMission != statusOfMission.DONE) {
@@ -232,11 +207,43 @@ public class Mission {
         doMissionThread.start();
     }
 
+    /**
+     * sign for mission
+     * @param worker
+     */
+    public synchronized void workerSign(String worker) {
+        workerList.put(worker,new WorkerStatus());
+        availableWorker++;
+        signWorkerSize++;
+    }
+    /**
+     * remove worker from sign
+     * @param workerName
+     */
+    public synchronized void removeWorkerFromMission(String workerName) {
+        if (workerList.containsKey(workerName)){
+            workerList.remove(workerName);
+            availableWorker--;
+            signWorkerSize--;
+        }
+    }
+    public void updateTarget(Target tar) {
+            for (Target t : targets) {
+                if (t.getName().equals(tar.getName())) {
+                    t.updateInfo(tar);
+                    amountOfCompleteTarget++;
+                    progress = String.valueOf((float) amountOfTarget / (float) amountOfCompleteTarget);
+                }
+            }
+    }
+
+    /**
+     * send target to worker in order to perform the target
+     */
     private void sendTargetToAvailableWorker() {
         for (String worker : workerList.keySet()) {
             if (availableWorker != 0 && workerList.get(worker).getStatus() && waitingTargetToExecute.size() != 0) {
                 Target t = waitingTargetToExecute.get(0);
-                System.out.println("send target : "+ t );
                 waitingTargetToExecute.remove(0);
                 sendTargetToWorker(worker, t);
                 targetInProgress ++;
@@ -246,7 +253,6 @@ public class Mission {
         }
         checkIfMissionDone();
     }
-
     private void sendTargetToWorker(String worker, Target target) {
         TargetToWorker targetToWorker = new TargetToWorker(target,worker);
         String json = new Gson().toJson(targetToWorker);        // to gson
@@ -262,15 +268,14 @@ public class Mission {
 
             @Override
             public void onFailure(@org.jetbrains.annotations.NotNull Call call, @org.jetbrains.annotations.NotNull IOException e) {
-                System.out.println(e.getStackTrace());
-                //Platform.runLater(() -> new errorMain(e));
+                Platform.runLater(() -> new errorMain(e.getMessage()));
             }
 
             @Override
             public void onResponse(@org.jetbrains.annotations.NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-               //     Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                    Platform.runLater(() -> new errorMain("Response code: "+response.code()+"\nResponse body: "+responseBody));
                 }
                 else{
 
@@ -286,6 +291,7 @@ public class Mission {
             }
         });
     }
+
     public void missionSetUp(boolean formScratch){
         if(formScratch){
             for(Target t : targets){
@@ -425,145 +431,125 @@ public class Mission {
         return s;
     }
 
+/// get and set
     public String getProgress() {
         return progress;
     }
     public void setProgress(String progress) {
         this.progress = progress;
     }
-
     public Map<String, WorkerStatus> getWorkerList() {
         return workerList;
     }
-
     public void setWorkerList(Map<String, WorkerStatus> workerList) {
         this.workerList = workerList;
         availableWorker = workerList.size();
     }
-
     public int getAvailableWorker() {
         return availableWorker;
     }
     public void setAvailableWorker(int availableWorker) {
         this.availableWorker = availableWorker;
     }
-
     public Utility.WhichTask getWhichTask() {
         return whichTask;
     }
     public void setWhichTask(Utility.WhichTask whichTask) {
         this.whichTask = whichTask;
     }
-
     public Utility.TypeOfRunning getTypeOfRunning() {
         return typeOfRunning;
     }
     public void setTypeOfRunning(Utility.TypeOfRunning typeOfRunning) {
         this.typeOfRunning = typeOfRunning;
     }
-
     public Simulation getSimulation() {
         return simulation;
     }
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
     }
-
     public Compilation getCompilation() {
         return compilation;
     }
     public void setCompilation(Compilation compilation) {
         this.compilation = compilation;
     }
-
     public String getNameOfGraph() {
         return nameOfGraph;
     }
     public void setNameOfGraph(String nameOfGraph) {
         this.nameOfGraph = nameOfGraph;
     }
-
     public int getPriceOfAllMission() {
         return priceOfAllMission;
     }
     public void setPriceOfAllMission(int priceOfAllMission) {
         this.priceOfAllMission = priceOfAllMission;
     }
-
     public int getAmountOfLeaf() {
         return amountOfLeaf;
     }
     public void setAmountOfLeaf(int amountOfLeaf) {
         this.amountOfLeaf = amountOfLeaf;
     }
-
     public List<Target> getWaitingTargetToExecute() {
         return waitingTargetToExecute;
     }
     public void setWaitingTargetToExecute(List<Target> targetToExecute) {
         this.waitingTargetToExecute = waitingTargetToExecute;
     }
-
     public List<Target> getTargets() {
         return targets;
     }
     public void setTargets(List<Target> targets) {
         this.targets = targets;
     }
-
     public String getNameOfMission() {
         return nameOfMission;
     }
     public void setNameOfMission(String nameOfMission) {
         this.nameOfMission = nameOfMission;
     }
-
     public String getNameOfCreator() {
         return nameOfCreator;
     }
     public void setNameOfCreator(String nameOfCreator) {
         this.nameOfCreator = nameOfCreator;
     }
-
     public int getAmountOfTarget() {
         return amountOfTarget;
     }
     public void setAmountOfTarget(int amountOfTarget) {
         this.amountOfTarget = amountOfTarget;
     }
-
     public int getAmountOfRoot() {
         return amountOfRoot;
     }
     public void setAmountOfRoot(int amountOfRoot) {
         this.amountOfRoot = amountOfRoot;
     }
-
     public int getAmountOfMiddle() {
         return amountOfMiddle;
     }
     public void setAmountOfMiddle(int amountOfMiddle) {
         this.amountOfMiddle = amountOfMiddle;
     }
-
     public int getAmountOfIndependents() {
         return amountOfIndependents;
     }
     public void setAmountOfIndependents(int amountOfIndependents) {
         this.amountOfIndependents = amountOfIndependents;
     }
-
     public int getPriceOfMission() {
         return priceOfMission;
     }
     public void setPriceOfMission(int priceOfMission) {
         this.priceOfMission = priceOfMission;
     }
-
     public Mission.statusOfMission getStatusOfMission() {
         return statusOfMission;
     }
-
     public void setStatusOfMission(Mission.statusOfMission statusOfMission) {
         this.statusOfMission = statusOfMission;
     }
@@ -583,41 +569,27 @@ public class Mission {
                 break;
         }
     }
-/*
-    public int getCount() {
-        return count;
-    }
-    public void setCount(int count) {
-        this.count = count;
-    }
-
- */
-
     public int getSignWorkerSize() {
         return signWorkerSize;
     }
     public void setSignWorkerSize(int signWorkerSize) {
         this.signWorkerSize = signWorkerSize;
     }
-
     public int getTargetWaiting() {
         return targetWaiting;
     }
     public void setTargetWaiting(int targetWaiting) {
         this.targetWaiting = targetWaiting;
     }
-
     public int getTargetInProgress() {
         return targetInProgress;
     }
     public void setTargetInProgress(int targetInProgress) {
         this.targetInProgress = targetInProgress;
     }
-
     public int getAmountOfCompleteTarget() {
         return amountOfCompleteTarget;
     }
-
     public void setAmountOfCompleteTarget(int amountOfCompleteTarget) {
         this.amountOfCompleteTarget = amountOfCompleteTarget;
     }
