@@ -227,7 +227,9 @@ public class Mission {
                 while (statusOfMission != statusOfMission.STOP && statusOfMission != statusOfMission.DONE && statusOfMission == statusOfMission.PAUSE) {
                     sendTargetToAvailableWorker();
                 }
+                System.out.println("thread do mission");
             }
+            System.out.println("finished thread do mission");
         });
         doMissionThread.start();
     }
@@ -235,7 +237,9 @@ public class Mission {
     private void sendTargetToAvailableWorker() {
         for (String worker : workerList.keySet()) {
             if (availableWorker != 0 && workerList.get(worker).getStatus() && waitingTargetToExecute.size() != 0) {
+
                 Target t = waitingTargetToExecute.get(0);
+                System.out.println("send target : "+ t );
                 waitingTargetToExecute.remove(0);
                 sendTargetToWorker(worker, t);
                 targetInProgress ++;
@@ -622,5 +626,14 @@ public class Mission {
 
     public void setAmountOfCompleteTarget(int amountOfCompleteTarget) {
         this.amountOfCompleteTarget = amountOfCompleteTarget;
+    }
+    public boolean checkIfAllTargetsSuccess(){
+        for(Target t:targets){
+            if(!(t.getStatus()==Target.Status.Success)){
+                return false;
+            }
+
+        }
+        return true;
     }
 }

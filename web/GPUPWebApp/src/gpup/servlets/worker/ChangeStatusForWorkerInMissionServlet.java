@@ -47,7 +47,7 @@ public class ChangeStatusForWorkerInMissionServlet extends HttpServlet {
             MissionManger missionManger = ServletUtils.getMissionManager(getServletContext());
             WorkerManager workerManager = ServletUtils.getWorkerManager(getServletContext());  ///check if it is worker
             WorkerObject worker = workerManager.getWorkerByName(usernameFromSession);
-            Mission m = null;
+            Mission m;
             if(worker.getStatusOfWorkerInMissionMap().containsKey(missionNameFromParameter)) {
                 worker.changeStatusOfWorkerInMission(statusFromParameter, missionNameFromParameter);
                 try {
