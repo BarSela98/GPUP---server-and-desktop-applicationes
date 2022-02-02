@@ -74,7 +74,6 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
                     String newName = mission.getNameOfMission()+missionManger.incrementalSize(nameOfMission);
                     List<Target> newList = new ArrayList<>();
                     Mission newMission = new Mission(mission);
-                    mission.setTargets(newList);
                     newMission.setNameOfMission(newName);
                     newMission.setProgress("-");
                     newMission.setWorkerList(new HashMap<>());
