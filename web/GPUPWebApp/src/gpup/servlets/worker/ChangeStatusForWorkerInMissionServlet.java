@@ -53,6 +53,8 @@ public class ChangeStatusForWorkerInMissionServlet extends HttpServlet {
                 worker.changeStatusOfWorkerInMission(statusFromParameter, missionNameFromParameter);
                 try {
                     m = missionManger.getMissionByName(missionNameFromParameter);
+                    System.out.println("------");
+                    System.out.println("before " + m.getWorkerList().get(usernameFromSession).getStatus() + " "+ m.getAvailableWorker());
                     if (statusFromParameter.equals("PAUSE") && m.getWorkerList().get(usernameFromSession).getStatus()){
                         status = false;
                         m.setAvailableWorker(m.getAvailableWorker()-1);
@@ -61,6 +63,8 @@ public class ChangeStatusForWorkerInMissionServlet extends HttpServlet {
                         status = true;
                         m.setAvailableWorker(m.getAvailableWorker()+1);
                     }
+                    System.out.println("after " + m.getWorkerList().get(usernameFromSession).getStatus() + " "+ m.getAvailableWorker());
+
 
 
                 } catch (Exception e) {
