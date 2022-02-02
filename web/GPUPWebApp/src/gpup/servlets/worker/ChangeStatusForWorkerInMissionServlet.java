@@ -21,7 +21,6 @@ import static gpup.constants.Constants.*;
 public class ChangeStatusForWorkerInMissionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, @NotNull HttpServletResponse response) throws IOException {
-        Boolean status =false;
         response.setContentType("text/plain;charset=UTF-8");
         String usernameFromSession = SessionUtils.getUsername(request);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
@@ -53,25 +52,21 @@ public class ChangeStatusForWorkerInMissionServlet extends HttpServlet {
                 worker.changeStatusOfWorkerInMission(statusFromParameter, missionNameFromParameter);
                 try {
                     m = missionManger.getMissionByName(missionNameFromParameter);
-                    System.out.println("------");
-                    System.out.println("before " + m.getWorkerList().get(usernameFromSession).getStatus() + " "+ m.getAvailableWorker());
                     if (statusFromParameter.equals("PAUSE") && m.getWorkerList().get(usernameFromSession).getStatus()){
-                        status = false;
                         m.setAvailableWorker(m.getAvailableWorker()-1);
+                        missionManger.getMissionByName(missionNameFromParameter).getWorkerList().get(usernameFromSession).setStatus(false);
+                        response.getOutputStream().print("Successful change new status (false) for mission " + missionNameFromParameter);
                     }
-                    else if (statusFromParameter.equals("DO") && !m.getWorkerList().get(usernameFromSession).getStatus()){
-                        status = true;
-                        m.setAvailableWorker(m.getAvailableWorker()+1);
+                    else if (statusFromParameter.equals("DO") && !m.getWorkerList().get(usernameFromSession).getStatus()) {
+                        m.setAvailableWorker(m.getAvailableWorker()+1 );
+                        missionManger.getMissionByName(missionNameFromParameter).getWorkerList().get(usernameFromSession).setStatus(true);
+                        response.getOutputStream().print("Successful change new status (true) for mission " + missionNameFromParameter);
                     }
-                    System.out.println("after " + m.getWorkerList().get(usernameFromSession).getStatus() + " "+ m.getAvailableWorker());
-
-
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.getOutputStream().print("Successful change new status (" + status + ") for mission " + missionNameFromParameter );
             }
             else{
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
