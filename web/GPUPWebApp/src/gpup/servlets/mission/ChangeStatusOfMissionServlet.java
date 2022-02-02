@@ -64,6 +64,11 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
                 }
                 else if (statusOfMission.equals("Incremental") && missionManger.getMissionByName(nameOfMission).getStatusOfMission() == Mission.statusOfMission.STOP & missionManger.getMissionByName(nameOfMission).getStatusOfMission() != Mission.statusOfMission.DONE){
                     Mission newMission = new Mission(mission);
+                    for (Target target : newMission.getTargets()){
+                        if (target.getStatus() == Target.Status.Failure || target.getStatus() == Target.Status.Skipped)
+                            target.setStatus(Target.Status.Frozen);
+                    }
+
                     newMission.setNameOfMission(mission.getNameOfMission()+missionManger.incrementalSize(nameOfMission));
 
                     newMission.setWorkerList(new HashMap<>());
