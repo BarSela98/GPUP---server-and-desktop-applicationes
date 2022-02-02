@@ -50,7 +50,6 @@ public class MissionListRefresherForWorker extends TimerTask {
                     Platform.runLater(() -> System.out.println("Mission List Refresher For Worker - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 } else {
                     String jsonArrayOfMissionsNames = response.body().string();
-                    Platform.runLater(() -> System.out.println("Refresher For Worker "));
 
                     if (jsonArrayOfMissionsNames.length() != 3) {
                         Mission[] MissionsNames = GSON_INSTANCE.fromJson(jsonArrayOfMissionsNames, Mission[].class);
