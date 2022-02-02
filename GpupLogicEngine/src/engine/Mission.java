@@ -365,14 +365,12 @@ public class Mission {
         }
         return false;
     }
-    public boolean checkIfMissionDone(){
-        boolean statusOfMissionBool = true;
+    public void checkIfMissionDone(){
         int IncompleteTargets = 0;
 
         for(Target t : targets){
             System.out.println(t.getStatus());
             if(t.getStatus()==Target.Status.Waiting||t.getStatus()==Target.Status.Frozen){
-                statusOfMissionBool = false;
                 IncompleteTargets++;
             }
         }
@@ -383,7 +381,6 @@ public class Mission {
         if (d == 100)
             statusOfMission = statusOfMission.DONE;
 
-        return statusOfMissionBool;
     }
     private void simulationSetUp(){
         int randomTime;

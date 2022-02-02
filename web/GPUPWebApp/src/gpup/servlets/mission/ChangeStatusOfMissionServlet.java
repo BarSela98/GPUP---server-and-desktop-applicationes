@@ -81,8 +81,8 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
                     newMission.setSignWorkerSize(0);
                     for (Target target : newMission.getTargets()){
                         Target t = new Target(target, newName);
-                        if (target.getStatus() == Target.Status.Failure || target.getStatus() == Target.Status.Skipped)
-                            target.setStatus(Target.Status.Frozen);
+                        if (t.getStatus() == Target.Status.Failure || target.getStatus() == Target.Status.Skipped)
+                            t.setStatus(Target.Status.Frozen);
                         newList.add(t);
                     }
                     newMission.setTargets(newList);
