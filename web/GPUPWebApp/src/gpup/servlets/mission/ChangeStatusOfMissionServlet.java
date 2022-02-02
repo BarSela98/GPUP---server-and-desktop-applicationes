@@ -91,6 +91,7 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
 
                     newMission.setTargets(newList);
                     missionManger.setStatusOfMissionByName(newMission.getNameOfMission(), "run");
+                    mission.doMission();
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.getWriter().write("run - Incremental");
                     response.getWriter().flush();
