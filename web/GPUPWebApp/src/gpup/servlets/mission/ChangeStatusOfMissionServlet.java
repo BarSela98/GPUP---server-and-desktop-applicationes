@@ -80,18 +80,17 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
                     newMission.setWorkerList(new HashMap<>());
                     newMission.setAvailableWorker(0);
                     newMission.setSignWorkerSize(0);
-                    missionManger.addMission(newMission);
-
                     for (Target target : newMission.getTargets()){
                         Target t = new Target(target, newName);
                         if (target.getStatus() == Target.Status.Failure || target.getStatus() == Target.Status.Skipped)
                             target.setStatus(Target.Status.Frozen);
                         newList.add(t);
                     }
-
                     newMission.setTargets(newList);
-                    missionManger.setStatusOfMissionByName(newMission.getNameOfMission(), "run");
-                    mission.doMission();
+                    newMission.setStatusOfMission(Mission.statusOfMission.INPROGRESS);
+
+                    missionManger.addMission(newMission);
+                    newMission.doMission();
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.getWriter().write("run - Incremental");
                     response.getWriter().flush();
