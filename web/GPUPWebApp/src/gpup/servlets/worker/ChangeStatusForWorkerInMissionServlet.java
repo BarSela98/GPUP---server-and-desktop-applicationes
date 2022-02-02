@@ -48,24 +48,26 @@ public class ChangeStatusForWorkerInMissionServlet extends HttpServlet {
             MissionManger missionManger = ServletUtils.getMissionManager(getServletContext());
             WorkerManager workerManager = ServletUtils.getWorkerManager(getServletContext());  ///check if it is worker
             WorkerObject worker = workerManager.getWorkerByName(usernameFromSession);
-            Mission m;
+            Mission m = null;
             if(worker.getStatusOfWorkerInMissionMap().containsKey(missionNameFromParameter)) {
                 worker.changeStatusOfWorkerInMission(statusFromParameter, missionNameFromParameter);
                 try {
                     m = missionManger.getMissionByName(missionNameFromParameter);
-                    if (statusFromParameter.equals("PAUSE"))
+                    if (statusFromParameter.equals("PAUSE") && m.getWorkerList().get(usernameFromSession).getStatus()){
                         status = false;
-                    else if (statusFromParameter.equals("DO"))
+                        m.setAvailableWorker(m.getAvailableWorker()-1);
+                    }
+                    else if (statusFromParameter.equals("DO") && !m.getWorkerList().get(usernameFromSession).getStatus()){
                         status = true;
-                    missionManger.getMissionByName(missionNameFromParameter).getWorkerList().get(usernameFromSession).setStatus(status);
-                    System.out.println(missionManger.getMissionByName(missionNameFromParameter).getAvailableWorker());
+                        m.setAvailableWorker(m.getAvailableWorker()+1);
+                    }
 
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.getOutputStream().print("Successful change new status (" + status + ") for mission " + missionNameFromParameter + " is a "+ m.getAvailableWorker() );
+                response.getOutputStream().print("Successful change new status (" + status + ") for mission " + missionNameFromParameter );
             }
             else{
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
