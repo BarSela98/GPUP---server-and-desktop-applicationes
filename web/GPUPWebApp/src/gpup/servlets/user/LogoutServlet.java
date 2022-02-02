@@ -1,5 +1,6 @@
 package gpup.servlets.user;
 
+import engine.Mission;
 import engine.Target;
 import gpup.servlets.MissionManger;
 import gpup.servlets.UserManager;
@@ -43,16 +44,22 @@ public class LogoutServlet extends HttpServlet {
     private void  workerLeaves(MissionManger missionManager , WorkerObject worker){
         for (Target t : worker.getTargetsToExecute()){
             try {
+                Mission mission =missionManager.getMissionByName(t.getMission());
                 t.setStatus(Target.Status.Waiting);
                 missionManager.getMissionByName(t.getMission()).getWaitingTargetToExecute().add(t);
+                mission.setTargetInProgress(mission.getTargetInProgress()-1);
+                mission.setTargetWaiting(mission.getTargetWaiting()+1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         for (Target t : worker.getTargetInProgress()){
             try {
+                Mission mission =missionManager.getMissionByName(t.getMission());
                 t.setStatus(Target.Status.Waiting);
-                missionManager.getMissionByName(t.getMission()).getWaitingTargetToExecute().add(t);
+                mission.getWaitingTargetToExecute().add(t);
+                mission.setTargetInProgress(mission.getTargetInProgress()-1);
+                mission.setTargetWaiting(mission.getTargetWaiting()+1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
