@@ -111,7 +111,7 @@ public class Mission {
         this.availableWorker = m.getAvailableWorker();
         this.nameOfMission=m.nameOfMission+ c;
         this.signWorkerSize=m.getSignWorkerSize();
-        this.progress =""+m.getProgress();
+        this.progress = m.getProgress();
         this.targetWaiting = m.getTargetWaiting();
         this.targetInProgress = m.getTargetInProgress();
 

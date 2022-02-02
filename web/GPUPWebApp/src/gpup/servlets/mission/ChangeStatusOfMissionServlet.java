@@ -71,22 +71,23 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
                 else if (statusOfMission.equals("Incremental") &&
                         (mission.getStatusOfMission() == Mission.statusOfMission.STOP
                         || (mission.getStatusOfMission() == Mission.statusOfMission.DONE && !mission.checkIfAllTargetsSuccess()))){
+                    String newName = mission.getNameOfMission()+missionManger.incrementalSize(nameOfMission);
                     List<Target> newList = new ArrayList<>();
-
                     Mission newMission = new Mission(mission);
-                    for (Target target : newMission.getTargets()){
-                        Target t = new Target(target);
-                        if (target.getStatus() == Target.Status.Failure || target.getStatus() == Target.Status.Skipped)
-                            target.setStatus(Target.Status.Frozen);
-                        newList.add(t);
-                    }
                     mission.setTargets(newList);
-                    newMission.setNameOfMission(mission.getNameOfMission()+missionManger.incrementalSize(nameOfMission));
+                    newMission.setNameOfMission(newName);
                     newMission.setProgress("-");
                     newMission.setWorkerList(new HashMap<>());
                     newMission.setAvailableWorker(0);
                     newMission.setSignWorkerSize(0);
                     missionManger.addMission(newMission);
+
+                    for (Target target : newMission.getTargets()){
+                        Target t = new Target(target, newName);
+                        if (target.getStatus() == Target.Status.Failure || target.getStatus() == Target.Status.Skipped)
+                            target.setStatus(Target.Status.Frozen);
+                        newList.add(t);
+                    }
                     missionManger.setStatusOfMissionByName(newMission.getNameOfMission(), "run");
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.getWriter().write("run - Incremental");

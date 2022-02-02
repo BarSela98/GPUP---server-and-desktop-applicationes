@@ -53,7 +53,7 @@ public class Target implements Serializable,Runnable {
 
     }
 
-    public Target(Target target) {
+    public Target(Target target , String newNameOfMission) {
         this.userData = target.userData;
         this.name = target.name;
         this.type = target.type;
@@ -74,7 +74,7 @@ public class Target implements Serializable,Runnable {
         this.compile = target.compile;
         this.compileDest = target.compileDest;
         this.source = target.source;
-        this.Mission = target.Mission;
+        this.Mission = newNameOfMission;
         this.price = target.price;
         this.nameOfTask = target.nameOfTask;
     }
