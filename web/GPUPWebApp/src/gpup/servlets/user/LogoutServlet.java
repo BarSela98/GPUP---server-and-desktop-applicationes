@@ -23,25 +23,9 @@ public class LogoutServlet extends HttpServlet {
         WorkerManager workerManager = ServletUtils.getWorkerManager(getServletContext());
         WorkerObject worker = workerManager.getWorkerByName(usernameFromSession);
         if (usernameFromSession != null) {
-            if (userManager.getUserRole(usernameFromSession).equals("Worker"))
-            {
+            if (userManager.getUserRole(usernameFromSession).equals("Worker")) {
                 missionManager.removeWorkerForAllMission(usernameFromSession);
-                for (Target t : worker.getTargetsToExecute()){
-                    try {
-                        t.setStatus(Target.Status.Waiting);
-                        missionManager.getMissionByName(t.getMission()).getWaitingTargetToExecute().add(t);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                for (Target t : worker.getTargetInProgress()){
-                    try {
-                        t.setStatus(Target.Status.Waiting);
-                        missionManager.getMissionByName(t.getMission()).getWaitingTargetToExecute().add(t);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                workerLeaves(missionManager, worker);
             }
             userManager.removeUser(usernameFromSession); /////////////////////////////////
             SessionUtils.clearSession(request);
@@ -56,4 +40,22 @@ public class LogoutServlet extends HttpServlet {
         }
     }
 
+    private void  workerLeaves(MissionManger missionManager , WorkerObject worker){
+        for (Target t : worker.getTargetsToExecute()){
+            try {
+                t.setStatus(Target.Status.Waiting);
+                missionManager.getMissionByName(t.getMission()).getWaitingTargetToExecute().add(t);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        for (Target t : worker.getTargetInProgress()){
+            try {
+                t.setStatus(Target.Status.Waiting);
+                missionManager.getMissionByName(t.getMission()).getWaitingTargetToExecute().add(t);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

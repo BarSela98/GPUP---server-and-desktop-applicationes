@@ -369,7 +369,6 @@ public class Mission {
         int IncompleteTargets = 0;
 
         for(Target t : targets){
-            System.out.println(t.getStatus());
             if(t.getStatus()==Target.Status.Waiting||t.getStatus()==Target.Status.Frozen){
                 IncompleteTargets++;
             }
