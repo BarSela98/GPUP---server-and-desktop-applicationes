@@ -370,11 +370,12 @@ public class Mission {
                 IncompleteTargets++;
             }
         }
-        if (statusOfMissionBool)
-            statusOfMission = statusOfMission.DONE;
 
         double d= ((double)(targets.size() - IncompleteTargets) / (double)targets.size()) * 100 ;
         progress = d + " %";
+
+        if (d == 100)
+            statusOfMission = statusOfMission.DONE;
 
         return statusOfMissionBool;
     }
