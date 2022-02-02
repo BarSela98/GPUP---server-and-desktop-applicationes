@@ -14,7 +14,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static gpup.constants.Constants.MISSIONS_NAME;
 import static gpup.constants.Constants.MISSIONS_STATUS;
@@ -44,9 +46,13 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
         else if (nameOfMission == null || nameOfMission.isEmpty() && statusOfMission == null || statusOfMission.isEmpty())
             response.setStatus(HttpServletResponse.SC_CONFLICT);
         else {
+
             //    public enum statusOfMission {PAUSE ,  , WAITING, INPROGRESS , run pause resume}
                 MissionManger missionManger = ServletUtils.getMissionManager(getServletContext());
                 Mission mission = missionManger.getMissionByName(nameOfMission);
+
+            System.out.println(mission.getStatusOfMission());
+            System.out.println((mission.getStatusOfMission() == Mission.statusOfMission.DONE && !mission.checkIfAllTargetsSuccess()));
                 if (statusOfMission.equals("Scratch") && (mission.getStatusOfMission() == Mission.statusOfMission.STOP || mission.getStatusOfMission() == Mission.statusOfMission.DONE)){
                     for(Target target :mission.getTargets()){
                         target.setStatus(Target.Status.Frozen);
@@ -65,12 +71,16 @@ public class ChangeStatusOfMissionServlet extends HttpServlet {
                 else if (statusOfMission.equals("Incremental") &&
                         (mission.getStatusOfMission() == Mission.statusOfMission.STOP
                         || (mission.getStatusOfMission() == Mission.statusOfMission.DONE && !mission.checkIfAllTargetsSuccess()))){
+                    List<Target> newList = new ArrayList<>();
+
                     Mission newMission = new Mission(mission);
                     for (Target target : newMission.getTargets()){
+                        Target t = new Target(target);
                         if (target.getStatus() == Target.Status.Failure || target.getStatus() == Target.Status.Skipped)
                             target.setStatus(Target.Status.Frozen);
+                        newList.add(t);
                     }
-
+                    mission.setTargets(newList);
                     newMission.setNameOfMission(mission.getNameOfMission()+missionManger.incrementalSize(nameOfMission));
 
                     newMission.setWorkerList(new HashMap<>());

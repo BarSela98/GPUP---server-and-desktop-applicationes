@@ -35,17 +35,6 @@ public class Target implements Serializable,Runnable {
     private String Mission;
     private int price;
     private String nameOfTask;
-    public String getNameOfTask() {
-        return nameOfTask;
-    }
-
-    public void setNameOfTask(String nameOfTask) {
-        this.nameOfTask = nameOfTask;
-    }
-
-
-
-
     /**
      * ctor
      */
@@ -62,6 +51,32 @@ public class Target implements Serializable,Runnable {
     }
     public Target() {
 
+    }
+
+    public Target(Target target) {
+        this.userData = target.userData;
+        this.name = target.name;
+        this.type = target.type;
+        this.status = target.status;
+        this.setDependsOn = target.setDependsOn;
+        this.setRequiredFor = target.setRequiredFor;
+        this.runTime = target.runTime;
+        this.successChance = target.successChance;
+        this.warningChance = target.warningChance;
+        this.simTimeString= target.simTimeString;
+        this.path = target.path;
+        this.isInQueue = target.isInQueue;
+        this.isRunning =target.isRunning;
+        this.startWaitingTime = target.startWaitingTime;
+        this.waitingTime = target.waitingTime;
+        this.failReason = target.failReason;
+        this.notSelected = target.notSelected;
+        this.compile = target.compile;
+        this.compileDest = target.compileDest;
+        this.source = target.source;
+        this.Mission = target.Mission;
+        this.price = target.price;
+        this.nameOfTask = target.nameOfTask;
     }
 
     public void updateInfo(Target tar) {
@@ -349,5 +364,14 @@ public class Target implements Serializable,Runnable {
         }
 
     }
+
+    public String getNameOfTask() {
+        return nameOfTask;
+    }
+    public void setNameOfTask(String nameOfTask) {
+        this.nameOfTask = nameOfTask;
+    }
+
+
 
 }
