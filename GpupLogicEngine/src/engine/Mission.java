@@ -313,6 +313,7 @@ public class Mission {
             done=true;
             synchronized(lock) {
                 for (Target t : targets) {
+
                     if (t.getStatus() == Target.Status.Frozen) {
                         if (checkIfToTurnWait(t)) {
                             t.setStatus(Target.Status.Waiting);
@@ -324,6 +325,7 @@ public class Mission {
                             done = false;
                         }
                     }
+
                 }
                 targetWaiting = waitingTargetToExecute.size();
             }

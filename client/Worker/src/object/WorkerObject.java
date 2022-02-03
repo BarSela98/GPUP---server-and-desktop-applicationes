@@ -36,7 +36,7 @@ public class WorkerObject {
         targetsToExecute = new ArrayList<>();
         targetsInProgress = new ArrayList<>();
         statusOfWorkerInMissionMap = new HashMap<>();
-        Thread doTask = new Thread(()->{
+        Thread doTask = new Thread(()->{//thread to wait for targets
             try {
                 while (true) {
                     Thread.sleep(50);
@@ -45,7 +45,7 @@ public class WorkerObject {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println(" doTask finish");
+
         });
         doTask.start();
     }
@@ -59,9 +59,9 @@ public class WorkerObject {
     }
 
     public void addToCompleteTarget(Target t) {
-        System.out.println("-------------------------------------add complete "+completeTarget);
+
         completeTarget.add(t);
-        System.out.println("-------------------------------------add complete "+completeTarget);
+
     }
 
     public Map<String, StatusOfWorkerInMission> getStatusOfWorkerInMissionMap() {
@@ -78,9 +78,9 @@ public class WorkerObject {
 
     public void addTargetToList(Target t){
         targetsToExecute.add(t);
-        System.out.println("add target to list "+t.getName());
     }
     public void updateTargetInMission(Target t){
+        //send to server an updated target,after execution
         String json = new Gson().toJson(t);
         String finalUrl = HttpUrl
                 .parse(UPDATE_TARGET_IN_MISSION)
@@ -114,7 +114,7 @@ public class WorkerObject {
     public List<Target> getTargetsToExecute() {
         return targetsToExecute;
     }
-    public void pullTargets(){
+    public void pullTargets(){//pull a target from the list to be executed
         if(targetsToExecute.size() != 0){
             targetsInProgress.add(targetsToExecute.get(0));
             targetsToExecute.remove(0);
@@ -122,8 +122,7 @@ public class WorkerObject {
         }
     }
     public void execute(Target t){
-        Thread thread = new Thread(()->{
-            System.out.println("thread execute " + t.getName());
+        Thread thread = new Thread(()->{//a thread for each target currently running
             curThreads++;
             t.run();
             while (t.isRunning()){
@@ -175,7 +174,7 @@ public class WorkerObject {
     public void setCompleteTarget(List<Target> completeTarget) {
         this.completeTarget = completeTarget;
     }
-    public boolean isAvailable(String missionName){
+    public boolean isAvailable(String missionName){//a check to see if there is a free resource to run targets on
         if(threadsNum-curThreads-targetsToExecute.size() > 0 && statusOfWorkerInMissionMap.get(missionName) == StatusOfWorkerInMission.DO)
             return true;
         else
