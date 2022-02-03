@@ -1,0 +1,51 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Admin:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Admin_jar</output-path>
+    <root id="archive" name="Admin.jar">
+      <element id="module-output" name="Admin" />
+      <element id="module-output" name="GpupLogicEngine" />
+      <element id="module-output" name="Exception" />
+      <element id="module-output" name="Worker" />
+      <element id="module-output" name="GPUPWebApp" />
+      <element id="library" level="application_server_libraries" name="Tomcat 10.0.14" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/3rd/okHttp/okhttp-4.9.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/3rd/okHttp/okio-2.8.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/3rd/okHttp/annotations-13.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/3rd/okHttp/kotlin-stdlib-1.4.10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/3rd/google-gson-2.1/gson-2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/el-api.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/jasper.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/jsp-api.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/catalina.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/ecj-4.20.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/jasper-el.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/jaspic-api.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-api.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-jni.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/catalina-ha.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/servlet-api.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-dbcp.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-jdbc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-util.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/catalina-ant.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/catalina-ssi.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-coyote.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/websocket-api.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-i18n-cs.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-i18n-de.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-i18n-es.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-i18n-fr.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-i18n-ja.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-i18n-ko.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-i18n-ru.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/annotations-api.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/catalina-tribes.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-util-scan.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-websocket.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-i18n-pt-BR.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/tomcat-i18n-zh-CN.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/catalina-storeconfig.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../tomcat/lib/jakartaee-migration-1.0.0-shaded.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
