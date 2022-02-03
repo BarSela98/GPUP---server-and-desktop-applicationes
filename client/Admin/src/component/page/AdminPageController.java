@@ -1,14 +1,12 @@
 package component.page;
 
 import ODT.MissionInTable;
-import com.google.gson.Gson;
 import component.api.AdminCommands;
 import component.chat.ChatAreaRefresher;
 import component.chat.model.ChatLinesWithVersion;
 import component.graph.main.MainGraphController;
 import component.mainApp.AdminAppMainController;
 import component.usersList.UsersListController;
-import engine.Mission;
 import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -26,7 +24,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
 
@@ -40,17 +41,20 @@ import static utility.Constants.*;
 public class AdminPageController implements AdminCommands, Closeable {
     private ObservableList<MissionInTable> missionItem = FXCollections.observableArrayList();
     private AdminAppMainController adminAppMainController;
+
     private final IntegerProperty chatVersion;
     private final BooleanProperty autoScroll;
     private final BooleanProperty autoUpdate;
+
     private Timer timerMissionRefresher;
     private Timer timerChatRefresher;
     private ChatAreaRefresher chatAreaRefresher;
-    private final BooleanProperty autoUpdateMission;
     private MissionListRefresher missionRefresher;
-    private final int maxNumSelected =  1;
+    private final BooleanProperty autoUpdateMission;
+
     private ObservableSet<CheckBox> selectedCheckBoxes = FXCollections.observableSet();
     private ObservableSet<CheckBox> unselectedCheckBoxes = FXCollections.observableSet();
+    private final int maxNumSelected =  1;
     private IntegerBinding numCheckBoxesSelected = Bindings.size(selectedCheckBoxes);
     private SimpleBooleanProperty showButton;
 
@@ -61,6 +65,7 @@ public class AdminPageController implements AdminCommands, Closeable {
         autoUpdateMission = new SimpleBooleanProperty(true);
         showButton = new SimpleBooleanProperty(true);
     }
+
     @FXML public void initialize() {
         if (usersListComponentController != null && graphAdminComponentController != null) {
             usersListComponentController.setMainController(this);
@@ -91,6 +96,11 @@ public class AdminPageController implements AdminCommands, Closeable {
     public void setAppMainController(AdminAppMainController adminAppMainController) {
         this.adminAppMainController = adminAppMainController;
     }
+
+    /**
+     * change send request to the server to change the status of mission
+     * @param status
+     */
     public synchronized void changeStatusOfMission(String status){
         String finalUrl = HttpUrl
                 .parse(CHANGE_STATUS_OF_MISSION)
@@ -103,22 +113,24 @@ public class AdminPageController implements AdminCommands, Closeable {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("error in changeStatusOfMission in worker "+e.getMessage()));
+                Platform.runLater(() -> new errorMain("error in changeStatusOfMission in worker " + e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {////
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> new errorMain(new Exception("Response code: "+response.code()+"\nResponse body: "+responseBody)));
+                    Platform.runLater(() -> new errorMain(("error in changeStatusOfMission in worker \nResponse code: "+response.code()+"\nResponse body: "+responseBody)));
                 }
                 else{
                     String responseBody = response.body().string();
-                    //Platform.runLater(() -> System.out.println(responseBody));
+                    Platform.runLater(() -> System.out.println(responseBody));
                 }
             }
         });
     }
+
+/// buttons
     @FXML void quitButton(ActionEvent event) {
         logout();
     }
@@ -150,14 +162,14 @@ public class AdminPageController implements AdminCommands, Closeable {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("error - admin logout"+e.getMessage()));
+                Platform.runLater(() -> new errorMain("error - admin logout"+e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("admin logout  - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    Platform.runLater(() -> new errorMain("admin logout  - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 } else {
                     String responseBody = response.body().string();
                     Platform.runLater(() -> {
@@ -170,6 +182,11 @@ public class AdminPageController implements AdminCommands, Closeable {
             }
         });
     }
+
+    /**
+     * set the name in page
+     * @param userName
+     */
     public void setNameOfAdmin(String userName) {
         nameOfAdmin.setText(userName);
     }
@@ -231,14 +248,14 @@ public class AdminPageController implements AdminCommands, Closeable {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("error in sendButtonClicked in admin "+e.getMessage()));
+                Platform.runLater(() -> new errorMain("error in sendButtonClicked in admin "+e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("sendButtonClicked  - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    Platform.runLater(() -> new errorMain("sendButtonClicked  - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 } else {
                     String responseBody = response.body().string();
                     Platform.runLater(() -> System.out.println(responseBody));
@@ -339,48 +356,8 @@ public class AdminPageController implements AdminCommands, Closeable {
         });
     }
 
-
-
-    ///
-    public void addMission(Mission mission){
-        String json = new Gson().toJson(mission);
-        String finalUrl = HttpUrl
-                .parse(ADD_MISSION)
-                .newBuilder()
-                .build()
-                .toString();
-        System.out.println(json);
-        MediaType mediaType = MediaType.parse("application/json");
-        RequestBody body = RequestBody.create(mediaType, json);
-        HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                //   Platform.runLater(() -> System.out.println("Execute Mission - error -"+e.getMessage()));
-                Platform.runLater(() -> new errorMain("Execute Mission - error -"+e.getMessage()));
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() != 200) {
-                    String responseBody = response.body().string();
-                    //    Platform.runLater(() -> System.out.println("Execute Mission " + responseBody));
-                    Platform.runLater(() -> new errorMain("Execute Mission " + responseBody));
-                } else {
-                    Platform.runLater(() -> {
-                        try {
-                            String responseBody = response.body().string();
-                            System.out.println(responseBody);
-                        } catch (IOException e) {
-                            Platform.runLater(() -> new errorMain(e));
-                        }
-                    });
-                }
-            }
-        });
-    }
 /// fxml member
-@FXML private UsersListController usersListComponentController;
+    @FXML private UsersListController usersListComponentController;
     @FXML private BorderPane usersListComponent;
     @FXML private MainGraphController graphAdminComponentController;
     @FXML private BorderPane graphAdminComponent;
@@ -390,6 +367,15 @@ public class AdminPageController implements AdminCommands, Closeable {
     @FXML private TextArea chatLineTextArea;
     @FXML private TextArea mainChatLinesTextArea;
     @FXML private Label chatVersionLabel;
+    // button
+    @FXML private Button stop;
+    @FXML private Button play;
+    @FXML private Button resume;
+    @FXML private Button pause;
+    @FXML private Button IncrementalButton;
+    @FXML private Button ScratchButton;
+    // table
+    @FXML private TableView<MissionInTable> tableViewMission;
     @FXML private TableColumn<MissionInTable, String> nameOfMissionCol;
     @FXML private TableColumn<MissionInTable, String> nameOfCreatorCol;
     @FXML private TableColumn<MissionInTable, String> rootCol;
@@ -399,16 +385,9 @@ public class AdminPageController implements AdminCommands, Closeable {
     @FXML private TableColumn<MissionInTable, Integer> workersCol;
     @FXML private TableColumn<MissionInTable, String> priceOfAllMissionCol;
     @FXML private TableColumn<MissionInTable, CheckBox> remarkCol;
-    @FXML private TableView<MissionInTable> tableViewMission;
     @FXML private TableColumn<MissionInTable, Integer> targetProgressCol;
     @FXML private TableColumn<MissionInTable, Integer> targetWaitingCol;
     @FXML private TableColumn<MissionInTable, String> ProgressCol;
     @FXML private TableColumn<MissionInTable, String> StatusOfMissionCol;
     @FXML private TableColumn<MissionInTable, String> nameOfGraphCol;
-    @FXML private Button stop;
-    @FXML private Button play;
-    @FXML private Button resume;
-    @FXML private Button pause;
-    @FXML private Button IncrementalButton;
-    @FXML private Button ScratchButton;
 }

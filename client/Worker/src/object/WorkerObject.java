@@ -2,6 +2,8 @@ package object;
 
 import com.google.gson.Gson;
 import engine.Target;
+import error.errorMain;
+import javafx.application.Platform;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
@@ -45,7 +47,7 @@ public class WorkerObject {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
+            System.out.println(" doTask finish");
         });
         doTask.start();
     }
@@ -94,14 +96,14 @@ public class WorkerObject {
         HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println(e.getMessage());
+                Platform.runLater(() -> new errorMain(e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                   // System.out.println("updateTargetInMission - WorkerObject - Response code: "+response.code()+"\nResponse body: "+responseBody);
+                    Platform.runLater(() -> new errorMain("updateTargetInMission - WorkerObject - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 }
                 else{
                     String responseBody = response.body().string();

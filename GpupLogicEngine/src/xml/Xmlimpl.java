@@ -20,13 +20,10 @@ import java.util.*;
 public class Xmlimpl implements Xml {
     private final GPUPDescriptor gpupDescriptor;
     private final static String JAXB_XML_PACKAGE_NAME = "generated2";
-
     public Xmlimpl(InputStream inputStream) throws Exception {
         inputStream.reset();
         gpupDescriptor = deserializeFrom(inputStream);
     }
-
-
     private static GPUPDescriptor deserializeFrom(InputStream in) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance(JAXB_XML_PACKAGE_NAME);
         Unmarshaller u = jc.createUnmarshaller();
@@ -96,13 +93,13 @@ public class Xmlimpl implements Xml {
         targetMap.forEach((k,t) ->
                 {
                     if (t.getSetRequiredFor().size() == 0 && t.getSetDependsOn().size() == 0)
-                        t.SetType(Target.Type.INDEPENDENTS);
+                        t.setType(Target.Type.INDEPENDENTS);
                     else if (t.getSetDependsOn().size() == 0)
-                        t.SetType(Target.Type.LEAF);
+                        t.setType(Target.Type.LEAF);
                     else if (t.getSetRequiredFor().size() == 0)
-                        t.SetType(Target.Type.ROOT);
+                        t.setType(Target.Type.ROOT);
                     else
-                        t.SetType(Target.Type.MIDDLE);
+                        t.setType(Target.Type.MIDDLE);
                 }
         );
     }
@@ -123,13 +120,7 @@ public class Xmlimpl implements Xml {
     public String getGraphName(){
         return gpupDescriptor.getGPUPConfiguration().getGPUPGraphName();
     }
-
-
-
-
-
     private String readFromInputStream(InputStream inputStream) {
         return new Scanner(inputStream).useDelimiter("\\Z").next();
     }
-
 }

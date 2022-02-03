@@ -19,16 +19,13 @@ public class gpupAdmin extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         primaryStage.setTitle("G.P.U.P - Admin");
-      //  import static util.Constants.*;
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(MAIN_PAGE_ADMIN_FXML_RESOURCE_LOCATION);
-        //URL url = getClass().getResource(ADMIN_PAGE_FXML_RESOURCE_LOCATION);
         fxmlLoader.setLocation(url);
         Parent root = fxmlLoader.load(url.openStream());
         Scene scene = new Scene(root, 500, 300);
         primaryStage.setScene(scene);
         AdminAppMainController controller = fxmlLoader.getController();
-        //AdminPageController controller = fxmlLoader.getController();
         controller.setStage(primaryStage);
         primaryStage.show();
     }
@@ -36,7 +33,6 @@ public class gpupAdmin extends Application {
     @Override
     public void stop() throws Exception {
         HttpClientUtil.shutdown();
-    //    workerAppMainController.close();
     }
 
     public static void main(String[] args) {

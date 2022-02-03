@@ -1,7 +1,5 @@
 package gpup.servlets.user;
 
-import engine.Mission;
-import engine.Target;
 import gpup.servlets.MissionManger;
 import gpup.servlets.UserManager;
 import gpup.servlets.WorkerManager;
@@ -24,10 +22,6 @@ public class LogoutServlet extends HttpServlet {
         WorkerManager workerManager = ServletUtils.getWorkerManager(getServletContext());
         WorkerObject worker = workerManager.getWorkerByName(usernameFromSession);
         if (usernameFromSession != null) {
-            if (userManager.getUserRole(usernameFromSession).equals("Worker")) {
-                missionManager.removeWorkerForAllMission(usernameFromSession);
-                workerLeaves(missionManager, worker);
-            }
             userManager.removeUser(usernameFromSession); /////////////////////////////////
             SessionUtils.clearSession(request);
             response.getWriter().write(usernameFromSession+" logout");
@@ -38,31 +32,6 @@ public class LogoutServlet extends HttpServlet {
             response.getWriter().write("you have login before logout");
             response.getWriter().flush();
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
-    }
-
-    private void  workerLeaves(MissionManger missionManager , WorkerObject worker){
-        for (Target t : worker.getTargetsToExecute()){
-            try {
-                Mission mission =missionManager.getMissionByName(t.getMission());
-                t.setStatus(Target.Status.Waiting);
-               // missionManager.getMissionByName(t.getMission()).getWaitingTargetToExecute().add(t);
-                mission.setTargetInProgress(mission.getTargetInProgress()-1);
-              //  mission.setTargetWaiting(mission.getTargetWaiting()+1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        for (Target t : worker.getTargetInProgress()){
-            try {
-                Mission mission = missionManager.getMissionByName(t.getMission());
-                t.setStatus(Target.Status.Waiting);
-               // mission.getWaitingTargetToExecute().add(t);
-                mission.setTargetInProgress(mission.getTargetInProgress()-1);
-              //  mission.setTargetWaiting(mission.getTargetWaiting()+1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 }

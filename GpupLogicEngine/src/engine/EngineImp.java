@@ -17,19 +17,12 @@ public class EngineImp {
     public EngineImp(Map<String, Target> targetMap) {
         this.targetMap = targetMap;
     }
-    public EngineImp() {
-    }
-
-
     public Map<String, Target> getTargetMap() {
         return targetMap;
     }
     public void setTargetMap(Map<String, Target> targetMap) {
         this.targetMap = targetMap;
     }
-
-
-
     /**
      * Specific target information
      *
@@ -38,7 +31,6 @@ public class EngineImp {
      * all the path between the targets with a specific dependence
      * @throws TargetIsExists on if target isn't exists
      */
-
     public PathBetweenTwoTargetsInfo findAPathBetweenTwoTargets(String t1, String t2, Utility.Dependence dependence) throws Exception {
         Target target1 = targetMap.get(t1);
         Target target2 = targetMap.get(t2);
@@ -61,23 +53,19 @@ public class EngineImp {
 
         return new PathBetweenTwoTargetsInfo(t1, t2, dependence.name(), list);
     }
-
     /** Circuit detection info
      *  @return all the information between the targets:
      *  target names
      *  all the cycle paths
      * @tRERhrows TargetIsExists on if target isn't exists
      */
-
     public Information circuitDetection(String name)throws Exception {
         PathBetweenTwoTargetsInfo info = findAPathBetweenTwoTargets(name,name,Utility.Dependence.DEPENDS_ON);
         return new CircuitDetectionInfo(name , info.getPaths());
     }
-
     /**
      * Specific target information - helper (recursion)
      */
-
     public void findPathBetweenTwoTargetsHelper(Target t1, Target t2, List<Targets> listSt, Intx index, Utility.Dependence dependence) {
 
         Set<String> tOneSet;
@@ -107,13 +95,9 @@ public class EngineImp {
                 listSt.get(index.x).getTargetsList().remove(listSt.get(index.x).getTargetsList().size() - 1);
         }
     }
-
-
     public Map<String, Target> getMap() {
         return targetMap;
     }
-
-
     public void whatIf(String target, List<String> newList, Utility.Dependence dependence) {
         Set<String> tOneSet;
         if (!newList.contains(target.toUpperCase())) {
@@ -130,6 +114,5 @@ public class EngineImp {
             }
         }
     }
-
 }
 

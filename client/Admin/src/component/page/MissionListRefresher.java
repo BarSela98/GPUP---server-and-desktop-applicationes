@@ -2,6 +2,7 @@ package component.page;
 
 import engine.Mission;
 import ODT.MissionInTable;
+import error.errorMain;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
@@ -42,14 +43,14 @@ public class MissionListRefresher extends TimerTask {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("MissionListRefresher " + e.getMessage()));
+                Platform.runLater(() -> new errorMain("MissionListRefresher " + e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> System.out.println("MissionListRefresher - Response code: "+response.code()+"\nResponse body: "+responseBody));
+                    Platform.runLater(() -> new errorMain("MissionListRefresher - Response code: "+response.code()+"\nResponse body: "+responseBody));
                 } else {
                     String jsonArrayOfMissionsNames = response.body().string();
 
@@ -59,8 +60,6 @@ public class MissionListRefresher extends TimerTask {
                         List<MissionInTable> table = new ArrayList<>();
                         for(int i= 0 ; i < MissionsNames.length ; ++i){
                             table.add(new MissionInTable(MissionsNames[i]));
-
-
                         }
                         MissionsListConsumer.accept(table);
                     }

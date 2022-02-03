@@ -53,6 +53,11 @@ public class missionAdminController {
         simulationBox.disableProperty().bind(isCompiler);
         compilerBox.disableProperty().bind(isCompiler.not());
         numCheckBoxesSelected.addListener((obs, oldSelectedCount, newSelectedCount) -> displayRunButton());
+        isCompilerAddListener();
+        selectAllAddListener();
+    }
+
+    public void isCompilerAddListener(){
         isCompiler.addListener((obs, oldSelectedCount, newSelectedCount) -> {
             if (isCompiler.getValue()) {
                 compilerToggle.setStyle(mainController.getToggleColor());
@@ -65,6 +70,8 @@ public class missionAdminController {
                 compilerToggle.setOpacity(0.3);
             }
         });
+    }
+    public void selectAllAddListener(){
         selectAll.selectedProperty().addListener((obs, oldSelectedCount, newSelectedCount)->{
             if (newSelectedCount){
                 ObservableList<TargetTable> data = tableView.getItems();
@@ -195,7 +202,7 @@ public class missionAdminController {
         Mission mission;
         ArrayList<Target> targetsToRun=new ArrayList<>();
 
-        if (nameOfMissionText.getText().equals(""))
+        if (nameOfMissionText.getText().equals("")) /// if nameOfMissionText is empty - don't make new mission
             return;
 
         typeOfRunning = Utility.TypeOfRunning.SCRATCH;
@@ -223,6 +230,10 @@ public class missionAdminController {
         addMission(mission);
     }
 
+    /**
+     * send request to server - add new mission
+     * @param mission
+     */
     public void addMission(Mission mission){
         String json = new Gson().toJson(mission);
         String finalUrl = HttpUrl
@@ -230,14 +241,12 @@ public class missionAdminController {
                 .newBuilder()
                 .build()
                 .toString();
-        System.out.println(json);
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, json);
         HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                //   Platform.runLater(() -> System.out.println("Execute Mission - error -"+e.getMessage()));
                 Platform.runLater(() -> new errorMain("Execute Mission - error -"+e.getMessage()));
             }
 
@@ -245,7 +254,6 @@ public class missionAdminController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    //    Platform.runLater(() -> System.out.println("Execute Mission " + responseBody));
                     Platform.runLater(() -> new errorMain("Execute Mission " + responseBody));
                 } else {
                     Platform.runLater(() -> {
@@ -264,15 +272,12 @@ public class missionAdminController {
     public void updateTable() {
         int priceForCompilation = mainController.getGraph().getPriceForCompilation();
         int priceForSimulation = mainController.getGraph().getPriceForSimulation();
-
         compilationPrice.setText(String.valueOf(priceForCompilation));
         simulationPrice.setText(String.valueOf(priceForSimulation));
-
         if (priceForCompilation == 0)
             compilerToggle.setDisable(true);
         if (priceForSimulation == 0)
             simulationToggle.setDisable(true);
-
 
         tableView.setItems(mainController.getItems());
         for (int i = 0 ; i< mainController.getItems().size();++i)
@@ -341,12 +346,10 @@ public class missionAdminController {
     @FXML private TableColumn<TargetTable, String> dataTableCol;
     @FXML private TableColumn<TargetTable, Integer> dependsOnTableCol;
     @FXML private TableColumn<TargetTable, String> requiredForTableCol;
-
+////
     @FXML private TextField nameOfMissionText;
     @FXML private CheckBox withRequired;
     @FXML private CheckBox withDepend;
-
-    ////
     @FXML private CheckBox selectAll;
 
 }

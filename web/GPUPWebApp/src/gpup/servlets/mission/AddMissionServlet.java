@@ -32,20 +32,24 @@ public class AddMissionServlet extends HttpServlet {
                 Collectors.joining("\n"));
         Mission mission = new Gson().fromJson(json, Mission.class);
 
+        /// request before login
         if(usernameFromSession == null || usernameFromSession.isEmpty()){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             out.write("please login");
         }
+        /// worker request add mission but only admin can add mission
         else if(!userManager.getUserRole(usernameFromSession).equals("Admin")){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             out.write("only admin can select a graph");
         }
+        /// can't add mission with zero price
         else if (mission.getPriceOfAllMission() == 0 ){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("you can't add new mission with zero price");
             response.getWriter().flush();
         }
-        else if (missionManger.isMissionNameExists(mission.getNameOfMission())){ //// the name is exists
+        //// the name is exists
+        else if (missionManger.isMissionNameExists(mission.getNameOfMission())){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("you can't add new mission with this name");
             response.getWriter().flush();
@@ -55,7 +59,6 @@ public class AddMissionServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().write(mission.getNameOfMission()+ " (name of mission) add to mission manager");
         response.getWriter().flush();
-            System.out.println(json);
         }
     }
 }
